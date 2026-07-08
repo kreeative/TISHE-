@@ -1,5 +1,5 @@
 import { useStore } from './StoreContext'
-import { ctaGlass, ctaTracking } from './cta'
+import { ctaGlassOnLight, ctaTracking } from './cta'
 
 const TIERS = [
   {
@@ -38,15 +38,15 @@ export default function Circle() {
   const { setAccountOpen } = useStore()
 
   return (
-    <section id="circle" className="bg-[#1a0f08] text-[#FFF8F2] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-t border-[#FFF8F2]/10">
+    <section id="circle" className="bg-[#FFF8F2] text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10">
       <div className="max-w-6xl mx-auto">
-        <p className="text-xs font-medium uppercase text-[#c99b6f]" style={{ letterSpacing: '0.35em' }}>
+        <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
           The Sukundu Circle
         </p>
         <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 max-w-2xl leading-[1.05]" style={{ textWrap: 'balance' }}>
           Loyalty, woven in
         </h2>
-        <p className="mt-5 max-w-lg text-sm sm:text-base text-[#FFF8F2]/70 leading-relaxed">
+        <p className="mt-5 max-w-lg text-sm sm:text-base text-[#1a120c]/75 leading-relaxed">
           Sukundu means hair in Pulaar — and in our culture, hair is cared for in community. The Circle
           is ours: earn strands on every order, learn the craft, and grow into richer rewards.
         </p>
@@ -55,18 +55,18 @@ export default function Circle() {
           {TIERS.map((tier, i) => (
             <div
               key={tier.name}
-              className={`flex flex-col p-7 border backdrop-blur-md ${
-                i === 2 ? 'border-[#c99b6f]/50 bg-white/[0.07]' : 'border-[#FFF8F2]/15 bg-white/[0.03]'
+              className={`flex flex-col p-7 border bg-white/50 ${
+                i === 2 ? 'border-[#5A3224]' : 'border-[#5A3224]/25'
               }`}
             >
               <h3 className="font-display text-3xl">{tier.name}</h3>
-              <p className="text-xs uppercase text-[#c99b6f] mt-1" style={{ letterSpacing: '0.25em' }}>
+              <p className="text-xs font-semibold uppercase text-[#5A3224] mt-1" style={{ letterSpacing: '0.25em' }}>
                 {tier.threshold}
               </p>
-              <ul className="mt-6 flex flex-col gap-3 text-sm text-[#FFF8F2]/70 leading-relaxed">
+              <ul className="mt-6 flex flex-col gap-3 text-sm text-[#1a120c]/75 leading-relaxed">
                 {tier.perks.map((perk) => (
                   <li key={perk} className="flex gap-3">
-                    <span className="text-[#c99b6f] shrink-0">—</span>
+                    <span className="text-[#5A3224] shrink-0">—</span>
                     {perk}
                   </li>
                 ))}
@@ -75,7 +75,7 @@ export default function Circle() {
           ))}
         </div>
 
-        <button className={`${ctaGlass} mt-10`} style={ctaTracking} onClick={() => setAccountOpen(true)}>
+        <button className={`${ctaGlassOnLight} mt-10`} style={ctaTracking} onClick={() => setAccountOpen(true)}>
           Join the Circle — Free
         </button>
       </div>

@@ -15,15 +15,15 @@ export default function LengthGuide() {
   const maxIn = LENGTHS[LENGTHS.length - 1].inches
 
   return (
-    <section id="lengths" className="bg-black text-[#FFF8F2] py-20 sm:py-28 px-5 sm:px-10 md:px-16">
+    <section id="lengths" className="bg-[#FFF8F2] text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10">
       <div className="max-w-6xl mx-auto">
-        <p className="text-xs font-medium uppercase text-[#FFF8F2]/60" style={{ letterSpacing: '0.35em' }}>
+        <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
           Sukundu School
         </p>
         <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 max-w-2xl leading-[1.05]" style={{ textWrap: 'balance' }}>
           Find your length
         </h2>
-        <p className="mt-5 max-w-md text-sm sm:text-base text-[#FFF8F2]/70 leading-relaxed">
+        <p className="mt-5 max-w-md text-sm sm:text-base text-[#1a120c]/75 leading-relaxed">
           Tap a length to see where it lands and how many bundles build the look.
         </p>
 
@@ -35,10 +35,10 @@ export default function LengthGuide() {
                   key={l.inches}
                   onClick={() => setSelected(l)}
                   aria-pressed={selected.inches === l.inches}
-                  className={`px-5 py-2.5 text-xs font-semibold backdrop-blur-md border transition-colors ${
+                  className={`px-5 py-2.5 text-xs font-semibold border transition-colors ${
                     selected.inches === l.inches
-                      ? 'bg-white/25 border-white/50 text-white'
-                      : 'bg-white/5 border-white/20 text-[#FFF8F2]/60 hover:bg-white/15 hover:text-[#FFF8F2]'
+                      ? 'bg-[#5A3224] border-[#5A3224] text-[#FFF8F2]'
+                      : 'bg-transparent border-[#5A3224]/30 text-[#1a120c]/65 hover:border-[#5A3224] hover:text-[#1a120c]'
                   }`}
                   style={{ letterSpacing: '0.15em', fontVariantNumeric: 'tabular-nums' }}
                 >
@@ -47,17 +47,17 @@ export default function LengthGuide() {
               ))}
             </div>
 
-            <div className="mt-10 border-t border-[#FFF8F2]/10 pt-8">
+            <div className="mt-10 border-t border-[#5A3224]/15 pt-8">
               <div className="flex items-baseline gap-4">
                 <span className="font-display text-6xl sm:text-7xl" style={{ fontVariantNumeric: 'tabular-nums' }}>
                   {selected.inches}"
                 </span>
-                <span className="text-xs uppercase text-[#c99b6f]" style={{ letterSpacing: '0.3em' }}>
+                <span className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.3em' }}>
                   lands at {selected.lands}
                 </span>
               </div>
-              <p className="mt-4 text-sm text-[#FFF8F2]/70 leading-relaxed max-w-sm">{selected.note}</p>
-              <p className="mt-3 text-xs uppercase text-[#FFF8F2]/50" style={{ letterSpacing: '0.2em' }}>
+              <p className="mt-4 text-sm text-[#1a120c]/75 leading-relaxed max-w-sm">{selected.note}</p>
+              <p className="mt-3 text-xs font-semibold uppercase text-[#1a120c]/55" style={{ letterSpacing: '0.2em' }}>
                 Full look: {selected.bundles}
               </p>
             </div>
@@ -69,7 +69,7 @@ export default function LengthGuide() {
               <button key={l.inches} onClick={() => setSelected(l)} className="group flex items-center gap-4 text-left">
                 <span
                   className={`text-xs w-8 shrink-0 transition-colors ${
-                    selected.inches === l.inches ? 'text-[#c99b6f]' : 'text-[#FFF8F2]/40 group-hover:text-[#FFF8F2]/70'
+                    selected.inches === l.inches ? 'text-[#5A3224] font-semibold' : 'text-[#1a120c]/45 group-hover:text-[#1a120c]/75'
                   }`}
                   style={{ fontVariantNumeric: 'tabular-nums' }}
                 >
@@ -77,13 +77,13 @@ export default function LengthGuide() {
                 </span>
                 <span
                   className={`h-px transition-all duration-500 ${
-                    selected.inches === l.inches ? 'bg-[#c99b6f]' : 'bg-[#FFF8F2]/20 group-hover:bg-[#FFF8F2]/40'
+                    selected.inches === l.inches ? 'bg-[#5A3224]' : 'bg-[#5A3224]/25 group-hover:bg-[#5A3224]/50'
                   }`}
                   style={{ width: `${(l.inches / maxIn) * 100}%` }}
                 />
                 <span
                   className={`text-xs whitespace-nowrap transition-colors ${
-                    selected.inches === l.inches ? 'text-[#FFF8F2]' : 'text-[#FFF8F2]/40 group-hover:text-[#FFF8F2]/70'
+                    selected.inches === l.inches ? 'text-[#1a120c] font-medium' : 'text-[#1a120c]/45 group-hover:text-[#1a120c]/75'
                   }`}
                 >
                   {l.lands}

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Mail } from 'lucide-react'
-import { ctaGlass, ctaTracking } from './cta'
+import { ctaGlassOnLight, ctaTracking } from './cta'
 
 function InstagramIcon({ size = 20 }: { size?: number }) {
   return (
@@ -18,20 +18,20 @@ export default function VipFooter() {
 
   return (
     <>
-      <section id="contact" className="bg-black text-[#FFF8F2] py-20 sm:py-28 px-5 sm:px-10 md:px-16">
+      <section id="contact" className="bg-[#FFF8F2] text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16">
         <div className="max-w-3xl mx-auto text-center flex flex-col items-center">
-          <p className="text-xs font-medium uppercase text-[#FFF8F2]/60" style={{ letterSpacing: '0.35em' }}>
+          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
             Something big is coming
           </p>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 leading-[1.05]" style={{ textWrap: 'balance' }}>
             Join the VIP list
           </h2>
-          <p className="mt-5 max-w-md text-sm sm:text-base text-[#FFF8F2]/70 leading-relaxed">
+          <p className="mt-5 max-w-md text-sm sm:text-base text-[#1a120c]/75 leading-relaxed">
             Early access to launches, restocks, and VIP-only pricing — straight to your inbox.
           </p>
 
           {joined ? (
-            <p className="mt-10 text-sm font-medium text-[#c99b6f]" style={{ letterSpacing: '0.15em' }}>
+            <p className="mt-10 text-sm font-semibold text-[#5A3224]" style={{ letterSpacing: '0.15em' }}>
               YOU'RE ON THE LIST — WATCH YOUR INBOX
             </p>
           ) : (
@@ -50,9 +50,9 @@ export default function VipFooter() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@email.com"
-                className="flex-1 bg-transparent border border-[#FFF8F2]/30 px-5 py-3.5 text-sm placeholder:text-[#FFF8F2]/40 focus:outline-none focus:border-[#FFF8F2]/70"
+                className="flex-1 bg-transparent border border-[#5A3224]/30 px-5 py-3.5 text-sm text-[#1a120c] placeholder:text-[#1a120c]/40 focus:outline-none focus:border-[#5A3224]"
               />
-              <button type="submit" className={ctaGlass} style={ctaTracking}>
+              <button type="submit" className={ctaGlassOnLight} style={ctaTracking}>
                 Join Now
               </button>
             </form>
@@ -60,10 +60,10 @@ export default function VipFooter() {
         </div>
       </section>
 
-      <footer className="bg-black text-[#FFF8F2] border-t border-[#FFF8F2]/10 px-5 sm:px-10 md:px-16 py-10">
+      <footer className="bg-[#1a0f08] text-[#FFF8F2] px-5 sm:px-10 md:px-16 py-10">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           <img src="/images/logo-mark.webp" alt="The Ivory Sukundu" className="h-12 w-auto" />
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-6">
             <a href="#" aria-label="Instagram" className="text-[#FFF8F2]/60 hover:text-[#FFF8F2] transition-colors">
               <InstagramIcon size={20} />
             </a>
@@ -71,7 +71,7 @@ export default function VipFooter() {
               <Mail size={20} strokeWidth={1.5} />
             </a>
           </div>
-          <p className="text-xs text-[#FFF8F2]/40">© 2026 The Ivory Sukundu. All rights reserved.</p>
+          <p className="text-xs text-[#FFF8F2]/45">© 2026 The Ivory Sukundu. All rights reserved.</p>
         </div>
       </footer>
     </>

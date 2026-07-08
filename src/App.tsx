@@ -12,7 +12,7 @@ import { StoreProvider } from './components/StoreContext'
 function App() {
   return (
     <StoreProvider>
-      <div id="top" className="min-h-screen bg-black tracking-[-0.02em]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+      <div id="top" className="min-h-screen bg-[#FFF8F2] tracking-[-0.02em]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
         <Hero />
         <Campaign />
         <Collection />

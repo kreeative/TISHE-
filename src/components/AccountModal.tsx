@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { useStore } from './StoreContext'
-import { ctaGlass, ctaTracking } from './cta'
+import { ctaGlassOnLight, ctaTracking } from './cta'
 
 const inputClass =
-  'w-full bg-transparent border border-[#FFF8F2]/25 px-4 py-3 text-sm placeholder:text-[#FFF8F2]/35 focus:outline-none focus:border-[#FFF8F2]/70 text-[#FFF8F2]'
+  'w-full bg-transparent border border-[#5A3224]/30 px-4 py-3 text-sm text-[#1a120c] placeholder:text-[#1a120c]/40 focus:outline-none focus:border-[#5A3224]'
 
 function MemberCard({ name }: { name: string }) {
   return (
@@ -14,13 +14,13 @@ function MemberCard({ name }: { name: string }) {
     >
       <div className="flex items-start justify-between">
         <img src="/images/logo-mark.webp" alt="The Ivory Sukundu" className="h-10 w-auto" />
-        <span className="text-[10px] text-[#c99b6f] uppercase" style={{ letterSpacing: '0.3em' }}>
+        <span className="text-[10px] text-[#c99b6f] uppercase font-semibold" style={{ letterSpacing: '0.3em' }}>
           Ivory Member
         </span>
       </div>
       <div>
         <p className="font-display text-xl text-[#FFF8F2]">{name}</p>
-        <p className="text-[10px] text-[#FFF8F2]/50 uppercase mt-1" style={{ letterSpacing: '0.25em' }}>
+        <p className="text-[10px] text-[#FFF8F2]/55 uppercase mt-1 font-medium" style={{ letterSpacing: '0.25em' }}>
           The Sukundu Circle — est. 2026
         </p>
       </div>
@@ -39,38 +39,38 @@ export default function AccountModal() {
     <div className="fixed inset-0 z-[130] flex items-center justify-center p-5">
       <button
         aria-label="Close account panel"
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm cursor-default"
+        className="absolute inset-0 bg-[#1a120c]/40 backdrop-blur-sm cursor-default"
         onClick={() => setAccountOpen(false)}
       />
-      <div className="relative w-full max-w-md bg-[#120b06] text-[#FFF8F2] border border-[#FFF8F2]/10 p-8">
+      <div className="relative w-full max-w-md bg-[#FFF8F2] text-[#1a120c] border border-[#5A3224]/20 p-8">
         <button
           onClick={() => setAccountOpen(false)}
           aria-label="Close"
-          className="absolute top-4 right-4 p-2 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-colors"
+          className="absolute top-4 right-4 text-[#1a120c]/60 hover:text-[#5A3224] transition-colors"
         >
-          <X size={16} />
+          <X size={20} strokeWidth={1.75} />
         </button>
 
         {memberName ? (
           <div className="flex flex-col gap-6">
             <div>
-              <p className="text-xs text-[#c99b6f] uppercase" style={{ letterSpacing: '0.3em' }}>
+              <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.3em' }}>
                 Welcome to the Circle
               </p>
               <h2 className="font-display text-3xl mt-2">{memberName}</h2>
             </div>
             <MemberCard name={memberName} />
-            <ul className="text-sm text-[#FFF8F2]/70 leading-relaxed flex flex-col gap-2">
+            <ul className="text-sm text-[#1a120c]/75 leading-relaxed flex flex-col gap-2">
               <li>— Every $1 earns 1 strand. 200 strands = $20 off.</li>
               <li>— Early access to every drop and restock.</li>
               <li>— Full access to Sukundu School care guides.</li>
               <li>— A gift on your birthday, always.</li>
             </ul>
-            <button className={ctaGlass} style={ctaTracking} onClick={() => setAccountOpen(false)}>
+            <button className={ctaGlassOnLight} style={ctaTracking} onClick={() => setAccountOpen(false)}>
               Start Shopping
             </button>
             <button
-              className="text-xs text-[#FFF8F2]/40 hover:text-[#FFF8F2]/70 uppercase transition-colors"
+              className="text-xs font-medium text-[#1a120c]/45 hover:text-[#5A3224] uppercase transition-colors"
               style={{ letterSpacing: '0.15em' }}
               onClick={() => setMemberName(null)}
             >
@@ -79,13 +79,15 @@ export default function AccountModal() {
           </div>
         ) : (
           <>
-            <div className="flex gap-1 mb-8 bg-white/5 border border-white/10 p-1">
+            <div className="flex gap-8 mb-8 border-b border-[#5A3224]/15">
               {(['create', 'signin'] as const).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTab(t)}
-                  className={`flex-1 py-2.5 text-xs font-semibold uppercase transition-colors ${
-                    tab === t ? 'bg-white/15 text-[#FFF8F2]' : 'text-[#FFF8F2]/50 hover:text-[#FFF8F2]/80'
+                  className={`pb-3 -mb-px text-xs font-semibold uppercase whitespace-nowrap transition-colors border-b-2 ${
+                    tab === t
+                      ? 'border-[#5A3224] text-[#1a120c]'
+                      : 'border-transparent text-[#1a120c]/50 hover:text-[#1a120c]/80'
                   }`}
                   style={{ letterSpacing: '0.2em' }}
                 >
@@ -103,38 +105,24 @@ export default function AccountModal() {
               }}
             >
               {tab === 'create' && (
-                <>
-                  <p className="text-sm text-[#FFF8F2]/70 leading-relaxed -mt-2 mb-2">
-                    Free to join. Earn strands on every order, unlock early access, and learn with Sukundu School.
-                  </p>
-                  <label className="sr-only" htmlFor="acc-name">Full name</label>
-                  <input
-                    id="acc-name"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Full name"
-                    className={inputClass}
-                  />
-                </>
+                <p className="text-sm text-[#1a120c]/75 leading-relaxed -mt-2 mb-2">
+                  Free to join. Earn strands on every order, unlock early access, and learn with Sukundu School.
+                </p>
               )}
-              {tab === 'signin' && (
-                <>
-                  <label className="sr-only" htmlFor="acc-name-si">Full name</label>
-                  <input
-                    id="acc-name-si"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Full name"
-                    className={inputClass}
-                  />
-                </>
-              )}
+              <label className="sr-only" htmlFor="acc-name">Full name</label>
+              <input
+                id="acc-name"
+                required={tab === 'create'}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Full name"
+                className={inputClass}
+              />
               <label className="sr-only" htmlFor="acc-email">Email</label>
               <input id="acc-email" type="email" required placeholder="you@email.com" className={inputClass} />
               <label className="sr-only" htmlFor="acc-pass">Password</label>
               <input id="acc-pass" type="password" required placeholder="Password" className={inputClass} />
-              <button type="submit" className={`${ctaGlass} w-full mt-2`} style={ctaTracking}>
+              <button type="submit" className={`${ctaGlassOnLight} w-full mt-2`} style={ctaTracking}>
                 {tab === 'create' ? 'Create My Account' : 'Sign In'}
               </button>
             </form>
