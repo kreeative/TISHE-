@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ShoppingBag, User } from 'lucide-react'
 import RevealLayer from './RevealLayer'
-import { ctaLight, ctaTracking } from './cta'
+import { useStore } from './StoreContext'
+import { ctaGlass, ctaTracking } from './cta'
 
 const SPOTLIGHT_R = 260
 const BASE_IMAGE = '/images/hero-base.jpg'
@@ -10,6 +11,7 @@ const REVEAL_IMAGE = '/images/hero-reveal.jpg'
 const NAV_LINKS = [
   { label: 'Our Hair', href: '#about' },
   { label: 'Collections', href: '#collections' },
+  { label: 'The Circle', href: '#circle' },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -17,6 +19,8 @@ export default function Hero() {
   const [cursorPos, setCursorPos] = useState({ x: -999, y: -999 })
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { cart, setCartOpen, setAccountOpen, memberName } = useStore()
+  const cartCount = cart.reduce((s, i) => s + i.qty, 0)
   const sectionRef = useRef<HTMLElement>(null)
   const mouse = useRef({ x: -999, y: -999 })
   const smooth = useRef({ x: -999, y: -999 })
@@ -111,7 +115,7 @@ export default function Hero() {
         style={{ animationDelay: '0.85s' }}
       >
         <p className="text-xs sm:text-sm text-[#FFF8F2]/80 leading-relaxed">
-          Hand-selected raw bundles and wigs crafted for texture, shine, and hold. Wash day to slay day — hair built to last.
+          Campaign 01 — The Half-Wig Edit. Comb-in, glueless, installed in sixty seconds. Your hairline breathes; your hair rests.
         </p>
       </div>
 
@@ -125,29 +129,52 @@ export default function Hero() {
           <img src="/images/logo-mark.webp" alt="The Ivory Sukundu" className="h-10 sm:h-14 w-auto" />
         </a>
 
-        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full px-2 py-2 items-center gap-1">
+        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 px-2 py-2 items-center gap-1">
           {NAV_LINKS.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              className="px-4 py-1.5 rounded-full text-sm font-medium text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+              className="px-4 py-1.5 text-sm font-medium text-white/80 hover:bg-white/20 hover:text-white transition-colors"
             >
               {l.label}
             </a>
           ))}
         </div>
 
-        <a href="#collections" className={`hidden md:block ${ctaLight}`} style={ctaTracking}>
-          Shop Now
-        </a>
-
-        <button
-          className="md:hidden text-white p-2 rounded-full bg-white/15 backdrop-blur-md border border-white/25"
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
-          {menuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <a href="#collections" className={`hidden md:block ${ctaGlass}`} style={ctaTracking}>
+            Shop Now
+          </a>
+          <button
+            className="text-white p-2.5 bg-white/15 backdrop-blur-md border border-white/25 hover:bg-white/30 transition-colors"
+            onClick={() => setAccountOpen(true)}
+            aria-label={memberName ? `Account: ${memberName}` : 'Account'}
+          >
+            <User size={18} className={memberName ? 'text-[#c99b6f]' : undefined} />
+          </button>
+          <button
+            className="relative text-white p-2.5 bg-white/15 backdrop-blur-md border border-white/25 hover:bg-white/30 transition-colors"
+            onClick={() => setCartOpen(true)}
+            aria-label={`Bag, ${cartCount} items`}
+          >
+            <ShoppingBag size={18} />
+            {cartCount > 0 && (
+              <span
+                className="absolute -top-1.5 -right-1.5 bg-[#FFF8F2] text-black text-[10px] font-bold w-5 h-5 flex items-center justify-center"
+                style={{ fontVariantNumeric: 'tabular-nums' }}
+              >
+                {cartCount}
+              </span>
+            )}
+          </button>
+          <button
+            className="md:hidden text-white p-2.5 bg-white/15 backdrop-blur-md border border-white/25"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
+        </div>
       </nav>
 
       {menuOpen && (
@@ -159,7 +186,7 @@ export default function Hero() {
           ))}
           <a
             href="#collections"
-            className={`${ctaLight} mt-4`}
+            className={`${ctaGlass} mt-4`}
             style={ctaTracking}
             onClick={() => setMenuOpen(false)}
           >

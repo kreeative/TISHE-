@@ -1,10 +1,11 @@
-// One CTA style across the site: sharp corners, uppercase Montserrat, wide tracking.
-const ctaBase = 'inline-block text-xs font-semibold uppercase px-7 py-3.5 transition-colors text-center'
+// One CTA style across the site: squared glassmorphism, uppercase Montserrat, wide tracking.
+const ctaBase =
+  'inline-block text-xs font-semibold uppercase px-7 py-3.5 transition-colors text-center backdrop-blur-md border cursor-pointer'
 
 export const ctaTracking = { letterSpacing: '0.2em' } as const
 
-// ivory button for dark grounds
-export const ctaLight = `${ctaBase} bg-[#FFF8F2] text-black hover:bg-white`
+// glass button for dark grounds
+export const ctaGlass = `${ctaBase} bg-white/15 border-white/30 text-[#FFF8F2] hover:bg-white/30`
 
-// espresso button for light grounds
-export const ctaDark = `${ctaBase} bg-[#1a120c] text-[#FFF8F2] hover:bg-[#5A3224]`
+// glass button for light (ivory) grounds
+export const ctaGlassOnLight = `${ctaBase} bg-[#1a120c]/5 border-[#1a120c]/30 text-[#1a120c] hover:bg-[#1a120c]/10`

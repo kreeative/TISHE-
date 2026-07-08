@@ -23,11 +23,15 @@ export default function WhyUs() {
     <section id="about" className="bg-[#1a0f08] text-[#FFF8F2] py-20 sm:py-28 px-5 sm:px-10 md:px-16">
       <div className="max-w-6xl mx-auto">
         <p className="text-xs font-medium uppercase text-[#FFF8F2]/60" style={{ letterSpacing: '0.35em' }}>
-          Why Sukundu
+          Sukundu — "hair" in Pulaar
         </p>
         <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 max-w-2xl leading-[1.05]" style={{ textWrap: 'balance' }}>
-          Hair that keeps <span className="italic">its promises</span>
+          Hair that keeps its promises
         </h2>
+        <p className="mt-5 max-w-lg text-sm sm:text-base text-[#FFF8F2]/70 leading-relaxed">
+          Our name comes from the Pulaar word for hair — because for us, hair is heritage. Every
+          Sukundu piece honors where it comes from and elevates where it's going.
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 mt-12 sm:mt-16">
           {REASONS.map((r) => (

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Mail } from 'lucide-react'
-import { ctaLight, ctaTracking } from './cta'
+import { ctaGlass, ctaTracking } from './cta'
 
 function InstagramIcon({ size = 20 }: { size?: number }) {
   return (
@@ -24,7 +24,7 @@ export default function VipFooter() {
             Something big is coming
           </p>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 leading-[1.05]" style={{ textWrap: 'balance' }}>
-            Join the <span className="italic">VIP list</span>
+            Join the VIP list
           </h2>
           <p className="mt-5 max-w-md text-sm sm:text-base text-[#FFF8F2]/70 leading-relaxed">
             Early access to launches, restocks, and VIP-only pricing — straight to your inbox.
@@ -52,7 +52,7 @@ export default function VipFooter() {
                 placeholder="you@email.com"
                 className="flex-1 bg-transparent border border-[#FFF8F2]/30 px-5 py-3.5 text-sm placeholder:text-[#FFF8F2]/40 focus:outline-none focus:border-[#FFF8F2]/70"
               />
-              <button type="submit" className={ctaLight} style={ctaTracking}>
+              <button type="submit" className={ctaGlass} style={ctaTracking}>
                 Join Now
               </button>
             </form>
