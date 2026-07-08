@@ -1,3 +1,5 @@
+import { ctaDark, ctaTracking } from './cta'
+
 const PRODUCTS = [
   {
     image: '/images/tex-straight.jpg',
@@ -51,11 +53,7 @@ export default function Collection() {
                 </span>
               </div>
               <p className="mt-2 text-sm text-[#1a120c]/70 leading-relaxed">{p.blurb}</p>
-              <a
-                href="#contact"
-                className="mt-4 inline-block self-start bg-[#1a120c] text-[#FFF8F2] text-xs font-semibold uppercase px-6 py-3 hover:bg-[#5A3224] transition-colors"
-                style={{ letterSpacing: '0.2em' }}
-              >
+              <a href="#contact" className={`mt-4 self-start ${ctaDark}`} style={ctaTracking}>
                 Shop Now
               </a>
             </article>

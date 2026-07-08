@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Mail } from 'lucide-react'
+import { ctaLight, ctaTracking } from './cta'
 
 function InstagramIcon({ size = 20 }: { size?: number }) {
   return (
@@ -51,11 +52,7 @@ export default function VipFooter() {
                 placeholder="you@email.com"
                 className="flex-1 bg-transparent border border-[#FFF8F2]/30 px-5 py-3.5 text-sm placeholder:text-[#FFF8F2]/40 focus:outline-none focus:border-[#FFF8F2]/70"
               />
-              <button
-                type="submit"
-                className="bg-[#FFF8F2] text-black text-xs font-semibold uppercase px-8 py-3.5 hover:bg-white transition-colors"
-                style={{ letterSpacing: '0.2em' }}
-              >
+              <button type="submit" className={ctaLight} style={ctaTracking}>
                 Join Now
               </button>
             </form>

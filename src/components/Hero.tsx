@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import RevealLayer from './RevealLayer'
+import { ctaLight, ctaTracking } from './cta'
 
 const SPOTLIGHT_R = 260
 const BASE_IMAGE = '/images/hero-base.jpg'
@@ -85,7 +86,7 @@ export default function Hero() {
           <img
             src="/images/logo-mark.webp"
             alt=""
-            className="w-[64vw] max-w-[300px] sm:w-[400px] sm:max-w-none xl:w-[480px] h-auto hero-anim hero-reveal"
+            className="w-[50vw] max-w-[240px] sm:w-[300px] sm:max-w-none xl:w-[360px] h-auto hero-anim hero-reveal"
             style={{ animationDelay: '0.25s' }}
           />
         </h1>
@@ -136,10 +137,7 @@ export default function Hero() {
           ))}
         </div>
 
-        <a
-          href="#collections"
-          className="hidden md:block bg-[#FFF8F2] text-black text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-white transition-colors"
-        >
+        <a href="#collections" className={`hidden md:block ${ctaLight}`} style={ctaTracking}>
           Shop Now
         </a>
 
@@ -161,7 +159,8 @@ export default function Hero() {
           ))}
           <a
             href="#collections"
-            className="bg-[#FFF8F2] text-black text-sm font-semibold px-6 py-2.5 rounded-full mt-4"
+            className={`${ctaLight} mt-4`}
+            style={ctaTracking}
             onClick={() => setMenuOpen(false)}
           >
             Shop Now
