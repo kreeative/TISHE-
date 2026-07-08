@@ -1,5 +1,3 @@
-import { useEffect, useRef } from 'react'
-
 interface RevealLayerProps {
   image: string
   cursorX: number
@@ -7,65 +5,26 @@ interface RevealLayerProps {
   radius: number
 }
 
-const GRADIENT_STOPS: [number, string][] = [
-  [0, 'rgba(255,255,255,1)'],
-  [0.4, 'rgba(255,255,255,1)'],
-  [0.6, 'rgba(255,255,255,0.75)'],
-  [0.75, 'rgba(255,255,255,0.4)'],
-  [0.88, 'rgba(255,255,255,0.12)'],
-  [1, 'rgba(255,255,255,0)'],
-]
-
 export default function RevealLayer({ image, cursorX, cursorY, radius }: RevealLayerProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const revealRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const resize = () => {
-      const canvas = canvasRef.current
-      if (!canvas) return
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
-    resize()
-    window.addEventListener('resize', resize)
-    return () => window.removeEventListener('resize', resize)
-  }, [])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    const reveal = revealRef.current
-    if (!canvas || !reveal) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    const gradient = ctx.createRadialGradient(cursorX, cursorY, 0, cursorX, cursorY, radius)
-    for (const [stop, color] of GRADIENT_STOPS) {
-      gradient.addColorStop(stop, color)
-    }
-    ctx.fillStyle = gradient
-    ctx.beginPath()
-    ctx.arc(cursorX, cursorY, radius, 0, Math.PI * 2)
-    ctx.fill()
-
-    const dataUrl = canvas.toDataURL()
-    reveal.style.maskImage = `url(${dataUrl})`
-    reveal.style.webkitMaskImage = `url(${dataUrl})`
-    reveal.style.maskSize = '100% 100%'
-    reveal.style.webkitMaskSize = '100% 100%'
-    reveal.style.maskRepeat = 'no-repeat'
-    reveal.style.webkitMaskRepeat = 'no-repeat'
-  }, [cursorX, cursorY, radius])
+  // Native CSS mask — GPU-composited, no per-frame canvas encoding
+  const mask = `radial-gradient(circle ${radius}px at ${cursorX}px ${cursorY}px,
+    rgba(255,255,255,1) 0%,
+    rgba(255,255,255,1) 40%,
+    rgba(255,255,255,0.75) 60%,
+    rgba(255,255,255,0.4) 75%,
+    rgba(255,255,255,0.12) 88%,
+    rgba(255,255,255,0) 100%)`
 
   return (
-    <>
-      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" style={{ display: 'none' }} />
-      <div
-        ref={revealRef}
-        className="absolute inset-0 hero-bg bg-cover bg-no-repeat z-30 pointer-events-none"
-        style={{ backgroundImage: `url(${image})` }}
-      />
-    </>
+    <div
+      className="absolute inset-0 hero-bg bg-cover bg-no-repeat z-30 pointer-events-none"
+      style={{
+        backgroundImage: `url(${image})`,
+        maskImage: mask,
+        WebkitMaskImage: mask,
+        maskRepeat: 'no-repeat',
+        WebkitMaskRepeat: 'no-repeat',
+      }}
+    />
   )
 }

@@ -18,18 +18,33 @@ export default function Hero() {
       mouse.current.x = e.clientX
       mouse.current.y = e.clientY
     }
+    const onTouch = (e: TouchEvent) => {
+      const t = e.touches[0]
+      if (!t) return
+      mouse.current.x = t.clientX
+      mouse.current.y = t.clientY
+    }
     window.addEventListener('mousemove', onMove)
+    window.addEventListener('touchstart', onTouch, { passive: true })
+    window.addEventListener('touchmove', onTouch, { passive: true })
 
     const loop = () => {
-      smooth.current.x += (mouse.current.x - smooth.current.x) * 0.1
-      smooth.current.y += (mouse.current.y - smooth.current.y) * 0.1
-      setCursorPos({ x: smooth.current.x, y: smooth.current.y })
+      const dx = mouse.current.x - smooth.current.x
+      const dy = mouse.current.y - smooth.current.y
+      // skip React re-renders once the spotlight has settled
+      if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
+        smooth.current.x += dx * 0.1
+        smooth.current.y += dy * 0.1
+        setCursorPos({ x: smooth.current.x, y: smooth.current.y })
+      }
       rafRef.current = requestAnimationFrame(loop)
     }
     rafRef.current = requestAnimationFrame(loop)
 
     return () => {
       window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('touchstart', onTouch)
+      window.removeEventListener('touchmove', onTouch)
       cancelAnimationFrame(rafRef.current)
     }
   }, [])
