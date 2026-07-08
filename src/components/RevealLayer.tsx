@@ -63,8 +63,8 @@ export default function RevealLayer({ image, cursorX, cursorY, radius }: RevealL
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" style={{ display: 'none' }} />
       <div
         ref={revealRef}
-        className="absolute inset-0 bg-center bg-cover bg-no-repeat z-30 pointer-events-none"
-        style={{ backgroundImage: `url(${image})`, filter: 'sepia(0.6) saturate(2.2) hue-rotate(-8deg) contrast(1.08) brightness(1.05)' }}
+        className="absolute inset-0 hero-bg bg-cover bg-no-repeat z-30 pointer-events-none"
+        style={{ backgroundImage: `url(${image})` }}
       />
     </>
   )

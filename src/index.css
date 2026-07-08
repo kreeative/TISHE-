@@ -25,6 +25,17 @@ body {
   margin: 0;
 }
 
+/* Keep both hero layers on the same crop so the reveal mask stays aligned.
+   On phones, bias toward the hair/clips side of the photo. */
+.hero-bg {
+  background-position: 62% center;
+}
+@media (min-width: 768px) {
+  .hero-bg {
+    background-position: center;
+  }
+}
+
 @keyframes heroReveal {
   0% { opacity: 0; transform: translateY(28px); filter: blur(12px); }
   100% { opacity: 1; transform: translateY(0); filter: blur(0); }

@@ -3,7 +3,8 @@ import { Menu, X } from 'lucide-react'
 import RevealLayer from './RevealLayer'
 
 const SPOTLIGHT_R = 260
-const HERO_IMAGE = '/images/hero-curls.jpg'
+const BASE_IMAGE = '/images/hero-base.jpg'
+const REVEAL_IMAGE = '/images/hero-reveal.jpg'
 
 export default function Hero() {
   const [cursorPos, setCursorPos] = useState({ x: -999, y: -999 })
@@ -36,17 +37,17 @@ export default function Hero() {
   return (
     <div className="min-h-screen bg-white tracking-[-0.02em]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
       <section className="relative w-full overflow-hidden h-screen bg-black" style={{ height: '100dvh' }}>
-        {/* Base layer: desaturated editorial still */}
+        {/* Base layer: jet-black hair */}
         <div
-          className="absolute inset-0 bg-center bg-cover bg-no-repeat hero-zoom z-10"
-          style={{ backgroundImage: `url(${HERO_IMAGE})`, filter: 'grayscale(1) contrast(1.1) brightness(0.85)' }}
+          className="absolute inset-0 hero-bg bg-cover bg-no-repeat hero-zoom z-10"
+          style={{ backgroundImage: `url(${BASE_IMAGE})` }}
         />
 
-        {/* Reveal layer: cursor-spotlight uncovers full color */}
-        <RevealLayer image={HERO_IMAGE} cursorX={cursorPos.x} cursorY={cursorPos.y} radius={SPOTLIGHT_R} />
+        {/* Reveal layer: cursor-spotlight uncovers the 613 blonde version */}
+        <RevealLayer image={REVEAL_IMAGE} cursorX={cursorPos.x} cursorY={cursorPos.y} radius={SPOTLIGHT_R} />
 
         {/* Scrim for text legibility */}
-        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/70 via-black/10 to-black/40 pointer-events-none" />
+        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/50 via-transparent to-black/30 pointer-events-none" />
 
         {/* Heading */}
         <div
