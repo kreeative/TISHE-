@@ -5,8 +5,6 @@ import { useStore } from './StoreContext'
 import { ctaGlass, ctaTracking } from './cta'
 
 const SPOTLIGHT_R = 260
-const BASE_IMAGE = '/images/hero-base.jpg'
-const REVEAL_IMAGE = '/images/hero-reveal.jpg'
 
 const NAV_LINKS = [
   { label: 'Our Hair', href: '#about' },
@@ -72,13 +70,10 @@ export default function Hero() {
       style={{ height: '100dvh' }}
     >
       {/* Base layer: jet-black hair */}
-      <div
-        className="absolute inset-0 hero-bg bg-cover bg-no-repeat hero-zoom z-10"
-        style={{ backgroundImage: `url(${BASE_IMAGE})` }}
-      />
+      <div className="absolute inset-0 hero-bg hero-bg-base bg-cover bg-no-repeat hero-zoom z-10" />
 
       {/* Reveal layer: cursor-spotlight uncovers the 613 blonde version */}
-      <RevealLayer image={REVEAL_IMAGE} cursorX={cursorPos.x} cursorY={cursorPos.y} radius={SPOTLIGHT_R} />
+      <RevealLayer cursorX={cursorPos.x} cursorY={cursorPos.y} radius={SPOTLIGHT_R} />
 
       {/* Scrim for text legibility */}
       <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/50 via-transparent to-black/30 pointer-events-none" />
@@ -129,12 +124,12 @@ export default function Hero() {
           <img src="/images/logo-mark.webp" alt="The Ivory Sukundu" className="h-10 sm:h-14 w-auto" />
         </a>
 
-        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 px-2 py-2 items-center gap-1">
+        <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 px-2 py-2 items-center gap-1">
           {NAV_LINKS.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              className="px-4 py-1.5 text-sm font-medium text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+              className="px-4 py-1.5 text-sm font-medium text-white/80 hover:bg-white/20 hover:text-white transition-colors whitespace-nowrap"
             >
               {l.label}
             </a>
@@ -142,9 +137,11 @@ export default function Hero() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <a href="#collections" className={`hidden md:block ${ctaGlass}`} style={ctaTracking}>
-            Shop Now
-          </a>
+          <span className="hidden lg:block">
+            <a href="#collections" className={`${ctaGlass} whitespace-nowrap`} style={ctaTracking}>
+              Shop Now
+            </a>
+          </span>
           <button
             className="text-white p-2.5 bg-white/15 backdrop-blur-md border border-white/25 hover:bg-white/30 transition-colors"
             onClick={() => setAccountOpen(true)}
@@ -168,7 +165,7 @@ export default function Hero() {
             )}
           </button>
           <button
-            className="md:hidden text-white p-2.5 bg-white/15 backdrop-blur-md border border-white/25"
+            className="lg:hidden text-white p-2.5 bg-white/15 backdrop-blur-md border border-white/25"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Toggle menu"
           >
@@ -178,7 +175,7 @@ export default function Hero() {
       </nav>
 
       {menuOpen && (
-        <div className="md:hidden fixed inset-0 z-[90] bg-black flex flex-col items-center justify-center gap-8">
+        <div className="lg:hidden fixed inset-0 z-[90] bg-black flex flex-col items-center justify-center gap-8">
           {NAV_LINKS.map((l) => (
             <a key={l.href} href={l.href} className="text-[#FFF8F2] text-2xl font-display" onClick={() => setMenuOpen(false)}>
               {l.label}

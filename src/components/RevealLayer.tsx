@@ -1,12 +1,12 @@
 interface RevealLayerProps {
-  image: string
   cursorX: number
   cursorY: number
   radius: number
 }
 
-export default function RevealLayer({ image, cursorX, cursorY, radius }: RevealLayerProps) {
-  // Native CSS mask — GPU-composited, no per-frame canvas encoding
+export default function RevealLayer({ cursorX, cursorY, radius }: RevealLayerProps) {
+  // Native CSS mask — GPU-composited, no per-frame canvas encoding.
+  // The image itself comes from the .hero-bg-reveal class (orientation-aware).
   const mask = `radial-gradient(circle ${radius}px at ${cursorX}px ${cursorY}px,
     rgba(255,255,255,1) 0%,
     rgba(255,255,255,1) 40%,
@@ -17,9 +17,8 @@ export default function RevealLayer({ image, cursorX, cursorY, radius }: RevealL
 
   return (
     <div
-      className="absolute inset-0 hero-bg bg-cover bg-no-repeat z-30 pointer-events-none"
+      className="absolute inset-0 hero-bg hero-bg-reveal bg-cover bg-no-repeat z-30 pointer-events-none"
       style={{
-        backgroundImage: `url(${image})`,
         maskImage: mask,
         WebkitMaskImage: mask,
         maskRepeat: 'no-repeat',
