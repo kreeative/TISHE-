@@ -69,19 +69,14 @@ export default function Hero() {
           className="absolute top-1/2 -translate-y-1/2 flex flex-col items-start text-left px-5 pointer-events-none z-50"
           style={{ left: '80px' }}
         >
-          <h1 className="text-[#FFF8F2] leading-[0.95]">
-            <span
-              className="block font-display italic font-normal text-5xl sm:text-7xl md:text-8xl hero-anim hero-reveal"
-              style={{ letterSpacing: '-0.05em', animationDelay: '0.25s' }}
-            >
-              The Ivory
-            </span>
-            <span
-              className="block font-display font-normal text-5xl sm:text-7xl md:text-8xl -mt-1 hero-anim hero-reveal"
-              style={{ letterSpacing: '-0.08em', animationDelay: '0.42s' }}
-            >
-              SUKUNDU
-            </span>
+          <h1 className="m-0">
+            <span className="sr-only">The Ivory Sukundu — Hair Extensions</span>
+            <img
+              src="/images/logo-mark.webp"
+              alt=""
+              className="w-[280px] sm:w-[400px] md:w-[480px] h-auto hero-anim hero-reveal"
+              style={{ animationDelay: '0.25s' }}
+            />
           </h1>
           <span
             className="text-[#FFF8F2]/85 text-xs sm:text-sm md:text-base font-light uppercase mt-4 sm:mt-5 hero-anim hero-reveal"
