@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 
 const FACTS = [
@@ -21,9 +22,9 @@ export default function Campaign() {
             Our signature half wig snaps in with combs — no glue, no lace, no salon chair. Your leave-out
             blends at the crown, your hairline breathes, and your natural hair rests protected underneath.
           </p>
-          <a href="#collections" className={`${ctaGlassOnLight} mt-8`} style={ctaTracking}>
+          <Link to="/collections" className={`${ctaGlassOnLight} mt-8`} style={ctaTracking}>
             Shop the Half-Wig
-          </a>
+          </Link>
         </div>
         <dl className="grid grid-cols-3 gap-6 md:gap-8">
           {FACTS.map(([stat, label]) => (

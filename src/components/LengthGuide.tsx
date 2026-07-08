@@ -1,17 +1,26 @@
 import { useState } from 'react'
 
 const LENGTHS = [
-  { inches: 14, lands: 'Shoulder', bundles: '2–3 bundles', note: 'Snappy, weightless, everyday-easy.' },
-  { inches: 16, lands: 'Collarbone', bundles: '3 bundles', note: 'The "is that all hers?" sweet spot.' },
-  { inches: 18, lands: 'Armpit', bundles: '3 bundles', note: 'Movement without the maintenance.' },
-  { inches: 20, lands: 'Bra strap', bundles: '3 bundles', note: 'Our best-selling length, hands down.' },
+  { inches: 10, lands: 'Nape', bundles: '2 bundles', note: 'Crisp, editorial, zero-fuss mornings.' },
+  { inches: 12, lands: 'Shoulder', bundles: '2 bundles', note: 'The perfect blunt-cut bob territory.' },
+  { inches: 14, lands: 'Collarbone', bundles: '2–3 bundles', note: 'Snappy, weightless, everyday-easy.' },
+  { inches: 16, lands: 'Armpit', bundles: '3 bundles', note: 'The "is that all hers?" sweet spot.' },
+  { inches: 18, lands: 'Bra strap', bundles: '3 bundles', note: 'Movement without the maintenance.' },
+  { inches: 20, lands: 'Below bra strap', bundles: '3 bundles', note: 'Our best-selling length, hands down.' },
   { inches: 22, lands: 'Mid-back', bundles: '3–4 bundles', note: 'Full glam that still whips into a bun.' },
+  { inches: 24, lands: 'Low back', bundles: '3–4 bundles', note: 'Drama that behaves on a work day.' },
   { inches: 26, lands: 'Waist', bundles: '4 bundles', note: 'Statement length — bring a silk scarf.' },
+  { inches: 28, lands: 'Low waist', bundles: '4 bundles', note: 'Mermaid energy, fully committed.' },
   { inches: 30, lands: 'Hip', bundles: '4+ bundles', note: 'Maximum drama. You already know.' },
+  { inches: 32, lands: 'Below hip', bundles: '4–5 bundles', note: 'Red-carpet length. Book the photographer.' },
+  { inches: 34, lands: 'Tailbone', bundles: '5 bundles', note: 'Rapunzel called — she wants tips.' },
+  { inches: 36, lands: 'Upper thigh', bundles: '5 bundles', note: 'Runway-only? Says who.' },
+  { inches: 38, lands: 'Thigh', bundles: '5+ bundles', note: 'Gravity is officially jealous.' },
+  { inches: 40, lands: 'Mid-thigh', bundles: '5+ bundles', note: 'The grand finale. Custom-order length.' },
 ]
 
 export default function LengthGuide() {
-  const [selected, setSelected] = useState(LENGTHS[3])
+  const [selected, setSelected] = useState(LENGTHS[5])
   const maxIn = LENGTHS[LENGTHS.length - 1].inches
 
   return (
@@ -92,6 +101,11 @@ export default function LengthGuide() {
             ))}
           </div>
         </div>
+
+        <p className="mt-12 text-xs font-medium text-[#1a120c]/55 max-w-md leading-relaxed">
+          Texture tip: hair is measured stretched straight — body wave wears about 2" shorter and
+          deep curl about 4" shorter than the number on the bundle.
+        </p>
       </div>
     </section>
   )
