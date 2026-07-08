@@ -21,16 +21,32 @@
 * { font-family: 'Montserrat', sans-serif; }
 .font-display { font-family: 'The Silver Editorial', serif; }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 /* Keep both hero layers on the same crop so the reveal mask stays aligned.
-   On phones, bias toward the hair/clips side of the photo. */
+   Portrait screens bias toward the hair/clips side; landscape tablets push
+   the subject right of the wordmark; wide desktops use the full frame. */
 .hero-bg {
   background-position: 62% center;
 }
-@media (min-width: 768px) {
+@media (min-width: 900px) and (orientation: landscape) {
+  .hero-bg {
+    background-position: 40% center;
+  }
+}
+@media (min-width: 1280px) {
   .hero-bg {
     background-position: center;
   }
