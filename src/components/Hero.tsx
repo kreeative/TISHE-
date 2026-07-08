@@ -84,8 +84,8 @@ export default function Hero() {
             </span>
           </h1>
           <span
-            className="font-display italic text-[#FFF8F2]/90 text-base sm:text-lg md:text-xl mt-3 sm:mt-4 hero-anim hero-reveal"
-            style={{ letterSpacing: '-0.02em', animationDelay: '0.58s' }}
+            className="text-[#FFF8F2]/85 text-xs sm:text-sm md:text-base font-light uppercase mt-4 sm:mt-5 hero-anim hero-reveal"
+            style={{ letterSpacing: '0.35em', animationDelay: '0.58s' }}
           >
             Luxury raw hair, redefined
           </span>
@@ -111,7 +111,7 @@ export default function Hero() {
         {/* Nav */}
         <nav className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between p-4 sm:p-5">
           <a href="#" className="flex items-center">
-            <img src="/images/logo-mark.webp" alt="The Ivory Sukundu" className="h-9 sm:h-11 w-auto" />
+            <img src="/images/logo-mark.webp" alt="The Ivory Sukundu" className="h-12 sm:h-14 w-auto" />
           </a>
 
           <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 bg-white/20 backdrop-blur-md border border-white/30 rounded-full px-2 py-2 items-center gap-1">
