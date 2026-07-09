@@ -2,10 +2,14 @@ import { X, Minus, Plus, ShoppingBag } from 'lucide-react'
 import { useStore } from './StoreContext'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 
+function formatMoney(amount: string, currencyCode: string) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode }).format(Number(amount))
+}
+
 export default function CartDrawer() {
-  const { cart, setQty, cartOpen, setCartOpen } = useStore()
-  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0)
-  const strands = Math.round(subtotal)
+  const { cart, cartLoading, cartError, setLineQty, cartOpen, setCartOpen } = useStore()
+  const lines = cart?.lines ?? []
+  const strands = cart ? Math.round(Number(cart.cost.subtotalAmount.amount)) : 0
 
   return (
     <>
@@ -33,42 +37,60 @@ export default function CartDrawer() {
           </button>
         </div>
 
-        {cart.length === 0 ? (
+        {cartError && (
+          <p className="mx-6 mt-4 text-xs text-red-700 bg-red-50 border border-red-200 px-3 py-2">{cartError}</p>
+        )}
+
+        {lines.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 text-[#1a120c]/55 px-8 text-center">
             <ShoppingBag size={32} strokeWidth={1.5} />
             <p className="text-sm leading-relaxed">Your bag is empty — the half-wig edit is waiting.</p>
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
-            {cart.map((item) => (
-              <div key={item.id} className="flex gap-4">
-                <img src={item.image} alt={item.name} className="w-20 h-24 object-cover" />
+            {lines.map((line) => (
+              <div key={line.id} className="flex gap-4">
+                {line.merchandise.product.featuredImage && (
+                  <img
+                    src={line.merchandise.product.featuredImage.url}
+                    alt={line.merchandise.product.featuredImage.altText ?? line.merchandise.product.title}
+                    className="w-20 h-24 object-cover"
+                  />
+                )}
                 <div className="flex-1 flex flex-col">
                   <div className="flex justify-between gap-2">
-                    <h3 className="font-display text-lg leading-tight">{item.name}</h3>
-                    <span className="text-sm font-medium" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                      ${item.price * item.qty}
+                    <div>
+                      <h3 className="font-display text-lg leading-tight">{line.merchandise.product.title}</h3>
+                      {line.merchandise.title !== 'Default Title' && (
+                        <p className="text-xs text-[#1a120c]/50 mt-0.5">{line.merchandise.title}</p>
+                      )}
+                    </div>
+                    <span className="text-sm font-medium whitespace-nowrap" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                      {formatMoney(String(Number(line.merchandise.price.amount) * line.quantity), line.merchandise.price.currencyCode)}
                     </span>
                   </div>
                   <div className="mt-auto flex items-center gap-3">
                     <button
-                      onClick={() => setQty(item.id, item.qty - 1)}
-                      aria-label={`Decrease ${item.name} quantity`}
-                      className="p-1.5 border border-[#5A3224]/30 text-[#1a120c]/70 hover:border-[#5A3224] hover:text-[#5A3224] transition-colors"
+                      onClick={() => setLineQty(line.id, line.quantity - 1)}
+                      disabled={cartLoading}
+                      aria-label={`Decrease ${line.merchandise.product.title} quantity`}
+                      className="p-1.5 border border-[#5A3224]/30 text-[#1a120c]/70 hover:border-[#5A3224] hover:text-[#5A3224] transition-colors disabled:opacity-40"
                     >
                       <Minus size={12} />
                     </button>
-                    <span className="text-sm w-4 text-center font-medium" style={{ fontVariantNumeric: 'tabular-nums' }}>{item.qty}</span>
+                    <span className="text-sm w-4 text-center font-medium" style={{ fontVariantNumeric: 'tabular-nums' }}>{line.quantity}</span>
                     <button
-                      onClick={() => setQty(item.id, item.qty + 1)}
-                      aria-label={`Increase ${item.name} quantity`}
-                      className="p-1.5 border border-[#5A3224]/30 text-[#1a120c]/70 hover:border-[#5A3224] hover:text-[#5A3224] transition-colors"
+                      onClick={() => setLineQty(line.id, line.quantity + 1)}
+                      disabled={cartLoading}
+                      aria-label={`Increase ${line.merchandise.product.title} quantity`}
+                      className="p-1.5 border border-[#5A3224]/30 text-[#1a120c]/70 hover:border-[#5A3224] hover:text-[#5A3224] transition-colors disabled:opacity-40"
                     >
                       <Plus size={12} />
                     </button>
                     <button
-                      onClick={() => setQty(item.id, 0)}
-                      className="ml-auto text-xs font-medium text-[#1a120c]/50 hover:text-[#5A3224] uppercase transition-colors"
+                      onClick={() => setLineQty(line.id, 0)}
+                      disabled={cartLoading}
+                      className="ml-auto text-xs font-medium text-[#1a120c]/50 hover:text-[#5A3224] uppercase transition-colors disabled:opacity-40"
                       style={{ letterSpacing: '0.15em' }}
                     >
                       Remove
@@ -83,19 +105,25 @@ export default function CartDrawer() {
         <div className="p-6 border-t border-[#5A3224]/15 flex flex-col gap-4">
           <div className="flex justify-between text-sm font-medium">
             <span className="text-[#1a120c]/70">Subtotal</span>
-            <span style={{ fontVariantNumeric: 'tabular-nums' }}>${subtotal}</span>
+            <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+              {cart ? formatMoney(cart.cost.subtotalAmount.amount, cart.cost.subtotalAmount.currencyCode) : '$0.00'}
+            </span>
           </div>
           {strands > 0 && (
             <p className="text-xs font-semibold text-[#5A3224]" style={{ letterSpacing: '0.15em' }}>
               CIRCLE MEMBERS EARN {strands} STRANDS ON THIS ORDER
             </p>
           )}
-          <button className={`${ctaGlassOnLight} w-full`} style={ctaTracking} disabled={cart.length === 0}>
-            Checkout
-          </button>
-          <p className="text-[11px] text-[#1a120c]/45 text-center">
-            Secure checkout activates at launch. Free shipping over $250.
-          </p>
+          {cart?.checkoutUrl ? (
+            <a href={cart.checkoutUrl} className={`${ctaGlassOnLight} w-full text-center`} style={ctaTracking}>
+              Checkout
+            </a>
+          ) : (
+            <button className={`${ctaGlassOnLight} w-full`} style={ctaTracking} disabled>
+              Checkout
+            </button>
+          )}
+          <p className="text-[11px] text-[#1a120c]/45 text-center">Free shipping — already included in every price.</p>
         </div>
       </aside>
     </>

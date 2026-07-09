@@ -16,7 +16,7 @@ export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { cart, setCartOpen, setAccountOpen, memberName } = useStore()
-  const cartCount = cart.reduce((s, i) => s + i.qty, 0)
+  const cartCount = cart?.totalQuantity ?? 0
   const location = useLocation()
 
   useEffect(() => {
