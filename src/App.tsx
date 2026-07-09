@@ -8,6 +8,7 @@ import LengthGuide from './components/LengthGuide'
 import WhyUs from './components/WhyUs'
 import Circle from './components/Circle'
 import Vip from './components/Vip'
+import Quiz from './components/Quiz'
 import Footer from './components/Footer'
 import CartDrawer from './components/CartDrawer'
 import AccountModal from './components/AccountModal'
@@ -66,6 +67,7 @@ function App() {
               <Route path="/collections" element={<CollectionsPage />} />
               <Route path="/circle" element={<CirclePage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/quiz" element={<Quiz />} />
               <Route path="*" element={<HomePage />} />
             </Routes>
           </main>

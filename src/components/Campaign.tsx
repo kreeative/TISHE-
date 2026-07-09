@@ -22,9 +22,18 @@ export default function Campaign() {
             Our signature half wig snaps in with combs — no glue, no lace, no salon chair. Your leave-out
             blends at the crown, your hairline breathes, and your natural hair rests protected underneath.
           </p>
-          <Link to="/collections" className={`${ctaGlassOnLight} mt-8`} style={ctaTracking}>
-            Shop the Half-Wig
-          </Link>
+          <div className="flex flex-wrap items-center gap-6 mt-8">
+            <Link to="/collections" className={ctaGlassOnLight} style={ctaTracking}>
+              Shop the Half-Wig
+            </Link>
+            <Link
+              to="/quiz"
+              className="text-xs font-semibold uppercase text-[#5A3224] hover:text-[#1a120c] transition-colors"
+              style={ctaTracking}
+            >
+              Not sure? Take the quiz →
+            </Link>
+          </div>
         </div>
         <dl className="grid grid-cols-3 gap-6 md:gap-8">
           {FACTS.map(([stat, label]) => (
