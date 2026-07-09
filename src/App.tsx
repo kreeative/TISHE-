@@ -10,6 +10,7 @@ import WhyUs from './components/WhyUs'
 import Circle from './components/Circle'
 import Vip from './components/Vip'
 import Quiz from './components/Quiz'
+import ProductPage from './components/ProductPage'
 import Footer from './components/Footer'
 import CartDrawer from './components/CartDrawer'
 import AccountModal from './components/AccountModal'
@@ -66,6 +67,7 @@ function AnimatedRoutes() {
         <Route path="/circle" element={<PageTransition><CirclePage /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
         <Route path="/quiz" element={<PageTransition><Quiz /></PageTransition>} />
+        <Route path="/products/:handle" element={<PageTransition><ProductPage /></PageTransition>} />
         <Route path="*" element={<PageTransition><HomePage /></PageTransition>} />
       </Routes>
     </AnimatePresence>

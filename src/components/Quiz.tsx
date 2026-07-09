@@ -106,7 +106,10 @@ export default function Quiz() {
     why = ARCHETYPES[winner].why
   }
 
-  const resultVariant = result?.variants.find((v) => v.availableForSale) ?? result?.variants[0]
+  const lengthMatch = result?.variants.find(
+    (v) => v.availableForSale && v.selectedOptions.some((o) => o.name.toLowerCase() === 'length' && o.value === recLength)
+  )
+  const resultVariant = lengthMatch ?? result?.variants.find((v) => v.availableForSale) ?? result?.variants[0]
 
   return (
     <section
@@ -202,14 +205,23 @@ export default function Quiz() {
                       Recommended length: {recLength}
                     </p>
                     <p className="mt-4 text-sm text-[#1a120c]/75 leading-relaxed">{why}</p>
-                    <button
-                      className={`${ctaGlassOnLight} mt-8`}
-                      style={ctaTracking}
-                      disabled={!resultVariant || cartLoading}
-                      onClick={() => resultVariant && addToCart(resultVariant.id)}
-                    >
-                      Add to Bag{resultVariant ? ` — ${formatMoney(resultVariant.price.amount, resultVariant.price.currencyCode)}` : ''}
-                    </button>
+                    <div className="flex flex-wrap items-center gap-4 mt-8">
+                      <button
+                        className={ctaGlassOnLight}
+                        style={ctaTracking}
+                        disabled={!resultVariant || cartLoading}
+                        onClick={() => resultVariant && addToCart(resultVariant.id)}
+                      >
+                        Add to Bag{resultVariant ? ` — ${formatMoney(resultVariant.price.amount, resultVariant.price.currencyCode)}` : ''}
+                      </button>
+                      <Link
+                        to={`/products/${result.handle}`}
+                        className="text-xs font-semibold uppercase text-[#5A3224] hover:text-[#1a120c] transition-colors"
+                        style={{ letterSpacing: '0.2em' }}
+                      >
+                        Customize length →
+                      </Link>
+                    </div>
                     <div className="flex gap-6 mt-6">
                       <button
                         onClick={restart}

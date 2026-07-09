@@ -36,13 +36,25 @@ export interface ShopifyVariant {
   selectedOptions: { name: string; value: string }[]
 }
 
+export interface ShopifyImage {
+  url: string
+  altText: string | null
+}
+
+export interface ShopifyOption {
+  name: string
+  values: string[]
+}
+
 export interface ShopifyProduct {
   id: string
   title: string
   handle: string
   descriptionHtml: string
   tags: string[]
-  featuredImage: { url: string; altText: string | null } | null
+  featuredImage: ShopifyImage | null
+  images: ShopifyImage[]
+  options: ShopifyOption[]
   priceRange: { minVariantPrice: ShopifyMoney; maxVariantPrice: ShopifyMoney }
   variants: ShopifyVariant[]
 }
@@ -54,6 +66,8 @@ const PRODUCT_FIELDS = `
   descriptionHtml
   tags
   featuredImage { url altText }
+  images(first: 8) { edges { node { url altText } } }
+  options { name values }
   priceRange { minVariantPrice { amount currencyCode } maxVariantPrice { amount currencyCode } }
   variants(first: 50) {
     edges { node { id title availableForSale price { amount currencyCode } selectedOptions { name value } } }
@@ -68,9 +82,21 @@ function normalizeProduct(node: any): ShopifyProduct {
     descriptionHtml: node.descriptionHtml,
     tags: node.tags ?? [],
     featuredImage: node.featuredImage,
+    images: (node.images?.edges ?? []).map((e: any) => e.node),
+    options: node.options ?? [],
     priceRange: node.priceRange,
     variants: (node.variants?.edges ?? []).map((e: any) => e.node),
   }
+}
+
+export async function getProductByHandle(handle: string): Promise<ShopifyProduct | null> {
+  const data = await shopifyFetch<{ product: any }>(
+    `query ProductByHandle($handle: String!) {
+      product(handle: $handle) { ${PRODUCT_FIELDS} }
+    }`,
+    { handle }
+  )
+  return data.product ? normalizeProduct(data.product) : null
 }
 
 export async function getProducts(first = 24): Promise<ShopifyProduct[]> {
