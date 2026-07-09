@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useStore, type Product } from './StoreContext'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 
@@ -105,90 +106,117 @@ export default function Quiz() {
   }
 
   return (
-    <section className="bg-[#FFF8F2] text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16 min-h-[70vh]">
+    <section
+      className="relative overflow-hidden text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16 min-h-[70vh]"
+      style={{ background: 'radial-gradient(120% 130% at 50% 0%, #FFFDFA 0%, #FFF8F2 55%, #F7E9DA 100%)' }}
+    >
       <div className="max-w-2xl mx-auto">
         <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
           Sukundu School — 60-second quiz
         </p>
 
-        {!done ? (
-          <>
-            <div className="flex gap-2 mt-6" aria-label={`Step ${step + 1} of ${STEPS.length}`}>
-              {STEPS.map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-1 flex-1 transition-colors ${i <= step ? 'bg-[#5A3224]' : 'bg-[#5A3224]/15'}`}
-                />
-              ))}
-            </div>
+        <div className="flex gap-2 mt-6" aria-label={`Step ${Math.min(step + 1, STEPS.length)} of ${STEPS.length}`}>
+          {STEPS.map((_, i) => (
+            <span key={i} className="h-1 flex-1 bg-[#5A3224]/15 overflow-hidden">
+              <motion.span
+                className="block h-full bg-[#5A3224]"
+                initial={false}
+                animate={{ width: i <= step ? '100%' : '0%' }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              />
+            </span>
+          ))}
+        </div>
 
-            <h2 className="font-display text-3xl sm:text-5xl mt-8 leading-[1.1]" style={{ textWrap: 'balance' }}>
-              {STEPS[step].question}
-            </h2>
+        <AnimatePresence mode="wait">
+          {!done ? (
+            <motion.div
+              key={`step-${step}`}
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -24 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <h2 className="font-display text-3xl sm:text-5xl mt-8 leading-[1.1]" style={{ textWrap: 'balance' }}>
+                {STEPS[step].question}
+              </h2>
 
-            <div className="flex flex-col gap-3 mt-10">
-              {STEPS[step].options.map((o) => (
+              <div className="flex flex-col gap-3 mt-10">
+                {STEPS[step].options.map((o, i) => (
+                  <motion.button
+                    key={o.label}
+                    onClick={() => pick(o)}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.08 * i, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ y: -2 }}
+                    className="group text-left border border-[#5A3224]/25 hover:border-[#5A3224] bg-white/45 backdrop-blur-sm hover:bg-white/75 hover:shadow-[0_16px_36px_-18px_rgba(90,50,36,0.4)] px-6 py-5 transition-colors duration-300"
+                  >
+                    <span className="block font-display text-xl group-hover:text-[#5A3224] transition-colors">{o.label}</span>
+                    <span className="block text-sm text-[#1a120c]/60 mt-1">{o.detail}</span>
+                  </motion.button>
+                ))}
+              </div>
+
+              {step > 0 && (
                 <button
-                  key={o.label}
-                  onClick={() => pick(o)}
-                  className="group text-left border border-[#5A3224]/25 hover:border-[#5A3224] bg-white/50 px-6 py-5 transition-colors"
+                  onClick={() => { setPicks(picks.slice(0, -1)); setStep(step - 1) }}
+                  className="mt-8 text-xs font-medium uppercase text-[#1a120c]/50 hover:text-[#5A3224] transition-colors"
+                  style={{ letterSpacing: '0.2em' }}
                 >
-                  <span className="block font-display text-xl group-hover:text-[#5A3224] transition-colors">{o.label}</span>
-                  <span className="block text-sm text-[#1a120c]/60 mt-1">{o.detail}</span>
+                  ← Back
                 </button>
-              ))}
-            </div>
-
-            {step > 0 && (
-              <button
-                onClick={() => { setPicks(picks.slice(0, -1)); setStep(step - 1) }}
-                className="mt-8 text-xs font-medium uppercase text-[#1a120c]/50 hover:text-[#5A3224] transition-colors"
-                style={{ letterSpacing: '0.2em' }}
-              >
-                ← Back
-              </button>
-            )}
-          </>
-        ) : (
-          <div className="mt-8">
-            <h2 className="font-display text-3xl sm:text-5xl leading-[1.1]" style={{ textWrap: 'balance' }}>
-              Your unit is waiting
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-10 items-start">
-              <img src={result.image} alt={result.name} className="w-full aspect-[4/5] object-cover" />
-              <div className="flex flex-col items-start">
-                <h3 className="font-display text-3xl">{result.name}</h3>
-                <p className="text-xs font-semibold uppercase text-[#5A3224] mt-2" style={{ letterSpacing: '0.25em' }}>
-                  Recommended length: {recLength}
-                </p>
-                <p className="mt-4 text-sm text-[#1a120c]/75 leading-relaxed">{result.why}</p>
-                <button
-                  className={`${ctaGlassOnLight} mt-8`}
-                  style={ctaTracking}
-                  onClick={() => addToCart({ id: result.id, name: result.name, price: result.price, image: result.image })}
-                >
-                  Add to Bag — ${result.price}
-                </button>
-                <div className="flex gap-6 mt-6">
+              )}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="result"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-8"
+            >
+              <h2 className="font-display text-3xl sm:text-5xl leading-[1.1]" style={{ textWrap: 'balance' }}>
+                Your unit is waiting
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-10 items-start">
+                <div className="overflow-hidden shadow-[0_20px_50px_-24px_rgba(90,50,36,0.5)]">
+                  <img src={result.image} alt={result.name} className="w-full aspect-[4/5] object-cover" />
+                </div>
+                <div className="flex flex-col items-start">
+                  <h3 className="font-display text-3xl">{result.name}</h3>
+                  <p className="text-xs font-semibold uppercase text-[#5A3224] mt-2" style={{ letterSpacing: '0.25em' }}>
+                    Recommended length: {recLength}
+                  </p>
+                  <p className="mt-4 text-sm text-[#1a120c]/75 leading-relaxed">{result.why}</p>
                   <button
-                    onClick={restart}
-                    className="text-xs font-medium uppercase text-[#1a120c]/50 hover:text-[#5A3224] transition-colors"
-                    style={{ letterSpacing: '0.2em' }}
+                    className={`${ctaGlassOnLight} mt-8`}
+                    style={ctaTracking}
+                    onClick={() => addToCart({ id: result.id, name: result.name, price: result.price, image: result.image })}
                   >
-                    Retake quiz
+                    Add to Bag — ${result.price}
                   </button>
-                  <Link
-                    to="/collections"
-                    className="text-xs font-medium uppercase text-[#1a120c]/50 hover:text-[#5A3224] transition-colors"
-                    style={{ letterSpacing: '0.2em' }}
-                  >
-                    See everything
-                  </Link>
+                  <div className="flex gap-6 mt-6">
+                    <button
+                      onClick={restart}
+                      className="text-xs font-medium uppercase text-[#1a120c]/50 hover:text-[#5A3224] transition-colors"
+                      style={{ letterSpacing: '0.2em' }}
+                    >
+                      Retake quiz
+                    </button>
+                    <Link
+                      to="/collections"
+                      className="text-xs font-medium uppercase text-[#1a120c]/50 hover:text-[#5A3224] transition-colors"
+                      style={{ letterSpacing: '0.2em' }}
+                    >
+                      See everything
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   )

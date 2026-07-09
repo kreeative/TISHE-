@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import Reveal from './Reveal'
 
 const LENGTHS = [
   { inches: 10, lands: 'Nape', bundles: '2 bundles', note: 'Crisp, editorial, zero-fuss mornings.' },
@@ -26,86 +28,108 @@ export default function LengthGuide() {
   return (
     <section id="lengths" className="bg-[#FFF8F2] text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10">
       <div className="max-w-6xl mx-auto">
-        <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
-          Sukundu School
-        </p>
-        <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 max-w-2xl leading-[1.05]" style={{ textWrap: 'balance' }}>
-          Find your length
-        </h2>
-        <p className="mt-5 max-w-md text-sm sm:text-base text-[#1a120c]/75 leading-relaxed">
-          Tap a length to see where it lands and how many bundles build the look.
-        </p>
+        <Reveal>
+          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+            Sukundu School
+          </p>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 max-w-2xl leading-[1.05]" style={{ textWrap: 'balance' }}>
+            Find your length
+          </h2>
+          <p className="mt-5 max-w-md text-sm sm:text-base text-[#1a120c]/75 leading-relaxed">
+            Tap a length to see where it lands and how many bundles build the look.
+          </p>
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mt-12 items-start">
+        <Reveal delay={0.15} className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mt-12 items-start">
           <div>
             <div className="flex flex-wrap gap-2">
-              {LENGTHS.map((l) => (
-                <button
-                  key={l.inches}
-                  onClick={() => setSelected(l)}
-                  aria-pressed={selected.inches === l.inches}
-                  className={`px-5 py-2.5 text-xs font-semibold border transition-colors ${
-                    selected.inches === l.inches
-                      ? 'bg-[#5A3224] border-[#5A3224] text-[#FFF8F2]'
-                      : 'bg-transparent border-[#5A3224]/30 text-[#1a120c]/65 hover:border-[#5A3224] hover:text-[#1a120c]'
-                  }`}
-                  style={{ letterSpacing: '0.15em', fontVariantNumeric: 'tabular-nums' }}
-                >
-                  {l.inches}"
-                </button>
-              ))}
+              {LENGTHS.map((l) => {
+                const active = selected.inches === l.inches
+                return (
+                  <button
+                    key={l.inches}
+                    onClick={() => setSelected(l)}
+                    aria-pressed={active}
+                    className={`px-5 py-2.5 text-xs font-semibold border transition-all duration-300 ${
+                      active
+                        ? 'bg-[#5A3224] border-[#5A3224] text-[#FFF8F2] shadow-[0_8px_22px_-8px_rgba(90,50,36,0.6)] -translate-y-0.5'
+                        : 'bg-white/40 backdrop-blur-sm border-[#5A3224]/25 text-[#1a120c]/65 hover:border-[#5A3224] hover:text-[#1a120c] hover:-translate-y-0.5 hover:shadow-[0_6px_16px_-8px_rgba(90,50,36,0.35)]'
+                    }`}
+                    style={{ letterSpacing: '0.15em', fontVariantNumeric: 'tabular-nums' }}
+                  >
+                    {l.inches}"
+                  </button>
+                )
+              })}
             </div>
 
-            <div className="mt-10 border-t border-[#5A3224]/15 pt-8">
-              <div className="flex items-baseline gap-4">
-                <span className="font-display text-6xl sm:text-7xl" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                  {selected.inches}"
-                </span>
-                <span className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.3em' }}>
-                  lands at {selected.lands}
-                </span>
-              </div>
-              <p className="mt-4 text-sm text-[#1a120c]/75 leading-relaxed max-w-sm">{selected.note}</p>
-              <p className="mt-3 text-xs font-semibold uppercase text-[#1a120c]/55" style={{ letterSpacing: '0.2em' }}>
-                Full look: {selected.bundles}
-              </p>
+            <div className="mt-10 border-t border-[#5A3224]/15 pt-8 min-h-[150px]">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selected.inches}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <div className="flex items-baseline gap-4">
+                    <span className="font-display text-6xl sm:text-7xl" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                      {selected.inches}"
+                    </span>
+                    <span className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.3em' }}>
+                      lands at {selected.lands}
+                    </span>
+                  </div>
+                  <p className="mt-4 text-sm text-[#1a120c]/75 leading-relaxed max-w-sm">{selected.note}</p>
+                  <p className="mt-3 text-xs font-semibold uppercase text-[#1a120c]/55" style={{ letterSpacing: '0.2em' }}>
+                    Full look: {selected.bundles}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
 
           {/* length gauge — swaps for the campaign visual when it's ready */}
           <div className="flex flex-col gap-3" aria-hidden="true">
-            {LENGTHS.map((l) => (
-              <button key={l.inches} onClick={() => setSelected(l)} className="group flex items-center gap-4 text-left">
-                <span
-                  className={`text-xs w-8 shrink-0 transition-colors ${
-                    selected.inches === l.inches ? 'text-[#5A3224] font-semibold' : 'text-[#1a120c]/45 group-hover:text-[#1a120c]/75'
-                  }`}
-                  style={{ fontVariantNumeric: 'tabular-nums' }}
-                >
-                  {l.inches}"
-                </span>
-                <span
-                  className={`h-px transition-all duration-500 ${
-                    selected.inches === l.inches ? 'bg-[#5A3224]' : 'bg-[#5A3224]/25 group-hover:bg-[#5A3224]/50'
-                  }`}
-                  style={{ width: `${(l.inches / maxIn) * 100}%` }}
-                />
-                <span
-                  className={`text-xs whitespace-nowrap transition-colors ${
-                    selected.inches === l.inches ? 'text-[#1a120c] font-medium' : 'text-[#1a120c]/45 group-hover:text-[#1a120c]/75'
-                  }`}
-                >
-                  {l.lands}
-                </span>
-              </button>
-            ))}
+            {LENGTHS.map((l) => {
+              const active = selected.inches === l.inches
+              return (
+                <button key={l.inches} onClick={() => setSelected(l)} className="group flex items-center gap-4 text-left">
+                  <span
+                    className={`text-xs w-8 shrink-0 transition-colors ${
+                      active ? 'text-[#5A3224] font-semibold' : 'text-[#1a120c]/45 group-hover:text-[#1a120c]/75'
+                    }`}
+                    style={{ fontVariantNumeric: 'tabular-nums' }}
+                  >
+                    {l.inches}"
+                  </span>
+                  <span className="relative h-px flex-1 bg-[#5A3224]/15 overflow-hidden">
+                    <motion.span
+                      className="absolute inset-y-0 left-0 bg-[#5A3224]"
+                      initial={false}
+                      animate={{ width: `${(l.inches / maxIn) * 100}%`, opacity: active ? 1 : 0.45 }}
+                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    />
+                  </span>
+                  <span
+                    className={`text-xs whitespace-nowrap transition-colors ${
+                      active ? 'text-[#1a120c] font-medium' : 'text-[#1a120c]/45 group-hover:text-[#1a120c]/75'
+                    }`}
+                  >
+                    {l.lands}
+                  </span>
+                </button>
+              )
+            })}
           </div>
-        </div>
+        </Reveal>
 
-        <p className="mt-12 text-xs font-medium text-[#1a120c]/55 max-w-md leading-relaxed">
-          Texture tip: hair is measured stretched straight — body wave wears about 2" shorter and
-          deep curl about 4" shorter than the number on the bundle.
-        </p>
+        <Reveal delay={0.25}>
+          <p className="mt-12 text-xs font-medium text-[#1a120c]/55 max-w-md leading-relaxed">
+            Texture tip: hair is measured stretched straight — body wave wears about 2" shorter and
+            deep curl about 4" shorter than the number on the bundle.
+          </p>
+        </Reveal>
       </div>
     </section>
   )

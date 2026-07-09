@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useStore } from './StoreContext'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 
@@ -33,16 +34,26 @@ export default function AccountModal() {
   const [tab, setTab] = useState<'signin' | 'create'>('create')
   const [name, setName] = useState('')
 
-  if (!accountOpen) return null
-
   return (
-    <div className="fixed inset-0 z-[130] flex items-center justify-center p-5">
-      <button
-        aria-label="Close account panel"
-        className="absolute inset-0 bg-[#1a120c]/40 backdrop-blur-sm cursor-default"
-        onClick={() => setAccountOpen(false)}
-      />
-      <div className="relative w-full max-w-md bg-[#FFF8F2] text-[#1a120c] border border-[#5A3224]/20 p-8">
+    <AnimatePresence>
+      {accountOpen && (
+        <div className="fixed inset-0 z-[130] flex items-center justify-center p-5">
+          <motion.button
+            aria-label="Close account panel"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="absolute inset-0 bg-[#1a120c]/40 backdrop-blur-sm cursor-default"
+            onClick={() => setAccountOpen(false)}
+          />
+          <motion.div
+            initial={{ opacity: 0, y: 16, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.98 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full max-w-md bg-[#FFF8F2] text-[#1a120c] border border-[#5A3224]/20 p-8 shadow-[0_30px_80px_-24px_rgba(26,18,12,0.45)]"
+          >
         <button
           onClick={() => setAccountOpen(false)}
           aria-label="Close"
@@ -128,7 +139,9 @@ export default function AccountModal() {
             </form>
           </>
         )}
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   )
 }

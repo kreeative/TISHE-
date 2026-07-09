@@ -1,5 +1,6 @@
 import { useStore } from './StoreContext'
 import { ctaGlassOnLight, ctaTracking } from './cta'
+import Reveal from './Reveal'
 
 const TIERS = [
   {
@@ -31,6 +32,7 @@ const TIERS = [
       'Yearly unit revamp service, on us',
       'Anniversary bundle gifted every year',
     ],
+    featured: true,
   },
 ]
 
@@ -38,46 +40,65 @@ export default function Circle() {
   const { setAccountOpen } = useStore()
 
   return (
-    <section id="circle" className="bg-[#FFF8F2] text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10">
+    <section
+      id="circle"
+      className="relative overflow-hidden text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10"
+      style={{ background: 'radial-gradient(120% 130% at 50% 0%, #FFFDFA 0%, #FFF8F2 55%, #F7E9DA 100%)' }}
+    >
       <div className="max-w-6xl mx-auto">
-        <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
-          The Sukundu Circle
-        </p>
-        <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 max-w-2xl leading-[1.05]" style={{ textWrap: 'balance' }}>
-          Loyalty, woven in
-        </h2>
-        <p className="mt-5 max-w-lg text-sm sm:text-base text-[#1a120c]/75 leading-relaxed">
-          Sukundu means hair in Pulaar — and in our culture, hair is cared for in community. The Circle
-          is ours: earn strands on every order, learn the craft, and grow into richer rewards.
-        </p>
+        <Reveal>
+          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+            The Sukundu Circle
+          </p>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 max-w-2xl leading-[1.05]" style={{ textWrap: 'balance' }}>
+            Loyalty, woven in
+          </h2>
+          <p className="mt-5 max-w-lg text-sm sm:text-base text-[#1a120c]/75 leading-relaxed">
+            Sukundu means hair in Pulaar — and in our culture, hair is cared for in community. The Circle
+            is ours: earn strands on every order, learn the craft, and grow into richer rewards.
+          </p>
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 sm:mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 sm:mt-16 md:items-end">
           {TIERS.map((tier, i) => (
-            <div
-              key={tier.name}
-              className={`flex flex-col p-7 border bg-white/50 ${
-                i === 2 ? 'border-[#5A3224]' : 'border-[#5A3224]/25'
-              }`}
-            >
-              <h3 className="font-display text-3xl">{tier.name}</h3>
-              <p className="text-xs font-semibold uppercase text-[#5A3224] mt-1" style={{ letterSpacing: '0.25em' }}>
-                {tier.threshold}
-              </p>
-              <ul className="mt-6 flex flex-col gap-3 text-sm text-[#1a120c]/75 leading-relaxed">
-                {tier.perks.map((perk) => (
-                  <li key={perk} className="flex gap-3">
-                    <span className="text-[#5A3224] shrink-0">—</span>
-                    {perk}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <Reveal key={tier.name} delay={0.1 + i * 0.12}>
+              <div
+                className={`group relative flex flex-col p-7 border backdrop-blur-md transition-all duration-500 hover:-translate-y-1 ${
+                  tier.featured
+                    ? 'border-[#5A3224] bg-gradient-to-b from-white/80 to-[#FBEEE1]/70 shadow-[0_20px_50px_-20px_rgba(90,50,36,0.45)] md:py-9'
+                    : 'border-[#5A3224]/25 bg-white/45 hover:bg-white/65 hover:shadow-[0_16px_40px_-20px_rgba(90,50,36,0.3)]'
+                }`}
+              >
+                {tier.featured && (
+                  <span
+                    className="absolute -top-3 left-7 bg-[#5A3224] text-[#FFF8F2] text-[10px] font-semibold uppercase px-3 py-1 shadow-[0_6px_16px_-4px_rgba(90,50,36,0.5)]"
+                    style={{ letterSpacing: '0.2em' }}
+                  >
+                    Most Rewarding
+                  </span>
+                )}
+                <h3 className="font-display text-3xl">{tier.name}</h3>
+                <p className="text-xs font-semibold uppercase text-[#5A3224] mt-1" style={{ letterSpacing: '0.25em' }}>
+                  {tier.threshold}
+                </p>
+                <ul className="mt-6 flex flex-col gap-3 text-sm text-[#1a120c]/75 leading-relaxed">
+                  {tier.perks.map((perk) => (
+                    <li key={perk} className="flex gap-3">
+                      <span className="text-[#5A3224] shrink-0">—</span>
+                      {perk}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
           ))}
         </div>
 
-        <button className={`${ctaGlassOnLight} mt-10`} style={ctaTracking} onClick={() => setAccountOpen(true)}>
-          Join the Circle — Free
-        </button>
+        <Reveal delay={0.4}>
+          <button className={`${ctaGlassOnLight} mt-10`} style={ctaTracking} onClick={() => setAccountOpen(true)}>
+            Join the Circle — Free
+          </button>
+        </Reveal>
       </div>
     </section>
   )
