@@ -1,5 +1,5 @@
 import { addPropertyControls, ControlType } from "framer"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 
 /**
  * The Ivory Sukundu — Product Page (clean white aesthetic)
@@ -13,6 +13,13 @@ import { useEffect, useMemo, useState } from "react"
  */
 
 const CART_ID_KEY = "sukundu_cart_id"
+const bodyFont = "'Montserrat', sans-serif"
+const displayFont = "Georgia, serif"
+
+function stripHtml(html) {
+    if (!html) return ""
+    return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()
+}
 
 function findVariant(variants, selection) {
     return variants.find((v) =>
@@ -21,10 +28,16 @@ function findVariant(variants, selection) {
 }
 
 function formatMoney(amount, currencyCode) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: currencyCode || "USD",
-    }).format(Number(amount))
+    const n = Number(amount)
+    if (isNaN(n)) return ""
+    try {
+        return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: currencyCode || "USD",
+        }).format(n)
+    } catch (e) {
+        return `$${n.toFixed(2)}`
+    }
 }
 
 async function shopifyFetch(domain, token, query, variables) {
@@ -34,126 +47,123 @@ async function shopifyFetch(domain, token, query, variables) {
             "Content-Type": "application/json",
             "X-Shopify-Storefront-Access-Token": token,
         },
-        body: JSON.stringify({ query, variables }),
+        body: JSON.stringify({ query: query, variables: variables }),
     })
     const json = await res.json()
-    if (json.errors) {
+    if (json.errors && json.errors.length > 0) {
         throw new Error(json.errors.map((e) => e.message).join("; "))
     }
     return json.data
 }
 
-const PRODUCT_QUERY = `
-  query ProductByHandle($handle: String!) {
-    product(handle: $handle) {
-      id
-      title
-      descriptionHtml
-      images(first: 8) { edges { node { url altText } } }
-      options { name values }
-      variants(first: 50) {
-        edges {
-          node {
-            id
-            availableForSale
-            price { amount currencyCode }
-            selectedOptions { name value }
-          }
-        }
-      }
-    }
-  }
-`
+const PRODUCT_QUERY =
+    "query ProductByHandle($handle: String!) { product(handle: $handle) { id title descriptionHtml images(first: 8) { edges { node { url altText } } } options { name values } variants(first: 50) { edges { node { id availableForSale price { amount currencyCode } selectedOptions { name value } } } } } }"
 
-const CART_FIELDS = `
-  id
-  checkoutUrl
-  totalQuantity
-`
+const CART_CREATE_MUTATION =
+    "mutation CartCreate($lines: [CartLineInput!]!) { cartCreate(input: { lines: $lines }) { cart { id checkoutUrl totalQuantity } userErrors { message } } }"
+
+const CART_ADD_MUTATION =
+    "mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) { cartLinesAdd(cartId: $cartId, lines: $lines) { cart { id checkoutUrl totalQuantity } userErrors { message } } }"
 
 export default function SukunduProductPage(props) {
-    const {
-        shopifyDomain,
-        storefrontToken,
-        productHandle,
-        accentColor,
-        features,
-        style,
-    } = props
+    const shopifyDomain = props.shopifyDomain || "r3dmi1-jm.myshopify.com"
+    const storefrontToken =
+        props.storefrontToken || "73a99755f0c52cc51f2957f806878246"
+    const productHandle = props.productHandle || ""
+    const accent = props.accentColor || "#111111"
+    const featuresRaw = props.features || ""
+    const style = props.style
 
     const [product, setProduct] = useState(null)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
+    const [errorMsg, setErrorMsg] = useState("")
     const [selection, setSelection] = useState({})
     const [activeImage, setActiveImage] = useState(0)
     const [qty, setQty] = useState(1)
     const [adding, setAdding] = useState(false)
-    const [checkoutUrl, setCheckoutUrl] = useState(null)
-    const [addError, setAddError] = useState(null)
+    const [checkoutUrl, setCheckoutUrl] = useState("")
+    const [addError, setAddError] = useState("")
 
     useEffect(() => {
         if (!shopifyDomain || !storefrontToken || !productHandle) {
             setLoading(false)
-            setError("Set Shopify domain, token, and product handle in the panel.")
+            setErrorMsg("Set the Product Handle in the panel on the right.")
             return
         }
         let cancelled = false
         setLoading(true)
-        setError(null)
+        setErrorMsg("")
         shopifyFetch(shopifyDomain, storefrontToken, PRODUCT_QUERY, {
             handle: productHandle,
         })
-            .then((data) => {
+            .then(function (data) {
                 if (cancelled) return
-                if (!data.product) {
-                    setError(`No product found for handle "${productHandle}".`)
+                if (!data || !data.product) {
+                    setErrorMsg('No product found for handle "' + productHandle + '".')
                     return
                 }
+                const p = data.product
                 const normalized = {
-                    id: data.product.id,
-                    title: data.product.title,
-                    descriptionHtml: data.product.descriptionHtml,
-                    images: data.product.images.edges.map((e) => e.node),
-                    options: data.product.options,
-                    variants: data.product.variants.edges.map((e) => e.node),
+                    id: p.id,
+                    title: p.title,
+                    descriptionHtml: p.descriptionHtml,
+                    images: (p.images && p.images.edges ? p.images.edges : []).map(
+                        function (e) {
+                            return e.node
+                        }
+                    ),
+                    options: p.options || [],
+                    variants: (p.variants && p.variants.edges
+                        ? p.variants.edges
+                        : []
+                    ).map(function (e) {
+                        return e.node
+                    }),
                 }
                 setProduct(normalized)
                 const firstAvailable =
-                    normalized.variants.find((v) => v.availableForSale) ??
-                    normalized.variants[0]
+                    normalized.variants.filter(function (v) {
+                        return v.availableForSale
+                    })[0] || normalized.variants[0]
                 const seed = {}
-                firstAvailable?.selectedOptions.forEach((o) => {
-                    seed[o.name] = o.value
-                })
+                if (firstAvailable) {
+                    firstAvailable.selectedOptions.forEach(function (o) {
+                        seed[o.name] = o.value
+                    })
+                }
                 setSelection(seed)
             })
-            .catch((err) => {
-                if (!cancelled) setError(err.message || "Could not load this product.")
+            .catch(function (err) {
+                if (!cancelled) {
+                    setErrorMsg(
+                        err && err.message ? err.message : "Could not load this product."
+                    )
+                }
             })
-            .finally(() => {
+            .finally(function () {
                 if (!cancelled) setLoading(false)
             })
-        return () => {
+        return function () {
             cancelled = true
         }
     }, [shopifyDomain, storefrontToken, productHandle])
 
-    const matchedVariant = useMemo(
-        () => (product ? findVariant(product.variants, selection) : undefined),
-        [product, selection]
-    )
-
-    const accent = accentColor || "#1a120c"
-    const images = product?.images ?? []
-    const featureList = (features || "")
+    const matchedVariant = product
+        ? findVariant(product.variants, selection)
+        : null
+    const images = product && product.images ? product.images : []
+    const featureList = featuresRaw
         .split("\n")
-        .map((f) => f.trim())
+        .map(function (f) {
+            return f.trim()
+        })
         .filter(Boolean)
+    const descriptionText = product ? stripHtml(product.descriptionHtml) : ""
 
-    const handleAddToBag = async () => {
+    const handleAddToBag = async function () {
         if (!matchedVariant) return
         setAdding(true)
-        setAddError(null)
+        setAddError("")
         try {
             const savedCartId =
                 typeof window !== "undefined"
@@ -164,32 +174,27 @@ export default function SukunduProductPage(props) {
                 data = await shopifyFetch(
                     shopifyDomain,
                     storefrontToken,
-                    `mutation CartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-            cartLinesAdd(cartId: $cartId, lines: $lines) {
-              cart { ${CART_FIELDS} }
-              userErrors { message }
-            }
-          }`,
-                    { cartId: savedCartId, lines: [{ merchandiseId: matchedVariant.id, quantity: qty }] }
+                    CART_ADD_MUTATION,
+                    {
+                        cartId: savedCartId,
+                        lines: [{ merchandiseId: matchedVariant.id, quantity: qty }],
+                    }
                 )
-                if (data.cartLinesAdd.userErrors.length) {
+                if (data.cartLinesAdd.userErrors.length > 0) {
                     throw new Error(data.cartLinesAdd.userErrors[0].message)
                 }
                 setCheckoutUrl(data.cartLinesAdd.cart.checkoutUrl)
-                window.localStorage.setItem(CART_ID_KEY, data.cartLinesAdd.cart.id)
+                if (typeof window !== "undefined") {
+                    window.localStorage.setItem(CART_ID_KEY, data.cartLinesAdd.cart.id)
+                }
             } else {
                 data = await shopifyFetch(
                     shopifyDomain,
                     storefrontToken,
-                    `mutation CartCreate($lines: [CartLineInput!]!) {
-            cartCreate(input: { lines: $lines }) {
-              cart { ${CART_FIELDS} }
-              userErrors { message }
-            }
-          }`,
+                    CART_CREATE_MUTATION,
                     { lines: [{ merchandiseId: matchedVariant.id, quantity: qty }] }
                 )
-                if (data.cartCreate.userErrors.length) {
+                if (data.cartCreate.userErrors.length > 0) {
                     throw new Error(data.cartCreate.userErrors[0].message)
                 }
                 setCheckoutUrl(data.cartCreate.cart.checkoutUrl)
@@ -198,46 +203,60 @@ export default function SukunduProductPage(props) {
                 }
             }
         } catch (err) {
-            setAddError(err.message || "Could not add that to your bag.")
+            setAddError(
+                err && err.message ? err.message : "Could not add that to your bag."
+            )
         } finally {
             setAdding(false)
         }
     }
 
-    const bodyFont = "'Montserrat', sans-serif"
-    const displayFont = "Georgia, serif"
-
     if (loading) {
         return (
-            <div style={{ ...wrapStyle, ...style }}>
+            <div style={Object.assign({}, wrapStyle, style)}>
                 <p style={{ fontFamily: bodyFont, color: "#00000099" }}>Loading…</p>
             </div>
         )
     }
 
-    if (error || !product) {
+    if (errorMsg || !product) {
         return (
-            <div style={{ ...wrapStyle, ...style }}>
-                <p style={{ fontFamily: bodyFont, color: "#00000099", maxWidth: 420, textAlign: "center" }}>
-                    {error ?? "Product not found."}
+            <div style={Object.assign({}, wrapStyle, style)}>
+                <p
+                    style={{
+                        fontFamily: bodyFont,
+                        color: "#00000099",
+                        maxWidth: 420,
+                        textAlign: "center",
+                        padding: 24,
+                    }}
+                >
+                    {errorMsg || "Product not found."}
                 </p>
             </div>
         )
     }
 
+    const visibleOptions = product.options.filter(function (opt) {
+        return !(opt.values.length === 1 && opt.values[0] === "Default Title")
+    })
+
     return (
         <div
-            style={{
-                width: "100%",
-                height: "100%",
-                overflow: "auto",
-                background: "#FFFFFF",
-                padding: "56px 24px",
-                boxSizing: "border-box",
-                fontFamily: bodyFont,
-                color: "#111111",
-                ...style,
-            }}
+            style={Object.assign(
+                {
+                    width: "100%",
+                    height: "100%",
+                    minHeight: 600,
+                    overflow: "auto",
+                    background: "#FFFFFF",
+                    padding: "56px 24px",
+                    boxSizing: "border-box",
+                    fontFamily: bodyFont,
+                    color: "#111111",
+                },
+                style
+            )}
         >
             <div
                 style={{
@@ -248,7 +267,6 @@ export default function SukunduProductPage(props) {
                     margin: "0 auto",
                 }}
             >
-                {/* main image, centered, square-ish */}
                 <div
                     style={{
                         width: "100%",
@@ -257,43 +275,48 @@ export default function SukunduProductPage(props) {
                         background: "#f5f5f5",
                     }}
                 >
-                    {images[activeImage] && (
+                    {images[activeImage] ? (
                         <img
                             src={images[activeImage].url}
                             alt={images[activeImage].altText || product.title}
                             style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
-                    )}
+                    ) : null}
                 </div>
 
-                {/* thumbnails */}
-                {images.length > 1 && (
+                {images.length > 1 ? (
                     <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
-                        {images.map((img, i) => (
-                            <button
-                                key={img.url}
-                                onClick={() => setActiveImage(i)}
-                                style={{
-                                    width: 88,
-                                    height: 96,
-                                    overflow: "hidden",
-                                    border: i === activeImage ? `2px solid ${accent}` : "1px solid #e5e5e5",
-                                    padding: 0,
-                                    cursor: "pointer",
-                                    background: "#f5f5f5",
-                                }}
-                            >
-                                <img
-                                    src={img.url}
-                                    alt=""
-                                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                />
-                            </button>
-                        ))}
+                        {images.map(function (img, i) {
+                            return (
+                                <button
+                                    key={img.url + i}
+                                    onClick={function () {
+                                        setActiveImage(i)
+                                    }}
+                                    style={{
+                                        width: 88,
+                                        height: 96,
+                                        overflow: "hidden",
+                                        border:
+                                            i === activeImage
+                                                ? "2px solid " + accent
+                                                : "1px solid #e5e5e5",
+                                        padding: 0,
+                                        cursor: "pointer",
+                                        background: "#f5f5f5",
+                                    }}
+                                >
+                                    <img
+                                        src={img.url}
+                                        alt=""
+                                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                    />
+                                </button>
+                            )
+                        })}
                     </div>
-                )}
+                ) : null}
 
-                {/* title + price, centered */}
                 <h1
                     style={{
                         fontFamily: displayFont,
@@ -306,17 +329,17 @@ export default function SukunduProductPage(props) {
                     {product.title}
                 </h1>
 
-                {matchedVariant && (
+                {matchedVariant ? (
                     <p style={{ fontSize: 18, fontWeight: 500, margin: "8px 0 0" }}>
                         {formatMoney(
                             matchedVariant.price.amount,
                             matchedVariant.price.currencyCode
                         )}
                     </p>
-                )}
+                ) : null}
 
-                {product.descriptionHtml && (
-                    <div
+                {descriptionText ? (
+                    <p
                         style={{
                             fontSize: 13,
                             color: "#00000099",
@@ -325,12 +348,12 @@ export default function SukunduProductPage(props) {
                             textAlign: "center",
                             maxWidth: 360,
                         }}
-                        dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-                    />
-                )}
+                    >
+                        {descriptionText}
+                    </p>
+                ) : null}
 
-                {/* simple feature list — clean text, not pointer-line annotations */}
-                {featureList.length > 0 && (
+                {featureList.length > 0 ? (
                     <ul
                         style={{
                             listStyle: "none",
@@ -342,29 +365,29 @@ export default function SukunduProductPage(props) {
                             alignItems: "center",
                         }}
                     >
-                        {featureList.map((f) => (
-                            <li
-                                key={f}
-                                style={{
-                                    fontSize: 12,
-                                    color: "#00000080",
-                                    letterSpacing: "0.02em",
-                                }}
-                            >
-                                {f}
-                            </li>
-                        ))}
+                        {featureList.map(function (f) {
+                            return (
+                                <li
+                                    key={f}
+                                    style={{
+                                        fontSize: 12,
+                                        color: "#00000080",
+                                        letterSpacing: "0.02em",
+                                    }}
+                                >
+                                    {f}
+                                </li>
+                            )
+                        })}
                     </ul>
-                )}
+                ) : null}
 
-                {/* options, centered pills */}
-                {product.options
-                    .filter(
-                        (opt) =>
-                            !(opt.values.length === 1 && opt.values[0] === "Default Title")
-                    )
-                    .map((opt) => (
-                        <div key={opt.name} style={{ marginTop: 24, width: "100%", textAlign: "center" }}>
+                {visibleOptions.map(function (opt) {
+                    return (
+                        <div
+                            key={opt.name}
+                            style={{ marginTop: 24, width: "100%", textAlign: "center" }}
+                        >
                             <p
                                 style={{
                                     fontSize: 11,
@@ -386,26 +409,29 @@ export default function SukunduProductPage(props) {
                                     marginTop: 10,
                                 }}
                             >
-                                {opt.values.map((value) => {
+                                {opt.values.map(function (value) {
                                     const isActive = selection[opt.name] === value
-                                    const wouldMatch = findVariant(product.variants, {
-                                        ...selection,
-                                        [opt.name]: value,
-                                    })
-                                    const disabled = !wouldMatch?.availableForSale
+                                    const nextSelection = Object.assign({}, selection)
+                                    nextSelection[opt.name] = value
+                                    const wouldMatch = findVariant(
+                                        product.variants,
+                                        nextSelection
+                                    )
+                                    const disabled = !wouldMatch || !wouldMatch.availableForSale
                                     return (
                                         <button
                                             key={value}
                                             disabled={disabled}
-                                            onClick={() =>
-                                                setSelection({ ...selection, [opt.name]: value })
-                                            }
+                                            onClick={function () {
+                                                setSelection(nextSelection)
+                                            }}
                                             style={{
                                                 padding: "9px 18px",
                                                 fontSize: 12,
                                                 fontWeight: 500,
                                                 letterSpacing: "0.05em",
-                                                border: `1px solid ${isActive ? accent : "#dddddd"}`,
+                                                border:
+                                                    "1px solid " + (isActive ? accent : "#dddddd"),
                                                 background: isActive ? accent : "#ffffff",
                                                 color: isActive
                                                     ? "#ffffff"
@@ -422,22 +448,43 @@ export default function SukunduProductPage(props) {
                                 })}
                             </div>
                         </div>
-                    ))}
+                    )
+                })}
 
-                {/* quantity */}
-                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 28 }}>
-                    <button onClick={() => setQty((q) => Math.max(1, q - 1))} style={qtyBtnStyle}>
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        marginTop: 28,
+                    }}
+                >
+                    <button
+                        onClick={function () {
+                            setQty(Math.max(1, qty - 1))
+                        }}
+                        style={qtyBtnStyle}
+                    >
                         –
                     </button>
-                    <span style={{ width: 24, textAlign: "center", fontWeight: 500 }}>{qty}</span>
-                    <button onClick={() => setQty((q) => q + 1)} style={qtyBtnStyle}>
+                    <span style={{ width: 24, textAlign: "center", fontWeight: 500 }}>
+                        {qty}
+                    </span>
+                    <button
+                        onClick={function () {
+                            setQty(qty + 1)
+                        }}
+                        style={qtyBtnStyle}
+                    >
                         +
                     </button>
                 </div>
 
-                {addError && (
-                    <p style={{ color: "#b91c1c", fontSize: 12, marginTop: 16 }}>{addError}</p>
-                )}
+                {addError ? (
+                    <p style={{ color: "#b91c1c", fontSize: 12, marginTop: 16 }}>
+                        {addError}
+                    </p>
+                ) : null}
 
                 <button
                     onClick={handleAddToBag}
@@ -454,20 +501,22 @@ export default function SukunduProductPage(props) {
                         border: "none",
                         color: "#ffffff",
                         cursor: "pointer",
-                        opacity: !matchedVariant || !matchedVariant.availableForSale ? 0.4 : 1,
+                        opacity:
+                            !matchedVariant || !matchedVariant.availableForSale ? 0.4 : 1,
                     }}
                 >
                     {!matchedVariant || !matchedVariant.availableForSale
                         ? "Out of Stock"
                         : adding
                         ? "Adding…"
-                        : `Add to Bag — ${formatMoney(
+                        : "Add to Bag — " +
+                          formatMoney(
                               matchedVariant.price.amount,
                               matchedVariant.price.currencyCode
-                          )}`}
+                          )}
                 </button>
 
-                {checkoutUrl && (
+                {checkoutUrl ? (
                     <a
                         href={checkoutUrl}
                         style={{
@@ -483,9 +532,16 @@ export default function SukunduProductPage(props) {
                     >
                         View Bag & Checkout →
                     </a>
-                )}
+                ) : null}
 
-                <p style={{ fontSize: 11, color: "#00000066", marginTop: 16, textAlign: "center" }}>
+                <p
+                    style={{
+                        fontSize: 11,
+                        color: "#00000066",
+                        marginTop: 16,
+                        textAlign: "center",
+                    }}
+                >
                     Free shipping — already included in the price.
                 </p>
             </div>
@@ -496,6 +552,7 @@ export default function SukunduProductPage(props) {
 const wrapStyle = {
     width: "100%",
     height: "100%",
+    minHeight: 400,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -539,7 +596,7 @@ addPropertyControls(SukunduProductPage, {
         title: "Feature List",
         displayTextArea: true,
         defaultValue:
-            "Single wefts for a flat, undetectable install\nAvailable in lengths 14\" – 32\"\nLifts and dyes easily without compromising quality",
+            'Single wefts for a flat, undetectable install\nAvailable in lengths 14" – 32"\nLifts and dyes easily without compromising quality',
         description: "One feature per line",
     },
 })
