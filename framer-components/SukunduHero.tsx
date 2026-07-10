@@ -64,6 +64,11 @@ export default function SukunduHero(props) {
     }, [])
 
     const radius = spotlightRadius ?? 260
+    const getImageSrc = (image) =>
+        typeof image === "string" ? image : image?.src
+    const baseImageSrc = getImageSrc(baseImage)
+    const revealImageSrc = getImageSrc(revealImage)
+    const logoImageSrc = getImageSrc(logoImage)
     const mask = `radial-gradient(circle ${radius}px at ${cursorPos.x}px ${cursorPos.y}px,
     rgba(255,255,255,1) 0%,
     rgba(255,255,255,1) 40%,
@@ -89,7 +94,9 @@ export default function SukunduHero(props) {
                 style={{
                     position: "absolute",
                     inset: 0,
-                    backgroundImage: baseImage ? `url(${baseImage.src})` : undefined,
+                    backgroundImage: baseImageSrc
+                        ? `url(${baseImageSrc})`
+                        : undefined,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
@@ -102,7 +109,9 @@ export default function SukunduHero(props) {
                 style={{
                     position: "absolute",
                     inset: 0,
-                    backgroundImage: revealImage ? `url(${revealImage.src})` : undefined,
+                    backgroundImage: revealImageSrc
+                        ? `url(${revealImageSrc})`
+                        : undefined,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
@@ -142,9 +151,9 @@ export default function SukunduHero(props) {
                     maxWidth: "60%",
                 }}
             >
-                {logoImage && (
+                {logoImageSrc && (
                     <img
-                        src={logoImage.src}
+                        src={logoImageSrc}
                         alt=""
                         style={{ width: 300, maxWidth: "100%", height: "auto" }}
                     />
@@ -218,17 +227,17 @@ export default function SukunduHero(props) {
 
 addPropertyControls(SukunduHero, {
     baseImage: {
-        type: ControlType.Image,
+        type: ControlType.ResponsiveImage,
         title: "Base Image",
         description: "Default look — e.g. jet-black hair",
     },
     revealImage: {
-        type: ControlType.Image,
+        type: ControlType.ResponsiveImage,
         title: "Reveal Image",
         description: "Revealed under the cursor — e.g. 613 blonde",
     },
     logoImage: {
-        type: ControlType.Image,
+        type: ControlType.ResponsiveImage,
         title: "Logo",
     },
     subtitle: {
