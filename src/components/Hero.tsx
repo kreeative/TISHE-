@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import RevealLayer from './RevealLayer'
+import { ctaTracking } from './cta'
 
 const SPOTLIGHT_R = 260
 
@@ -49,50 +51,38 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden bg-black h-[calc(100dvh-64px)] sm:h-[calc(100dvh-72px)]"
+      className="relative w-full overflow-hidden bg-[#E5DCCE] h-[calc(100dvh-64px)] sm:h-[calc(100dvh-72px)]"
     >
-      {/* Base layer: jet-black hair */}
+      {/* Base layer: jet-black hair on champagne */}
       <div className="absolute inset-0 hero-bg hero-bg-base bg-cover bg-no-repeat hero-zoom z-10" />
 
       {/* Reveal layer: cursor-spotlight uncovers the 613 blonde version */}
       <RevealLayer cursorX={cursorPos.x} cursorY={cursorPos.y} radius={SPOTLIGHT_R} />
 
-      {/* Scrim for text legibility */}
-      <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
-
-      {/* Heading: the actual logo lockup */}
-      <div className="absolute top-1/2 -translate-y-1/2 left-2 sm:left-[80px] flex flex-col items-start text-left px-5 pointer-events-none z-50">
+      {/* Wordmark + CTA — left on desktop, top on small portrait screens */}
+      <div className="absolute z-50 flex flex-col items-center sm:items-start text-center sm:text-left pointer-events-none top-10 left-1/2 -translate-x-1/2 w-full px-6 sm:px-0 sm:w-auto sm:top-1/2 sm:left-[72px] lg:left-[96px] sm:-translate-x-0 sm:-translate-y-1/2">
         <h1 className="m-0">
           <span className="sr-only">The Ivory Sukundu — Hair Extensions</span>
           <img
-            src="/images/logo-mark.webp"
+            src="/images/logo-lockup-brown.png"
             alt=""
-            className="w-[50vw] max-w-[240px] sm:w-[300px] sm:max-w-none xl:w-[360px] h-auto hero-anim hero-reveal"
+            className="w-[64vw] max-w-[280px] sm:w-[320px] sm:max-w-none lg:w-[380px] xl:w-[420px] h-auto hero-anim hero-reveal"
             style={{ animationDelay: '0.25s' }}
           />
         </h1>
-        <span
-          className="text-[#FFF8F2]/90 text-xs sm:text-sm md:text-base font-medium uppercase mt-4 sm:mt-5 hero-anim hero-reveal"
-          style={{ letterSpacing: '0.35em', animationDelay: '0.58s' }}
+        <Link
+          to="/collections"
+          className="pointer-events-auto inline-block text-xs font-semibold uppercase px-10 py-3.5 mt-8 sm:mt-10 text-center bg-[#FFF8F2]/90 border border-[#5A3224]/15 text-[#3d2418] shadow-[0_10px_30px_-14px_rgba(90,50,36,0.45)] backdrop-blur-sm transition-all duration-300 ease-out hover:bg-[#FFF8F2] hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-12px_rgba(90,50,36,0.5)] active:translate-y-0 hero-anim hero-fade"
+          style={{ ...ctaTracking, animationDelay: '0.6s' }}
         >
-          Luxury raw hair, redefined
-        </span>
+          Shop Now
+        </Link>
       </div>
 
-      {/* Bottom-left copy */}
-      <div className="hidden sm:block absolute bottom-14 max-w-[260px] hero-anim hero-fade z-50" style={{ left: '100px', animationDelay: '0.7s' }}>
-        <p className="text-sm text-[#FFF8F2]/85 leading-relaxed">
+      {/* Bottom-left copy (desktop only) */}
+      <div className="hidden lg:block absolute bottom-12 max-w-[280px] hero-anim hero-fade z-50" style={{ left: '96px', animationDelay: '0.8s' }}>
+        <p className="text-sm text-[#3d2418]/70 leading-relaxed">
           Ethically sourced, raw virgin hair — luxuriously soft, endlessly versatile, and built to move exactly like it's yours.
-        </p>
-      </div>
-
-      {/* Bottom-right copy */}
-      <div
-        className="absolute bottom-10 sm:bottom-24 left-5 right-5 sm:left-auto sm:right-10 md:right-14 max-w-full sm:max-w-[260px] flex flex-col items-start gap-4 sm:gap-5 hero-anim hero-fade z-50"
-        style={{ animationDelay: '0.85s' }}
-      >
-        <p className="text-xs sm:text-sm text-[#FFF8F2]/85 leading-relaxed">
-          Campaign 01 — The Half-Wig Edit. Comb-in, glueless, installed in sixty seconds. Your hairline breathes; your hair rests.
         </p>
       </div>
     </section>

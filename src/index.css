@@ -46,28 +46,23 @@ body {
    Portrait screens get the portrait campaign shots; landscape screens get
    the wide ones, with the subject pushed right of the wordmark on tablets. */
 .hero-bg {
-  background-position: center;
+  background-position: center bottom;
 }
 .hero-bg-base {
-  background-image: url('/images/hero-base-mobile.jpg');
+  background-image: url('/images/hero-light-base-mobile.jpg');
 }
 .hero-bg-reveal {
-  background-image: url('/images/hero-reveal-mobile.jpg');
+  background-image: url('/images/hero-light-reveal-mobile.jpg');
 }
 @media (orientation: landscape) {
   .hero-bg {
-    background-position: 40% center;
+    background-position: right center;
   }
   .hero-bg-base {
-    background-image: url('/images/hero-base.jpg');
+    background-image: url('/images/hero-light-base.jpg');
   }
   .hero-bg-reveal {
-    background-image: url('/images/hero-reveal.jpg');
-  }
-}
-@media (min-width: 1280px) and (orientation: landscape) {
-  .hero-bg {
-    background-position: center;
+    background-image: url('/images/hero-light-reveal.jpg');
   }
 }
 
