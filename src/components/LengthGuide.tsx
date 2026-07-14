@@ -32,10 +32,10 @@ export default function LengthGuide() {
           <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
             Sukundu School
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 max-w-2xl leading-[1.05]" style={{ textWrap: 'balance' }}>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
             Find your length
           </h2>
-          <p className="mt-5 max-w-md text-sm sm:text-base text-[#1a120c]/75 leading-relaxed">
+          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1a120c]/75 leading-[1.85]">
             Tap a length to see where it lands and how many bundles build the look.
           </p>
         </Reveal>
@@ -80,7 +80,7 @@ export default function LengthGuide() {
                       lands at {selected.lands}
                     </span>
                   </div>
-                  <p className="mt-4 text-sm text-[#1a120c]/75 leading-relaxed max-w-sm">{selected.note}</p>
+                  <p className="mt-4 text-sm text-[#1a120c]/75 leading-[1.85] max-w-sm">{selected.note}</p>
                   <p className="mt-3 text-xs font-semibold uppercase text-[#1a120c]/55" style={{ letterSpacing: '0.2em' }}>
                     Full look: {selected.bundles}
                   </p>
@@ -125,7 +125,7 @@ export default function LengthGuide() {
         </Reveal>
 
         <Reveal delay={0.25}>
-          <p className="mt-12 text-xs font-medium text-[#1a120c]/55 max-w-md leading-relaxed">
+          <p className="mt-12 text-xs font-medium text-[#1a120c]/55 max-w-md leading-[1.85]">
             Texture tip: hair is measured stretched straight — body wave wears about 2" shorter and
             deep curl about 4" shorter than the number on the bundle.
           </p>

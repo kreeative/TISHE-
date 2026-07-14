@@ -50,10 +50,10 @@ export default function Circle() {
           <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
             The Sukundu Circle
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 max-w-2xl leading-[1.05]" style={{ textWrap: 'balance' }}>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
             Loyalty, woven in
           </h2>
-          <p className="mt-5 max-w-lg text-sm sm:text-base text-[#1a120c]/75 leading-relaxed">
+          <p className="mt-6 max-w-lg text-sm sm:text-base text-[#1a120c]/75 leading-[1.85]">
             Sukundu means hair in Pulaar — and in our culture, hair is cared for in community. The Circle
             is ours: earn strands on every order, learn the craft, and grow into richer rewards.
           </p>
@@ -81,7 +81,7 @@ export default function Circle() {
                 <p className="text-xs font-semibold uppercase text-[#5A3224] mt-1" style={{ letterSpacing: '0.25em' }}>
                   {tier.threshold}
                 </p>
-                <ul className="mt-6 flex flex-col gap-3 text-sm text-[#1a120c]/75 leading-relaxed">
+                <ul className="mt-6 flex flex-col gap-3 text-sm text-[#1a120c]/75 leading-[1.85]">
                   {tier.perks.map((perk) => (
                     <li key={perk} className="flex gap-3">
                       <span className="text-[#5A3224] shrink-0">—</span>

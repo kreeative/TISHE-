@@ -99,7 +99,7 @@ export default function ProductPage() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <h1 className="font-display text-4xl sm:text-5xl leading-[1.05]" style={{ textWrap: 'balance' }}>
+            <h1 className="font-display text-4xl sm:text-5xl leading-[1.16]" style={{ textWrap: 'balance' }}>
               {product.title}
             </h1>
             {displayPrice && (
@@ -110,7 +110,7 @@ export default function ProductPage() {
 
             {product.descriptionHtml && (
               <div
-                className="mt-5 text-sm text-[#1a120c]/75 leading-relaxed max-w-md"
+                className="mt-5 text-sm text-[#1a120c]/75 leading-[1.85] max-w-md"
                 dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
               />
             )}

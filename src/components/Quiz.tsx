@@ -143,7 +143,7 @@ export default function Quiz() {
               exit={{ opacity: 0, x: -24 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
-              <h2 className="font-display text-3xl sm:text-5xl mt-8 leading-[1.1]" style={{ textWrap: 'balance' }}>
+              <h2 className="font-display text-3xl sm:text-5xl mt-8 leading-[1.18]" style={{ textWrap: 'balance' }}>
                 {STEPS[step].question}
               </h2>
 
@@ -182,7 +182,7 @@ export default function Quiz() {
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="mt-8"
             >
-              <h2 className="font-display text-3xl sm:text-5xl leading-[1.1]" style={{ textWrap: 'balance' }}>
+              <h2 className="font-display text-3xl sm:text-5xl leading-[1.18]" style={{ textWrap: 'balance' }}>
                 Your unit is waiting
               </h2>
 
@@ -204,7 +204,7 @@ export default function Quiz() {
                     <p className="text-xs font-semibold uppercase text-[#5A3224] mt-2" style={{ letterSpacing: '0.25em' }}>
                       Recommended length: {recLength}
                     </p>
-                    <p className="mt-4 text-sm text-[#1a120c]/75 leading-relaxed">{why}</p>
+                    <p className="mt-4 text-sm text-[#1a120c]/75 leading-[1.85]">{why}</p>
                     <div className="flex flex-wrap items-center gap-4 mt-8">
                       <button
                         className={ctaGlassOnLight}

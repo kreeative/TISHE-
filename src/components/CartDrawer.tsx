@@ -44,7 +44,7 @@ export default function CartDrawer() {
         {lines.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 text-[#1a120c]/55 px-8 text-center">
             <ShoppingBag size={32} strokeWidth={1.5} />
-            <p className="text-sm leading-relaxed">Your bag is empty — the half-wig edit is waiting.</p>
+            <p className="text-sm leading-[1.85]">Your bag is empty — the half-wig edit is waiting.</p>
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6">

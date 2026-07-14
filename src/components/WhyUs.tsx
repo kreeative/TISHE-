@@ -31,10 +31,10 @@ export default function WhyUs() {
           <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
             Sukundu — "hair" in Pulaar
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 max-w-2xl leading-[1.05]" style={{ textWrap: 'balance' }}>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
             Hair that keeps its promises
           </h2>
-          <p className="mt-5 max-w-lg text-sm sm:text-base text-[#1a120c]/75 leading-relaxed">
+          <p className="mt-6 max-w-lg text-sm sm:text-base text-[#1a120c]/75 leading-[1.85]">
             Our name comes from the Pulaar word for hair — because for us, hair is heritage. Every
             Sukundu piece honors where it comes from and elevates where it's going.
           </p>
@@ -49,14 +49,14 @@ export default function WhyUs() {
               >
                 <r.icon size={28} strokeWidth={1.5} className="text-[#5A3224] transition-transform duration-500 group-hover:-translate-y-0.5" aria-hidden="true" />
                 <h3 className="font-display text-2xl mt-5">{r.title}</h3>
-                <p className="mt-3 text-sm text-[#1a120c]/75 leading-relaxed max-w-[320px]">{r.body}</p>
+                <p className="mt-3 text-sm text-[#1a120c]/75 leading-[1.85] max-w-[320px]">{r.body}</p>
               </div>
             </Reveal>
           ))}
         </div>
 
         <Reveal delay={0.3}>
-          <p className="mt-14 sm:mt-20 max-w-xl text-base sm:text-lg text-[#1a120c]/85 leading-relaxed">
+          <p className="mt-14 sm:mt-20 max-w-xl text-base sm:text-lg text-[#1a120c]/85 leading-[1.85]">
             Experience unmatched quality in every strand — indulge in texture so soft it promises to
             elevate your hair game to new heights. Choose The Ivory Sukundu for the raw hair you deserve.
           </p>

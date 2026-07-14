@@ -17,10 +17,10 @@ export default function Campaign() {
           <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
             Campaign 01 — The Half-Wig Edit
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 leading-[1.05]" style={{ textWrap: 'balance' }}>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-5 leading-[1.16]" style={{ textWrap: 'balance' }}>
             Half the install. All the hair.
           </h2>
-          <p className="mt-5 max-w-md text-sm sm:text-base text-[#1a120c]/75 leading-relaxed">
+          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1a120c]/75 leading-[1.85]">
             Our signature half wig snaps in with combs — no glue, no lace, no salon chair. Your leave-out
             blends at the crown, your hairline breathes, and your natural hair rests protected underneath.
           </p>

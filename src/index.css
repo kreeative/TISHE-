@@ -34,6 +34,9 @@ html {
 
 body {
   margin: 0;
+  /* Montserrat medium-semibold base so copy reads with presence on ivory */
+  font-weight: 500;
+  letter-spacing: 0.015em;
 }
 
 @media (prefers-reduced-motion: reduce) {

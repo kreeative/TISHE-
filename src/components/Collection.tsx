@@ -17,10 +17,10 @@ export default function Collection() {
           <p className="text-xs font-medium uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
             The Collection
           </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-4 max-w-2xl leading-[1.05]" style={{ textWrap: 'balance' }}>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
             Textures worth the obsession
           </h2>
-          <p className="mt-5 max-w-md text-sm sm:text-base text-[#1a120c]/70 leading-relaxed">
+          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1a120c]/70 leading-[1.85]">
             Raw, single-donor hair in three signature finishes — every bundle hand-inspected before it ships.
           </p>
         </Reveal>
@@ -93,7 +93,7 @@ export default function Collection() {
                 </div>
                 {p.descriptionHtml && (
                   <p
-                    className="mt-2 text-sm text-[#1a120c]/70 leading-relaxed"
+                    className="mt-2 text-sm text-[#1a120c]/70 leading-[1.85]"
                     dangerouslySetInnerHTML={{ __html: p.descriptionHtml }}
                   />
                 )}

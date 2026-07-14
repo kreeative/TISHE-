@@ -71,7 +71,7 @@ export default function AccountModal() {
               <h2 className="font-display text-3xl mt-2">{memberName}</h2>
             </div>
             <MemberCard name={memberName} />
-            <ul className="text-sm text-[#1a120c]/75 leading-relaxed flex flex-col gap-2">
+            <ul className="text-sm text-[#1a120c]/75 leading-[1.85] flex flex-col gap-2">
               <li>— Every $1 earns 1 strand. 200 strands = $20 off.</li>
               <li>— Early access to every drop and restock.</li>
               <li>— Full access to Sukundu School care guides.</li>
@@ -116,7 +116,7 @@ export default function AccountModal() {
               }}
             >
               {tab === 'create' && (
-                <p className="text-sm text-[#1a120c]/75 leading-relaxed -mt-2 mb-2">
+                <p className="text-sm text-[#1a120c]/75 leading-[1.85] -mt-2 mb-2">
                   Free to join. Earn strands on every order, unlock early access, and learn with Sukundu School.
                 </p>
               )}
