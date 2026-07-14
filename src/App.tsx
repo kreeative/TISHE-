@@ -15,6 +15,7 @@ import Footer from './components/Footer'
 import CartDrawer from './components/CartDrawer'
 import AccountModal from './components/AccountModal'
 import PageTransition from './components/PageTransition'
+import WelcomePopup from './components/WelcomePopup'
 import { StoreProvider } from './components/StoreContext'
 
 function ScrollToTop() {
@@ -87,6 +88,7 @@ function App() {
           <Footer />
           <CartDrawer />
           <AccountModal />
+          <WelcomePopup />
         </div>
       </HashRouter>
     </StoreProvider>

@@ -228,3 +228,23 @@ export async function removeCartLine(cartId: string, lineId: string): Promise<Sh
   if (data.cartLinesRemove.userErrors.length) throw new Error(data.cartLinesRemove.userErrors[0].message)
   return normalizeCart(data.cartLinesRemove.cart)
 }
+
+// Best-effort marketing signup: creates a customer record flagged as
+// accepting marketing so the email shows up in the Shopify admin list.
+// Never throws — the welcome popup must succeed for the visitor regardless.
+export async function subscribeEmail(email: string): Promise<void> {
+  try {
+    const password = crypto.randomUUID() + crypto.randomUUID()
+    await shopifyFetch(
+      `mutation customerCreate($input: CustomerCreateInput!) {
+        customerCreate(input: $input) {
+          customer { id }
+          customerUserErrors { message }
+        }
+      }`,
+      { input: { email, password, acceptsMarketing: true } },
+    )
+  } catch {
+    // ignore — popup UX continues either way
+  }
+}
