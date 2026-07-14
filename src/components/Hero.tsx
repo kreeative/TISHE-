@@ -79,12 +79,6 @@ export default function Hero() {
         </Link>
       </div>
 
-      {/* Bottom-left copy (desktop only) */}
-      <div className="hidden lg:block absolute bottom-12 max-w-[280px] hero-anim hero-fade z-50" style={{ left: '96px', animationDelay: '0.8s' }}>
-        <p className="text-sm text-[#3d2418]/70 leading-relaxed">
-          Ethically sourced, raw virgin hair — luxuriously soft, endlessly versatile, and built to move exactly like it's yours.
-        </p>
-      </div>
     </section>
   )
 }
