@@ -10,8 +10,8 @@ export default function Vip() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16"
-      style={{ background: 'radial-gradient(120% 140% at 50% 100%, #FFFDFA 0%, #FFF8F2 50%, #F7E9DA 100%)' }}
+      className="relative overflow-hidden text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16"
+      style={{ background: 'radial-gradient(120% 140% at 50% 100%, #FFFDFA 0%, #FAF7F3 50%, #F7E9DA 100%)' }}
     >
       <div className="max-w-3xl mx-auto text-center flex flex-col items-center">
         <Reveal className="flex flex-col items-center">
@@ -21,7 +21,7 @@ export default function Vip() {
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-5 leading-[1.16]" style={{ textWrap: 'balance' }}>
             Join the VIP list
           </h2>
-          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1a120c]/75 leading-[1.85]">
+          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
             Early access to launches, restocks, and VIP-only pricing — straight to your inbox.
           </p>
         </Reveal>
@@ -58,7 +58,7 @@ export default function Vip() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@email.com"
-                className="flex-1 bg-white/40 backdrop-blur-sm border border-[#5A3224]/30 px-5 py-3.5 text-sm text-[#1a120c] placeholder:text-[#1a120c]/40 transition-colors focus:outline-none focus:border-[#5A3224] focus:bg-white/70"
+                className="flex-1 bg-white/40 backdrop-blur-sm border border-[#5A3224]/30 px-5 py-3.5 text-sm text-[#1B1113] placeholder:text-[#1B1113]/40 transition-colors focus:outline-none focus:border-[#5A3224] focus:bg-white/70"
               />
               <button type="submit" className={ctaGlassOnLight} style={ctaTracking}>
                 Join Now

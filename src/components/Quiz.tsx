@@ -113,8 +113,8 @@ export default function Quiz() {
 
   return (
     <section
-      className="relative overflow-hidden text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16 min-h-[70vh]"
-      style={{ background: 'radial-gradient(120% 130% at 50% 0%, #FFFDFA 0%, #FFF8F2 55%, #F7E9DA 100%)' }}
+      className="relative overflow-hidden text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16 min-h-[70vh]"
+      style={{ background: 'radial-gradient(120% 130% at 50% 0%, #FFFDFA 0%, #FAF7F3 55%, #F7E9DA 100%)' }}
     >
       <div className="max-w-2xl mx-auto">
         <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
@@ -159,7 +159,7 @@ export default function Quiz() {
                     className="group text-left border border-[#5A3224]/25 hover:border-[#5A3224] bg-white/45 backdrop-blur-sm hover:bg-white/75 hover:shadow-[0_16px_36px_-18px_rgba(90,50,36,0.4)] px-6 py-5 transition-colors duration-300"
                   >
                     <span className="block font-display text-xl group-hover:text-[#5A3224] transition-colors">{o.label}</span>
-                    <span className="block text-sm text-[#1a120c]/60 mt-1">{o.detail}</span>
+                    <span className="block text-sm text-[#1B1113]/60 mt-1">{o.detail}</span>
                   </motion.button>
                 ))}
               </div>
@@ -167,7 +167,7 @@ export default function Quiz() {
               {step > 0 && (
                 <button
                   onClick={() => { setPicks(picks.slice(0, -1)); setStep(step - 1) }}
-                  className="mt-8 text-xs font-medium uppercase text-[#1a120c]/50 hover:text-[#5A3224] transition-colors"
+                  className="mt-8 text-xs font-medium uppercase text-[#1B1113]/50 hover:text-[#5A3224] transition-colors"
                   style={{ letterSpacing: '0.2em' }}
                 >
                   ← Back
@@ -187,9 +187,9 @@ export default function Quiz() {
               </h2>
 
               {productsLoading ? (
-                <p className="mt-10 text-sm text-[#1a120c]/50">Finding your match…</p>
+                <p className="mt-10 text-sm text-[#1B1113]/50">Finding your match…</p>
               ) : !result ? (
-                <p className="mt-10 text-sm text-[#1a120c]/50 max-w-md">
+                <p className="mt-10 text-sm text-[#1B1113]/50 max-w-md">
                   The shop isn't connected yet — once products are live, your match will appear here.
                 </p>
               ) : (
@@ -204,7 +204,7 @@ export default function Quiz() {
                     <p className="text-xs font-semibold uppercase text-[#5A3224] mt-2" style={{ letterSpacing: '0.25em' }}>
                       Recommended length: {recLength}
                     </p>
-                    <p className="mt-4 text-sm text-[#1a120c]/75 leading-[1.85]">{why}</p>
+                    <p className="mt-4 text-sm text-[#1B1113]/75 leading-[1.85]">{why}</p>
                     <div className="flex flex-wrap items-center gap-4 mt-8">
                       <button
                         className={ctaGlassOnLight}
@@ -216,7 +216,7 @@ export default function Quiz() {
                       </button>
                       <Link
                         to={`/products/${result.handle}`}
-                        className="text-xs font-semibold uppercase text-[#5A3224] hover:text-[#1a120c] transition-colors"
+                        className="text-xs font-semibold uppercase text-[#5A3224] hover:text-[#1B1113] transition-colors"
                         style={{ letterSpacing: '0.2em' }}
                       >
                         Customize length →
@@ -225,14 +225,14 @@ export default function Quiz() {
                     <div className="flex gap-6 mt-6">
                       <button
                         onClick={restart}
-                        className="text-xs font-medium uppercase text-[#1a120c]/50 hover:text-[#5A3224] transition-colors"
+                        className="text-xs font-medium uppercase text-[#1B1113]/50 hover:text-[#5A3224] transition-colors"
                         style={{ letterSpacing: '0.2em' }}
                       >
                         Retake quiz
                       </button>
                       <Link
                         to="/collections"
-                        className="text-xs font-medium uppercase text-[#1a120c]/50 hover:text-[#5A3224] transition-colors"
+                        className="text-xs font-medium uppercase text-[#1B1113]/50 hover:text-[#5A3224] transition-colors"
                         style={{ letterSpacing: '0.2em' }}
                       >
                         See everything

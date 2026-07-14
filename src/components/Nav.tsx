@@ -33,7 +33,7 @@ export default function Nav() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[100] bg-[#FFF8F2]/95 backdrop-blur-md border-b flex items-center justify-between px-5 sm:px-8 h-16 sm:h-[72px] transition-shadow duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-[100] bg-[#FAF7F3]/95 backdrop-blur-md border-b flex items-center justify-between px-5 sm:px-8 h-16 sm:h-[72px] transition-shadow duration-300 ${
           scrolled ? 'border-[#5A3224]/15 shadow-[0_8px_30px_-16px_rgba(90,50,36,0.25)]' : 'border-transparent'
         }`}
       >
@@ -46,7 +46,7 @@ export default function Nav() {
             <NavLink key={l.to} to={l.to} className="group relative text-sm font-medium whitespace-nowrap py-1">
               {({ isActive }) => (
                 <>
-                  <span className={`transition-colors ${isActive ? 'text-[#5A3224]' : 'text-[#1a120c]/75 group-hover:text-[#5A3224]'}`}>
+                  <span className={`transition-colors ${isActive ? 'text-[#5A3224]' : 'text-[#1B1113]/75 group-hover:text-[#5A3224]'}`}>
                     {l.label}
                   </span>
                   <span
@@ -62,14 +62,14 @@ export default function Nav() {
 
         <div className="flex items-center gap-5 sm:gap-6">
           <button
-            className="text-[#1a120c]/75 hover:text-[#5A3224] transition-colors"
+            className="text-[#1B1113]/75 hover:text-[#5A3224] transition-colors"
             onClick={() => setAccountOpen(true)}
             aria-label={memberName ? `Account: ${memberName}` : 'Account'}
           >
             <User size={20} strokeWidth={1.75} className={memberName ? 'text-[#5A3224]' : undefined} />
           </button>
           <button
-            className="flex items-start gap-1 text-[#1a120c]/75 hover:text-[#5A3224] transition-colors"
+            className="flex items-start gap-1 text-[#1B1113]/75 hover:text-[#5A3224] transition-colors"
             onClick={() => setCartOpen(true)}
             aria-label={`Bag, ${cartCount} items`}
           >
@@ -91,7 +91,7 @@ export default function Nav() {
             </AnimatePresence>
           </button>
           <button
-            className="lg:hidden text-[#1a120c]/75 hover:text-[#5A3224] transition-colors"
+            className="lg:hidden text-[#1B1113]/75 hover:text-[#5A3224] transition-colors"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Toggle menu"
           >
@@ -107,7 +107,7 @@ export default function Nav() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden fixed inset-0 z-[90] bg-[#FFF8F2] flex flex-col items-center justify-center gap-8"
+            className="lg:hidden fixed inset-0 z-[90] bg-[#FAF7F3] flex flex-col items-center justify-center gap-8"
           >
             {NAV_LINKS.map((l, i) => (
               <motion.div
@@ -118,7 +118,7 @@ export default function Nav() {
               >
                 <Link
                   to={l.to}
-                  className="font-display text-3xl text-[#1a120c] hover:text-[#5A3224] transition-colors"
+                  className="font-display text-3xl text-[#1B1113] hover:text-[#5A3224] transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   {l.label}

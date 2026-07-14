@@ -42,8 +42,8 @@ export default function Circle() {
   return (
     <section
       id="circle"
-      className="relative overflow-hidden text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10"
-      style={{ background: 'radial-gradient(120% 130% at 50% 0%, #FFFDFA 0%, #FFF8F2 55%, #F7E9DA 100%)' }}
+      className="relative overflow-hidden text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10"
+      style={{ background: 'radial-gradient(120% 130% at 50% 0%, #FFFDFA 0%, #FAF7F3 55%, #F7E9DA 100%)' }}
     >
       <div className="max-w-6xl mx-auto">
         <Reveal>
@@ -53,7 +53,7 @@ export default function Circle() {
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
             Loyalty, woven in
           </h2>
-          <p className="mt-6 max-w-lg text-sm sm:text-base text-[#1a120c]/75 leading-[1.85]">
+          <p className="mt-6 max-w-lg text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
             Sukundu means hair in Pulaar — and in our culture, hair is cared for in community. The Circle
             is ours: earn strands on every order, learn the craft, and grow into richer rewards.
           </p>
@@ -71,7 +71,7 @@ export default function Circle() {
               >
                 {tier.featured && (
                   <span
-                    className="absolute -top-3 left-7 bg-[#5A3224] text-[#FFF8F2] text-[10px] font-semibold uppercase px-3 py-1 shadow-[0_6px_16px_-4px_rgba(90,50,36,0.5)]"
+                    className="absolute -top-3 left-7 bg-[#5A3224] text-[#FAF7F3] text-[10px] font-semibold uppercase px-3 py-1 shadow-[0_6px_16px_-4px_rgba(90,50,36,0.5)]"
                     style={{ letterSpacing: '0.2em' }}
                   >
                     Most Rewarding
@@ -81,7 +81,7 @@ export default function Circle() {
                 <p className="text-xs font-semibold uppercase text-[#5A3224] mt-1" style={{ letterSpacing: '0.25em' }}>
                   {tier.threshold}
                 </p>
-                <ul className="mt-6 flex flex-col gap-3 text-sm text-[#1a120c]/75 leading-[1.85]">
+                <ul className="mt-6 flex flex-col gap-3 text-sm text-[#1B1113]/75 leading-[1.85]">
                   {tier.perks.map((perk) => (
                     <li key={perk} className="flex gap-3">
                       <span className="text-[#5A3224] shrink-0">—</span>

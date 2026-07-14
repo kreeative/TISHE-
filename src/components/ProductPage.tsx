@@ -41,7 +41,7 @@ export default function ProductPage() {
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto px-5 sm:px-10 md:px-16 py-24">
-        <p className="text-sm text-[#1a120c]/50">Loading…</p>
+        <p className="text-sm text-[#1B1113]/50">Loading…</p>
       </div>
     )
   }
@@ -49,7 +49,7 @@ export default function ProductPage() {
   if (error || !product) {
     return (
       <div className="max-w-6xl mx-auto px-5 sm:px-10 md:px-16 py-24">
-        <p className="text-sm text-[#1a120c]/50 max-w-md">
+        <p className="text-sm text-[#1B1113]/50 max-w-md">
           {error ?? 'That product could not be found.'}
         </p>
         <Link to="/collections" className="inline-block mt-6 text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.2em' }}>
@@ -60,11 +60,11 @@ export default function ProductPage() {
   }
 
   return (
-    <section className="bg-[#FFF8F2] text-[#1a120c] py-12 sm:py-16 px-5 sm:px-10 md:px-16">
+    <section className="bg-[#FAF7F3] text-[#1B1113] py-12 sm:py-16 px-5 sm:px-10 md:px-16">
       <div className="max-w-6xl mx-auto">
         <Link
           to="/collections"
-          className="inline-flex items-center gap-1 text-xs font-semibold uppercase text-[#1a120c]/50 hover:text-[#5A3224] transition-colors"
+          className="inline-flex items-center gap-1 text-xs font-semibold uppercase text-[#1B1113]/50 hover:text-[#5A3224] transition-colors"
           style={{ letterSpacing: '0.2em' }}
         >
           <ChevronLeft size={14} /> Collection
@@ -110,7 +110,7 @@ export default function ProductPage() {
 
             {product.descriptionHtml && (
               <div
-                className="mt-5 text-sm text-[#1a120c]/75 leading-[1.85] max-w-md"
+                className="mt-5 text-sm text-[#1B1113]/75 leading-[1.85] max-w-md"
                 dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
               />
             )}
@@ -134,10 +134,10 @@ export default function ProductPage() {
                           onClick={() => setSelection({ ...active, [opt.name]: value })}
                           className={`px-5 py-2.5 text-xs font-semibold border transition-all duration-300 ${
                             isActive
-                              ? 'bg-[#5A3224] border-[#5A3224] text-[#FFF8F2] shadow-[0_8px_22px_-8px_rgba(90,50,36,0.6)] -translate-y-0.5'
+                              ? 'bg-[#5A3224] border-[#5A3224] text-[#FAF7F3] shadow-[0_8px_22px_-8px_rgba(90,50,36,0.6)] -translate-y-0.5'
                               : disabled
-                                ? 'bg-transparent border-[#5A3224]/10 text-[#1a120c]/25 line-through cursor-not-allowed'
-                                : 'bg-white/40 backdrop-blur-sm border-[#5A3224]/25 text-[#1a120c]/65 hover:border-[#5A3224] hover:text-[#1a120c] hover:-translate-y-0.5'
+                                ? 'bg-transparent border-[#5A3224]/10 text-[#1B1113]/25 line-through cursor-not-allowed'
+                                : 'bg-white/40 backdrop-blur-sm border-[#5A3224]/25 text-[#1B1113]/65 hover:border-[#5A3224] hover:text-[#1B1113] hover:-translate-y-0.5'
                           }`}
                           style={{ letterSpacing: '0.15em' }}
                         >
@@ -153,7 +153,7 @@ export default function ProductPage() {
               <button
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
                 aria-label="Decrease quantity"
-                className="p-2.5 border border-[#5A3224]/30 text-[#1a120c]/70 hover:border-[#5A3224] hover:text-[#5A3224] transition-colors"
+                className="p-2.5 border border-[#5A3224]/30 text-[#1B1113]/70 hover:border-[#5A3224] hover:text-[#5A3224] transition-colors"
               >
                 <Minus size={14} />
               </button>
@@ -161,7 +161,7 @@ export default function ProductPage() {
               <button
                 onClick={() => setQty((q) => q + 1)}
                 aria-label="Increase quantity"
-                className="p-2.5 border border-[#5A3224]/30 text-[#1a120c]/70 hover:border-[#5A3224] hover:text-[#5A3224] transition-colors"
+                className="p-2.5 border border-[#5A3224]/30 text-[#1B1113]/70 hover:border-[#5A3224] hover:text-[#5A3224] transition-colors"
               >
                 <Plus size={14} />
               </button>
@@ -187,7 +187,7 @@ export default function ProductPage() {
                   : `Add to Bag — ${formatMoney(matchedVariant.price.amount, matchedVariant.price.currencyCode)}`}
             </button>
 
-            <p className="mt-4 text-[11px] text-[#1a120c]/45">Free shipping — already included in the price.</p>
+            <p className="mt-4 text-[11px] text-[#1B1113]/45">Free shipping — already included in the price.</p>
           </Reveal>
         </div>
       </div>

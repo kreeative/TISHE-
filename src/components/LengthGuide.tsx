@@ -26,7 +26,7 @@ export default function LengthGuide() {
   const maxIn = LENGTHS[LENGTHS.length - 1].inches
 
   return (
-    <section id="lengths" className="bg-[#FFF8F2] text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10">
+    <section id="lengths" className="bg-[#FAF7F3] text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10">
       <div className="max-w-6xl mx-auto">
         <Reveal>
           <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
@@ -35,7 +35,7 @@ export default function LengthGuide() {
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
             Find your length
           </h2>
-          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1a120c]/75 leading-[1.85]">
+          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
             Tap a length to see where it lands and how many bundles build the look.
           </p>
         </Reveal>
@@ -52,8 +52,8 @@ export default function LengthGuide() {
                     aria-pressed={active}
                     className={`px-5 py-2.5 text-xs font-semibold border transition-all duration-300 ${
                       active
-                        ? 'bg-[#5A3224] border-[#5A3224] text-[#FFF8F2] shadow-[0_8px_22px_-8px_rgba(90,50,36,0.6)] -translate-y-0.5'
-                        : 'bg-white/40 backdrop-blur-sm border-[#5A3224]/25 text-[#1a120c]/65 hover:border-[#5A3224] hover:text-[#1a120c] hover:-translate-y-0.5 hover:shadow-[0_6px_16px_-8px_rgba(90,50,36,0.35)]'
+                        ? 'bg-[#5A3224] border-[#5A3224] text-[#FAF7F3] shadow-[0_8px_22px_-8px_rgba(90,50,36,0.6)] -translate-y-0.5'
+                        : 'bg-white/40 backdrop-blur-sm border-[#5A3224]/25 text-[#1B1113]/65 hover:border-[#5A3224] hover:text-[#1B1113] hover:-translate-y-0.5 hover:shadow-[0_6px_16px_-8px_rgba(90,50,36,0.35)]'
                     }`}
                     style={{ letterSpacing: '0.15em', fontVariantNumeric: 'tabular-nums' }}
                   >
@@ -80,8 +80,8 @@ export default function LengthGuide() {
                       lands at {selected.lands}
                     </span>
                   </div>
-                  <p className="mt-4 text-sm text-[#1a120c]/75 leading-[1.85] max-w-sm">{selected.note}</p>
-                  <p className="mt-3 text-xs font-semibold uppercase text-[#1a120c]/55" style={{ letterSpacing: '0.2em' }}>
+                  <p className="mt-4 text-sm text-[#1B1113]/75 leading-[1.85] max-w-sm">{selected.note}</p>
+                  <p className="mt-3 text-xs font-semibold uppercase text-[#1B1113]/55" style={{ letterSpacing: '0.2em' }}>
                     Full look: {selected.bundles}
                   </p>
                 </motion.div>
@@ -97,7 +97,7 @@ export default function LengthGuide() {
                 <button key={l.inches} onClick={() => setSelected(l)} className="group flex items-center gap-4 text-left">
                   <span
                     className={`text-xs w-8 shrink-0 transition-colors ${
-                      active ? 'text-[#5A3224] font-semibold' : 'text-[#1a120c]/45 group-hover:text-[#1a120c]/75'
+                      active ? 'text-[#5A3224] font-semibold' : 'text-[#1B1113]/45 group-hover:text-[#1B1113]/75'
                     }`}
                     style={{ fontVariantNumeric: 'tabular-nums' }}
                   >
@@ -113,7 +113,7 @@ export default function LengthGuide() {
                   </span>
                   <span
                     className={`text-xs whitespace-nowrap transition-colors ${
-                      active ? 'text-[#1a120c] font-medium' : 'text-[#1a120c]/45 group-hover:text-[#1a120c]/75'
+                      active ? 'text-[#1B1113] font-medium' : 'text-[#1B1113]/45 group-hover:text-[#1B1113]/75'
                     }`}
                   >
                     {l.lands}
@@ -125,7 +125,7 @@ export default function LengthGuide() {
         </Reveal>
 
         <Reveal delay={0.25}>
-          <p className="mt-12 text-xs font-medium text-[#1a120c]/55 max-w-md leading-[1.85]">
+          <p className="mt-12 text-xs font-medium text-[#1B1113]/55 max-w-md leading-[1.85]">
             Texture tip: hair is measured stretched straight — body wave wears about 2" shorter and
             deep curl about 4" shorter than the number on the bundle.
           </p>

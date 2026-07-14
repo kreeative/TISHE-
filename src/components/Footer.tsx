@@ -13,8 +13,8 @@ function InstagramIcon({ size = 20 }: { size?: number }) {
 export default function Footer() {
   return (
     <footer
-      className="relative overflow-hidden text-[#FFF8F2] px-5 sm:px-10 md:px-16 py-10"
-      style={{ background: 'radial-gradient(140% 180% at 15% 0%, #2a170c 0%, #1a0f08 55%, #120a05 100%)' }}
+      className="relative overflow-hidden text-[#FAF7F3] px-5 sm:px-10 md:px-16 py-10"
+      style={{ background: 'radial-gradient(140% 180% at 15% 0%, #2A1D20 0%, #1B1113 55%, #120C0E 100%)' }}
     >
       <div
         className="pointer-events-none absolute -bottom-24 right-0 w-[360px] h-[360px] rounded-full opacity-30 blur-3xl"
@@ -23,14 +23,14 @@ export default function Footer() {
       <div className="relative max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
         <img src="/images/logo-mark.webp" alt="The Ivory Sukundu" className="h-12 w-auto" />
         <div className="flex items-center gap-6">
-          <a href="#" aria-label="Instagram" className="text-[#FFF8F2]/60 hover:text-[#FFF8F2] transition-colors">
+          <a href="#" aria-label="Instagram" className="text-[#FAF7F3]/60 hover:text-[#FAF7F3] transition-colors">
             <InstagramIcon size={20} />
           </a>
-          <a href="mailto:hello@theivorysukundu.com" aria-label="Email" className="text-[#FFF8F2]/60 hover:text-[#FFF8F2] transition-colors">
+          <a href="mailto:hello@theivorysukundu.com" aria-label="Email" className="text-[#FAF7F3]/60 hover:text-[#FAF7F3] transition-colors">
             <Mail size={20} strokeWidth={1.5} />
           </a>
         </div>
-        <p className="text-xs text-[#FFF8F2]/45">© 2026 The Ivory Sukundu. All rights reserved.</p>
+        <p className="text-xs text-[#FAF7F3]/45">© 2026 The Ivory Sukundu. All rights reserved.</p>
       </div>
     </footer>
   )

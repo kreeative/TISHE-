@@ -11,7 +11,7 @@ export default function Collection() {
   const { products, loading, error } = useProducts()
 
   return (
-    <section id="collections" className="bg-[#FFF8F2] text-[#1a120c] py-20 sm:py-28 px-5 sm:px-10 md:px-16">
+    <section id="collections" className="bg-[#FAF7F3] text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16">
       <div className="max-w-6xl mx-auto">
         <Reveal>
           <p className="text-xs font-medium uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
@@ -20,23 +20,23 @@ export default function Collection() {
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
             Textures worth the obsession
           </h2>
-          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1a120c]/70 leading-[1.85]">
+          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/70 leading-[1.85]">
             Raw, single-donor hair in three signature finishes — every bundle hand-inspected before it ships.
           </p>
         </Reveal>
 
         {loading && (
-          <p className="mt-16 text-sm text-[#1a120c]/50">Loading the collection…</p>
+          <p className="mt-16 text-sm text-[#1B1113]/50">Loading the collection…</p>
         )}
 
         {!loading && error && (
-          <p className="mt-16 text-sm text-[#1a120c]/50 max-w-md">
+          <p className="mt-16 text-sm text-[#1B1113]/50 max-w-md">
             The shop isn't connected yet. Once products are added in Shopify, they'll appear here automatically.
           </p>
         )}
 
         {!loading && !error && products.length === 0 && (
-          <p className="mt-16 text-sm text-[#1a120c]/50 max-w-md">
+          <p className="mt-16 text-sm text-[#1B1113]/50 max-w-md">
             No products in the store yet — add some in Shopify and they'll show up here automatically.
           </p>
         )}
@@ -73,7 +73,7 @@ export default function Collection() {
                     />
                     {isCampaign && (
                       <span
-                        className="absolute top-4 left-4 bg-white/20 backdrop-blur-md border border-white/40 text-[#FFF8F2] text-[10px] font-semibold uppercase px-3 py-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.2)]"
+                        className="absolute top-4 left-4 bg-white/20 backdrop-blur-md border border-white/40 text-[#FAF7F3] text-[10px] font-semibold uppercase px-3 py-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.2)]"
                         style={{ letterSpacing: '0.25em' }}
                       >
                         Campaign 01
@@ -93,7 +93,7 @@ export default function Collection() {
                 </div>
                 {p.descriptionHtml && (
                   <p
-                    className="mt-2 text-sm text-[#1a120c]/70 leading-[1.85]"
+                    className="mt-2 text-sm text-[#1B1113]/70 leading-[1.85]"
                     dangerouslySetInnerHTML={{ __html: p.descriptionHtml }}
                   />
                 )}

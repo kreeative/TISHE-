@@ -79,7 +79,7 @@ function App() {
     <StoreProvider>
       <HashRouter>
         <ScrollToTop />
-        <div className="min-h-screen bg-[#FFF8F2] tracking-[-0.02em] flex flex-col" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+        <div className="min-h-screen bg-[#FAF7F3] tracking-[-0.02em] flex flex-col" style={{ fontFamily: "'Montserrat', sans-serif" }}>
           <Nav />
           <main className="pt-16 sm:pt-[72px] flex-1">
             <AnimatedRoutes />

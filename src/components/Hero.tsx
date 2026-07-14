@@ -72,7 +72,7 @@ export default function Hero() {
         </h1>
         <Link
           to="/collections"
-          className="pointer-events-auto inline-block text-xs font-semibold uppercase px-10 py-3.5 mt-8 sm:mt-10 text-center bg-[#FFF8F2]/90 border border-[#5A3224]/15 text-[#3d2418] shadow-[0_10px_30px_-14px_rgba(90,50,36,0.45)] backdrop-blur-sm transition-all duration-300 ease-out hover:bg-[#FFF8F2] hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-12px_rgba(90,50,36,0.5)] active:translate-y-0 hero-anim hero-fade"
+          className="pointer-events-auto inline-block text-xs font-semibold uppercase px-10 py-3.5 mt-8 sm:mt-10 text-center bg-[#FAF7F3]/90 border border-[#5A3224]/15 text-[#1B1113] shadow-[0_10px_30px_-14px_rgba(90,50,36,0.45)] backdrop-blur-sm transition-all duration-300 ease-out hover:bg-[#FAF7F3] hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-12px_rgba(90,50,36,0.5)] active:translate-y-0 hero-anim hero-fade"
           style={{ ...ctaTracking, animationDelay: '0.6s' }}
         >
           Shop Now
