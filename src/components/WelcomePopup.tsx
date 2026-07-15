@@ -45,14 +45,14 @@ export default function WelcomePopup() {
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-[140] flex items-center justify-center p-5">
-          <motion.button
-            aria-label="Close welcome offer"
+          {/* dimmed backdrop — intentionally not clickable; only the X, Decline,
+              or signing up closes the offer */}
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="absolute inset-0 bg-[#1B1113]/45 backdrop-blur-sm cursor-default"
-            onClick={dismiss}
+            className="absolute inset-0 bg-[#1B1113]/45 backdrop-blur-sm"
           />
           <motion.div
             initial={{ opacity: 0, y: 24, scale: 0.97 }}
