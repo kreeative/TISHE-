@@ -9,25 +9,21 @@ import Reveal from './Reveal'
 const inputClass =
   'w-full bg-transparent border border-[#5A3224]/30 px-4 py-3.5 text-sm text-[#1B1113] placeholder:text-[#1B1113]/40 focus:outline-none focus:border-[#5A3224]'
 
-function MemberCard({ name, tier, strands }: { name: string; tier: string; strands: number }) {
+function MemberCard({ name, tier }: { name: string; tier: string }) {
   return (
     <div
       className="relative w-full max-w-xl aspect-[5/3] bg-cover bg-center rounded-[4.2%/7%] overflow-hidden shadow-[0_0_44px_-10px_rgba(27,17,19,0.35)] select-none"
       style={{ backgroundImage: "url('/images/member-card.jpg')" }}
     >
-      <p className="absolute right-[7%] top-[9%] font-display italic text-lg sm:text-2xl text-[#3b2318]">
+      <p className="absolute right-[7%] top-[9%] text-xs sm:text-sm font-semibold uppercase text-[#3b2318]" style={{ letterSpacing: '0.08em' }}>
         {tier} Member
       </p>
-      <div className="absolute left-[7%] bottom-[9%]">
-        <p className="text-sm sm:text-lg font-semibold uppercase text-[#3b2318]" style={{ letterSpacing: '0.08em' }}>
-          {name}
-        </p>
-      </div>
-      <div className="absolute right-[7%] bottom-[9%] text-right">
-        <p className="font-display text-lg sm:text-2xl text-[#3b2318]" style={{ fontVariantNumeric: 'tabular-nums' }}>
-          {strands.toLocaleString()} strands
-        </p>
-      </div>
+      <p
+        className="absolute left-[7%] bottom-[9%] text-sm sm:text-lg font-semibold uppercase text-[#3b2318]"
+        style={{ letterSpacing: '0.08em' }}
+      >
+        {name}
+      </p>
     </div>
   )
 }
@@ -84,13 +80,20 @@ export default function AccountPage() {
 
           <Reveal delay={0.1}>
             <div className="mt-10">
-              <MemberCard name={name} tier={status.tier} strands={status.strands} />
+              <MemberCard name={name} tier={status.tier} />
             </div>
           </Reveal>
 
-          {/* tier progress */}
+          {/* strands + tier progress */}
           <Reveal delay={0.18}>
             <div className="mt-10 max-w-xl">
+              <p className="font-display text-4xl" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                {status.strands.toLocaleString()}
+                <span className="text-lg text-[#5A3224] ml-2">strands</span>
+              </p>
+              <p className="mt-1 mb-5 text-xs text-[#1B1113]/50">
+                Every $1 spent earns 1 strand. 200 strands is $20 off your next order.
+              </p>
               {status.next ? (
                 <>
                   <div className="flex items-baseline justify-between text-sm">
