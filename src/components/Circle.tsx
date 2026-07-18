@@ -76,7 +76,7 @@ export default function Circle() {
               {STEPS.map((s) => (
                 <div key={s.n} className="flex items-baseline gap-4 py-5">
                   <span className="font-display text-lg text-[#c99b6f] shrink-0 w-8">{s.n}</span>
-                  <p className="flex flex-wrap items-baseline gap-x-3">
+                  <p className="flex flex-col lg:flex-row lg:flex-wrap lg:items-baseline lg:gap-x-3">
                     <span className="font-display text-2xl">{s.title}</span>
                     <span className="text-sm text-[#1B1113]/60">{s.body}</span>
                   </p>
