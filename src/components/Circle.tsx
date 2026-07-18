@@ -75,12 +75,12 @@ export default function Circle() {
           <Reveal delay={0.15}>
             <div className="lg:pt-10 flex flex-col divide-y divide-[#5A3224]/12">
               {STEPS.map((s) => (
-                <div key={s.n} className="flex items-baseline gap-5 py-4">
-                  <span className="font-display text-2xl text-[#c99b6f] shrink-0 w-10">{s.n}</span>
-                  <div>
-                    <p className="text-sm font-semibold uppercase" style={{ letterSpacing: '0.15em' }}>{s.title}</p>
-                    <p className="text-sm text-[#1B1113]/60 mt-0.5">{s.body}</p>
-                  </div>
+                <div key={s.n} className="flex items-baseline gap-4 py-5">
+                  <span className="font-display text-lg text-[#c99b6f] shrink-0 w-8">{s.n}</span>
+                  <p className="flex flex-wrap items-baseline gap-x-3">
+                    <span className="font-display text-2xl">{s.title}</span>
+                    <span className="text-sm text-[#1B1113]/60">{s.body}</span>
+                  </p>
                 </div>
               ))}
             </div>
@@ -120,20 +120,15 @@ export default function Circle() {
                   </span>
                 )}
 
-                <span className={`font-display text-xl ${tier.featured ? 'text-[#c99b6f]' : 'text-[#c99b6f]'}`}>
-                  {tier.numeral}
-                </span>
-                <h3 className="font-display text-4xl mt-2">{tier.name}</h3>
-                <p
-                  className={`text-xs font-semibold uppercase mt-2 ${tier.featured ? 'text-[#c99b6f]' : 'text-[#5A3224]'}`}
-                  style={{ letterSpacing: '0.25em' }}
-                >
+                <div className="flex items-baseline justify-between gap-4">
+                  <h3 className="font-display text-4xl">{tier.name}</h3>
+                  <span className="font-display text-lg text-[#c99b6f]">{tier.numeral}</span>
+                </div>
+                <p className={`font-display italic text-lg mt-1 ${tier.featured ? 'text-[#c99b6f]' : 'text-[#5A3224]'}`}>
                   {tier.threshold}
                 </p>
 
-                <div className={`h-px w-14 my-6 ${tier.featured ? 'bg-[#c99b6f]/50' : 'bg-[#5A3224]/25'}`} />
-
-                <ul className={`flex flex-col gap-3.5 text-sm leading-[1.85] ${tier.featured ? 'text-[#FAF7F3]/80' : 'text-[#1B1113]/75'}`}>
+                <ul className={`mt-7 flex flex-col gap-3.5 text-sm leading-[1.85] ${tier.featured ? 'text-[#FAF7F3]/80' : 'text-[#1B1113]/75'}`}>
                   {tier.perks.map((perk) => (
                     <li key={perk} className="flex gap-3">
                       <span className="text-[#c99b6f] shrink-0">·</span>
