@@ -21,7 +21,7 @@ export default function Collection() {
             Textures worth the obsession
           </h2>
           <p className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/70 leading-[1.85]">
-            Raw, single-donor hair in three signature finishes — every bundle hand-inspected before it ships.
+            Raw, single-donor hair in three signature finishes. Every bundle is hand-inspected before it ships.
           </p>
         </Reveal>
 
@@ -37,7 +37,7 @@ export default function Collection() {
 
         {!loading && !error && products.length === 0 && (
           <p className="mt-16 text-sm text-[#1B1113]/50 max-w-md">
-            No products in the store yet — add some in Shopify and they'll show up here automatically.
+            No products in the store yet. Add some in Shopify and they'll show up here automatically.
           </p>
         )}
 
@@ -99,7 +99,7 @@ export default function Collection() {
                 )}
                 <div className="mt-4 flex items-center gap-4">
                   <Link to={`/products/${p.handle}`} className={`self-start ${ctaGlassOnLight}`} style={ctaTracking}>
-                    {hasRange ? 'Shop Options — from ' : 'Shop — '}
+                    {hasRange ? 'Shop Options · from ' : 'Shop · '}
                     {formatMoney(minPrice.amount, minPrice.currencyCode)}
                   </Link>
                 </div>

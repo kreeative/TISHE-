@@ -184,10 +184,10 @@ export default function ProductPage() {
                 ? 'Out of Stock'
                 : justAdded
                   ? 'Added ✓'
-                  : `Add to Bag — ${formatMoney(matchedVariant.price.amount, matchedVariant.price.currencyCode)}`}
+                  : `Add to Bag · ${formatMoney(matchedVariant.price.amount, matchedVariant.price.currencyCode)}`}
             </button>
 
-            <p className="mt-4 text-[11px] text-[#1B1113]/45">Free shipping — already included in the price.</p>
+            <p className="mt-4 text-[11px] text-[#1B1113]/45">Free shipping, already included in the price.</p>
           </Reveal>
         </div>
       </div>

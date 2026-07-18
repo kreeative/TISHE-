@@ -32,7 +32,7 @@ function MemberCard({ name }: { name: string }) {
         <p className="font-display text-2xl text-[#FAF7F3]">{name}</p>
         <div className="h-px w-16 bg-[#c99b6f]/50 my-2" />
         <p className="text-[10px] text-[#FAF7F3]/60 uppercase font-medium" style={{ letterSpacing: '0.25em' }}>
-          The Sukundu Circle — est. 2026
+          The Sukundu Circle · est. 2026
         </p>
       </div>
     </div>
@@ -81,10 +81,10 @@ export default function AccountModal() {
             </div>
             <MemberCard name={memberName} />
             <ul className="text-sm text-[#1B1113]/75 leading-[1.85] flex flex-col gap-2">
-              <li>— Every $1 earns 1 strand. 200 strands = $20 off.</li>
-              <li>— Early access to every drop and restock.</li>
-              <li>— Full access to Sukundu School care guides.</li>
-              <li>— A gift on your birthday, always.</li>
+              <li>· Every $1 earns 1 strand. 200 strands = $20 off.</li>
+              <li>· Early access to every drop and restock.</li>
+              <li>· Full access to Sukundu School care guides.</li>
+              <li>· A gift on your birthday, always.</li>
             </ul>
             <a
               href={PORTAL_URL}
@@ -113,7 +113,7 @@ export default function AccountModal() {
               <h2 className="font-display text-3xl mt-2">Your member portal</h2>
             </div>
             <p className="text-sm text-[#1B1113]/75 leading-[1.85]">
-              Sign in securely with a one-time code sent to your email — no password to remember.
+              Sign in securely with a one-time code sent to your email, no password to remember.
               View orders, track shipping, and manage your details.
             </p>
             <a
@@ -143,7 +143,7 @@ export default function AccountModal() {
               }}
             >
               <p className="text-sm text-[#1B1113]/75 leading-[1.85] -mt-2">
-                Join the Circle — free forever. Earn strands on every order, unlock early access, and
+                Join the Circle, free forever. Earn strands on every order, unlock early access, and
                 learn with Sukundu School.
               </p>
               <label className="sr-only" htmlFor="acc-name">First name</label>

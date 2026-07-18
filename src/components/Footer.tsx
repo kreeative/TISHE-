@@ -62,8 +62,8 @@ export default function Footer() {
         <div className="flex flex-col gap-5">
           <img src="/images/logo-mark.webp" alt="The Ivory Sukundu" className="h-14 w-auto self-start" />
           <p className="text-sm text-[#FAF7F3]/60 leading-[1.85] max-w-[260px]">
-            Luxury raw hair, redefined. Glueless half wigs and raw bundles — installed in sixty
-            seconds, made to last for years.
+            Luxury raw hair, redefined. Glueless half wigs and raw bundles, installed in sixty
+            seconds and made to last for years.
           </p>
           <div className="flex items-center gap-5 mt-1">
             <a
@@ -125,7 +125,7 @@ export default function Footer() {
           <p className={footerHeading} style={{ letterSpacing: '0.3em' }}>The Circle</p>
           {joined ? (
             <p className="mt-4 text-sm text-[#FAF7F3]/70 leading-[1.85]">
-              Welcome to the Circle — your 15% code is on its way to your inbox.
+              Welcome to the Circle. Your 15% code is on its way to your inbox.
             </p>
           ) : (
             <>

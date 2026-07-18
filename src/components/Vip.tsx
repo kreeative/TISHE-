@@ -22,7 +22,7 @@ export default function Vip() {
             Join the VIP list
           </h2>
           <p className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
-            Early access to launches, restocks, and VIP-only pricing — straight to your inbox.
+            Early access to launches, restocks, and VIP-only pricing, straight to your inbox.
           </p>
         </Reveal>
 
@@ -36,7 +36,7 @@ export default function Vip() {
               className="mt-10 text-sm font-semibold text-[#5A3224]"
               style={{ letterSpacing: '0.15em' }}
             >
-              YOU'RE ON THE LIST — WATCH YOUR INBOX
+              YOU'RE ON THE LIST. WATCH YOUR INBOX
             </motion.p>
           ) : (
             <motion.form

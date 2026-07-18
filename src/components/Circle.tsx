@@ -7,7 +7,7 @@ const TIERS = [
     name: 'Ivory',
     threshold: 'Free to join',
     perks: [
-      'Every $1 earns 1 strand — 200 strands is $20 off',
+      'Every $1 earns 1 strand. 200 strands is $20 off',
       'Early access to drops and restocks',
       'Sukundu School: care guides and install tutorials',
       'A gift on your birthday, always',
@@ -54,7 +54,7 @@ export default function Circle() {
             Loyalty, woven in
           </h2>
           <p className="mt-6 max-w-lg text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
-            Sukundu means hair in Pulaar — and in our culture, hair is cared for in community. The Circle
+            Sukundu means hair in Pulaar. In our culture, hair is cared for in community. The Circle
             is ours: earn strands on every order, learn the craft, and grow into richer rewards.
           </p>
         </Reveal>
@@ -84,7 +84,7 @@ export default function Circle() {
                 <ul className="mt-6 flex flex-col gap-3 text-sm text-[#1B1113]/75 leading-[1.85]">
                   {tier.perks.map((perk) => (
                     <li key={perk} className="flex gap-3">
-                      <span className="text-[#5A3224] shrink-0">—</span>
+                      <span className="text-[#5A3224] shrink-0">·</span>
                       {perk}
                     </li>
                   ))}
@@ -96,7 +96,7 @@ export default function Circle() {
 
         <Reveal delay={0.4}>
           <button className={`${ctaGlassOnLight} mt-10`} style={ctaTracking} onClick={() => setAccountOpen(true)}>
-            Join the Circle — Free
+            Join the Circle · Free
           </button>
         </Reveal>
       </div>

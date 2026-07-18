@@ -62,7 +62,7 @@ export default function Hero() {
       {/* Wordmark + CTA — left on desktop, top on small portrait screens */}
       <div className="absolute z-50 flex flex-col items-center sm:items-start text-center sm:text-left pointer-events-none top-10 left-1/2 -translate-x-1/2 w-full px-6 sm:px-0 sm:w-auto sm:top-1/2 sm:left-[72px] lg:left-[96px] sm:-translate-x-0 sm:-translate-y-1/2">
         <h1 className="m-0">
-          <span className="sr-only">The Ivory Sukundu — Hair Extensions</span>
+          <span className="sr-only">The Ivory Sukundu, Hair Extensions</span>
           <img
             src="/images/logo-lockup-brown.png"
             alt=""

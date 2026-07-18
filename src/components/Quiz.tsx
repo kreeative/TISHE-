@@ -19,9 +19,9 @@ interface Step {
 }
 
 const ARCHETYPES = {
-  straight: { keywords: ['straight', 'half wig', 'half-wig', 'sleek'], why: 'Comb-in, glueless, and installed in sixty seconds — sleek raw hair that keeps up with a fast life while your own hair rests underneath.' },
-  curl: { keywords: ['curl', 'curly', 'wave'], why: 'Springy, wash-day-proof texture with serious volume — it reverts every time and loves an active routine.' },
-  blonde: { keywords: ['613', 'blonde', 'ivory'], why: 'True platinum blonde that owns every room and every photo — tone it icy or wear it golden.' },
+  straight: { keywords: ['straight', 'half wig', 'half-wig', 'sleek'], why: 'Comb-in, glueless, and installed in sixty seconds. Sleek raw hair that keeps up with a fast life while your own hair rests underneath.' },
+  curl: { keywords: ['curl', 'curly', 'wave'], why: 'Springy, wash-day-proof texture with serious volume. It reverts every time and loves an active routine.' },
+  blonde: { keywords: ['613', 'blonde', 'ivory'], why: 'True platinum blonde that owns every room and every photo. Tone it icy or wear it golden.' },
 } as const
 
 type Archetype = keyof typeof ARCHETYPES
@@ -118,7 +118,7 @@ export default function Quiz() {
     >
       <div className="max-w-2xl mx-auto">
         <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
-          Sukundu School — 60-second quiz
+          Sukundu School · 60-second quiz
         </p>
 
         <div className="flex gap-2 mt-6" aria-label={`Step ${Math.min(step + 1, STEPS.length)} of ${STEPS.length}`}>
@@ -190,7 +190,7 @@ export default function Quiz() {
                 <p className="mt-10 text-sm text-[#1B1113]/50">Finding your match…</p>
               ) : !result ? (
                 <p className="mt-10 text-sm text-[#1B1113]/50 max-w-md">
-                  The shop isn't connected yet — once products are live, your match will appear here.
+                  The shop isn't connected yet. Once products are live, your match will appear here.
                 </p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-10 items-start">
@@ -212,7 +212,7 @@ export default function Quiz() {
                         disabled={!resultVariant || cartLoading}
                         onClick={() => resultVariant && addToCart(resultVariant.id)}
                       >
-                        Add to Bag{resultVariant ? ` — ${formatMoney(resultVariant.price.amount, resultVariant.price.currencyCode)}` : ''}
+                        Add to Bag{resultVariant ? ` · ${formatMoney(resultVariant.price.amount, resultVariant.price.currencyCode)}` : ''}
                       </button>
                       <Link
                         to={`/products/${result.handle}`}

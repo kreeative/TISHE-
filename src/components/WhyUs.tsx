@@ -5,7 +5,7 @@ const REASONS = [
   {
     icon: Leaf,
     title: 'Ethically sourced',
-    body: 'Single-donor raw hair with full traceability — sourced with respect for both nature and community.',
+    body: 'Single-donor raw hair with full traceability, sourced with respect for both nature and community.',
   },
   {
     icon: Feather,
@@ -15,7 +15,7 @@ const REASONS = [
   {
     icon: ShieldCheck,
     title: 'Built to last',
-    body: 'Bleach it, press it, wear it daily — two years and counting with basic care.',
+    body: 'Bleach it, press it, wear it daily. Two years and counting with basic care.',
   },
 ]
 
@@ -29,13 +29,13 @@ export default function WhyUs() {
       <div className="max-w-6xl mx-auto">
         <Reveal>
           <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
-            Sukundu — "hair" in Pulaar
+            Sukundu, "hair" in Pulaar
           </p>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
             Hair that keeps its promises
           </h2>
           <p className="mt-6 max-w-lg text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
-            Our name comes from the Pulaar word for hair — because for us, hair is heritage. Every
+            Our name comes from the Pulaar word for hair, because for us, hair is heritage. Every
             Sukundu piece honors where it comes from and elevates where it's going.
           </p>
         </Reveal>
@@ -57,7 +57,7 @@ export default function WhyUs() {
 
         <Reveal delay={0.3}>
           <p className="mt-14 sm:mt-20 max-w-xl text-base sm:text-lg text-[#1B1113]/85 leading-[1.85]">
-            Experience unmatched quality in every strand — indulge in texture so soft it promises to
+            Experience unmatched quality in every strand. Indulge in texture so soft it promises to
             elevate your hair game to new heights. Choose The Ivory Sukundu for the raw hair you deserve.
           </p>
         </Reveal>

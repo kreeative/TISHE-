@@ -115,7 +115,7 @@ export default function WelcomePopup() {
                     your first order
                   </p>
                   <p className="mt-5 text-sm text-[#1B1113]/70 leading-[1.85] max-w-xs">
-                    Join the Sukundu Circle and get 15% off your first order — plus early access to
+                    Join the Sukundu Circle and get 15% off your first order, plus early access to
                     every drop and restock.
                   </p>
                   <form onSubmit={submit} className="w-full mt-6 flex flex-col gap-3">
