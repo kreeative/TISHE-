@@ -19,7 +19,9 @@ function MemberCard({ name, tier, strands }: { name: string; tier: string; stran
         {tier} Member
       </p>
       <div className="absolute left-[7%] bottom-[9%]">
-        <p className="text-sm sm:text-lg font-semibold text-[#3b2318]">{name}</p>
+        <p className="text-sm sm:text-lg font-semibold uppercase text-[#3b2318]" style={{ letterSpacing: '0.08em' }}>
+          {name}
+        </p>
       </div>
       <div className="absolute right-[7%] bottom-[9%] text-right">
         <p className="font-display text-lg sm:text-2xl text-[#3b2318]" style={{ fontVariantNumeric: 'tabular-nums' }}>
