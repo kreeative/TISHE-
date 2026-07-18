@@ -97,6 +97,14 @@ export default function LengthGuide() {
                 alt=""
                 className="h-[540px] sm:h-[660px] w-auto select-none"
                 draggable={false}
+                style={{
+                  maskImage:
+                    'linear-gradient(180deg, transparent 0%, black 6%, black 88%, transparent 100%), linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)',
+                  maskComposite: 'intersect',
+                  WebkitMaskImage:
+                    'linear-gradient(180deg, transparent 0%, black 6%, black 88%, transparent 100%), linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)',
+                  WebkitMaskComposite: 'source-in',
+                }}
               />
               <motion.div
                 className="absolute left-0 right-0 pointer-events-none"
