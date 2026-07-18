@@ -2,28 +2,28 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Reveal from './Reveal'
 
+// y = where the length lands on the reference photo, as % of image height
 const LENGTHS = [
-  { inches: 10, lands: 'Nape', bundles: '2 bundles', note: 'Crisp, editorial, zero-fuss mornings.' },
-  { inches: 12, lands: 'Shoulder', bundles: '2 bundles', note: 'The perfect blunt-cut bob territory.' },
-  { inches: 14, lands: 'Collarbone', bundles: '2–3 bundles', note: 'Snappy, weightless, everyday-easy.' },
-  { inches: 16, lands: 'Armpit', bundles: '3 bundles', note: 'The "is that all hers?" sweet spot.' },
-  { inches: 18, lands: 'Bra strap', bundles: '3 bundles', note: 'Movement without the maintenance.' },
-  { inches: 20, lands: 'Below bra strap', bundles: '3 bundles', note: 'Our best-selling length, hands down.' },
-  { inches: 22, lands: 'Mid-back', bundles: '3–4 bundles', note: 'Full glam that still whips into a bun.' },
-  { inches: 24, lands: 'Low back', bundles: '3–4 bundles', note: 'Drama that behaves on a work day.' },
-  { inches: 26, lands: 'Waist', bundles: '4 bundles', note: 'Statement length. Bring a silk scarf.' },
-  { inches: 28, lands: 'Low waist', bundles: '4 bundles', note: 'Mermaid energy, fully committed.' },
-  { inches: 30, lands: 'Hip', bundles: '4+ bundles', note: 'Maximum drama. You already know.' },
-  { inches: 32, lands: 'Below hip', bundles: '4–5 bundles', note: 'Red-carpet length. Book the photographer.' },
-  { inches: 34, lands: 'Tailbone', bundles: '5 bundles', note: 'Rapunzel called. She wants tips.' },
-  { inches: 36, lands: 'Upper thigh', bundles: '5 bundles', note: 'Runway-only? Says who.' },
-  { inches: 38, lands: 'Thigh', bundles: '5+ bundles', note: 'Gravity is officially jealous.' },
-  { inches: 40, lands: 'Mid-thigh', bundles: '5+ bundles', note: 'The grand finale. Custom-order length.' },
+  { inches: 10, lands: 'Nape', bundles: '2 bundles', note: 'Crisp, editorial, zero-fuss mornings.', y: 24 },
+  { inches: 12, lands: 'Shoulder', bundles: '2 bundles', note: 'The perfect blunt-cut bob territory.', y: 29 },
+  { inches: 14, lands: 'Collarbone', bundles: '2–3 bundles', note: 'Snappy, weightless, everyday-easy.', y: 31.5 },
+  { inches: 16, lands: 'Armpit', bundles: '3 bundles', note: 'The "is that all hers?" sweet spot.', y: 35 },
+  { inches: 18, lands: 'Bra strap', bundles: '3 bundles', note: 'Movement without the maintenance.', y: 41 },
+  { inches: 20, lands: 'Below bra strap', bundles: '3 bundles', note: 'Our best-selling length, hands down.', y: 45 },
+  { inches: 22, lands: 'Mid-back', bundles: '3–4 bundles', note: 'Full glam that still whips into a bun.', y: 49 },
+  { inches: 24, lands: 'Low back', bundles: '3–4 bundles', note: 'Drama that behaves on a work day.', y: 53 },
+  { inches: 26, lands: 'Waist', bundles: '4 bundles', note: 'Statement length. Bring a silk scarf.', y: 57 },
+  { inches: 28, lands: 'Low waist', bundles: '4 bundles', note: 'Mermaid energy, fully committed.', y: 60.5 },
+  { inches: 30, lands: 'Hip', bundles: '4+ bundles', note: 'Maximum drama. You already know.', y: 64 },
+  { inches: 32, lands: 'Below hip', bundles: '4–5 bundles', note: 'Red-carpet length. Book the photographer.', y: 68 },
+  { inches: 34, lands: 'Tailbone', bundles: '5 bundles', note: 'Rapunzel called. She wants tips.', y: 71 },
+  { inches: 36, lands: 'Upper thigh', bundles: '5 bundles', note: 'Runway-only? Says who.', y: 74 },
+  { inches: 38, lands: 'Thigh', bundles: '5+ bundles', note: 'Gravity is officially jealous.', y: 80 },
+  { inches: 40, lands: 'Mid-thigh', bundles: '5+ bundles', note: 'The grand finale. Custom-order length.', y: 86 },
 ]
 
 export default function LengthGuide() {
   const [selected, setSelected] = useState(LENGTHS[5])
-  const maxIn = LENGTHS[LENGTHS.length - 1].inches
 
   return (
     <section id="lengths" className="bg-[#FAF7F3] text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10">
@@ -89,38 +89,30 @@ export default function LengthGuide() {
             </div>
           </div>
 
-          {/* length gauge — swaps for the campaign visual when it's ready */}
-          <div className="flex flex-col gap-3" aria-hidden="true">
-            {LENGTHS.map((l) => {
-              const active = selected.inches === l.inches
-              return (
-                <button key={l.inches} onClick={() => setSelected(l)} className="group flex items-center gap-4 text-left">
-                  <span
-                    className={`text-xs w-8 shrink-0 transition-colors ${
-                      active ? 'text-[#5A3224] font-semibold' : 'text-[#1B1113]/45 group-hover:text-[#1B1113]/75'
-                    }`}
-                    style={{ fontVariantNumeric: 'tabular-nums' }}
-                  >
-                    {l.inches}"
-                  </span>
-                  <span className="relative h-px flex-1 bg-[#5A3224]/15 overflow-hidden">
-                    <motion.span
-                      className="absolute inset-y-0 left-0 bg-[#5A3224]"
-                      initial={false}
-                      animate={{ width: `${(l.inches / maxIn) * 100}%`, opacity: active ? 1 : 0.45 }}
-                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    />
-                  </span>
-                  <span
-                    className={`text-xs whitespace-nowrap transition-colors ${
-                      active ? 'text-[#1B1113] font-medium' : 'text-[#1B1113]/45 group-hover:text-[#1B1113]/75'
-                    }`}
-                  >
-                    {l.lands}
-                  </span>
-                </button>
-              )
-            })}
+          {/* photo gauge: marker line tracks the selected length on a real back view */}
+          <div className="flex justify-center md:justify-end" aria-hidden="true">
+            <div className="relative">
+              <img
+                src="/images/length-model.jpg"
+                alt=""
+                className="h-[540px] sm:h-[660px] w-auto select-none"
+                draggable={false}
+              />
+              <motion.div
+                className="absolute left-0 right-0 pointer-events-none"
+                initial={false}
+                animate={{ top: `${selected.y}%` }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div className="h-px bg-[#FAF7F3] shadow-[0_1px_4px_rgba(27,17,19,0.55)]" />
+                <span
+                  className="absolute right-0 top-0 -translate-y-1/2 bg-[#5A3224] text-[#FAF7F3] text-[10px] font-semibold uppercase px-2.5 py-1 whitespace-nowrap"
+                  style={{ letterSpacing: '0.12em' }}
+                >
+                  {selected.inches}" · {selected.lands}
+                </span>
+              </motion.div>
+            </div>
           </div>
         </Reveal>
 
