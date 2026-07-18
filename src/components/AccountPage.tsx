@@ -12,7 +12,7 @@ const inputClass =
 function MemberCard({ name, tier, strands }: { name: string; tier: string; strands: number }) {
   return (
     <div
-      className="relative w-full max-w-xl aspect-[5/3] bg-cover bg-center shadow-[0_0_44px_-10px_rgba(27,17,19,0.35)] select-none"
+      className="relative w-full max-w-xl aspect-[5/3] bg-cover bg-center rounded-[4.2%/7%] overflow-hidden shadow-[0_0_44px_-10px_rgba(27,17,19,0.35)] select-none"
       style={{ backgroundImage: "url('/images/member-card.jpg')" }}
     >
       <div className="absolute left-[7%] bottom-[9%]">
