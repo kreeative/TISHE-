@@ -13,7 +13,7 @@ import Quiz from './components/Quiz'
 import ProductPage from './components/ProductPage'
 import Footer from './components/Footer'
 import CartDrawer from './components/CartDrawer'
-import AccountModal from './components/AccountModal'
+import AccountPage from './components/AccountPage'
 import PageTransition from './components/PageTransition'
 import WelcomePopup from './components/WelcomePopup'
 import { StoreProvider } from './components/StoreContext'
@@ -68,6 +68,7 @@ function AnimatedRoutes() {
         <Route path="/circle" element={<PageTransition><CirclePage /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
         <Route path="/quiz" element={<PageTransition><Quiz /></PageTransition>} />
+        <Route path="/account" element={<PageTransition><AccountPage /></PageTransition>} />
         <Route path="/products/:handle" element={<PageTransition><ProductPage /></PageTransition>} />
         <Route path="*" element={<PageTransition><HomePage /></PageTransition>} />
       </Routes>
@@ -87,7 +88,6 @@ function App() {
           </main>
           <Footer />
           <CartDrawer />
-          <AccountModal />
           <WelcomePopup />
         </div>
       </HashRouter>

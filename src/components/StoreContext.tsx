@@ -8,8 +8,16 @@ import {
   removeCartLine,
   type ShopifyCart,
 } from '../lib/shopify'
+import {
+  customerLogin,
+  customerLogout,
+  customerRegister,
+  fetchCustomer,
+  type SukunduCustomer,
+} from '../lib/customer'
 
 const CART_ID_KEY = 'sukundu_cart_id'
+const TOKEN_KEY = 'sukundu_customer_token'
 
 interface StoreState {
   cart: ShopifyCart | null
@@ -19,21 +27,38 @@ interface StoreState {
   setLineQty: (lineId: string, quantity: number) => Promise<void>
   cartOpen: boolean
   setCartOpen: (open: boolean) => void
-  accountOpen: boolean
-  setAccountOpen: (open: boolean) => void
-  memberName: string | null
-  setMemberName: (name: string | null) => void
+  customer: SukunduCustomer | null
+  customerLoading: boolean
+  login: (email: string, password: string) => Promise<void>
+  register: (firstName: string, lastName: string, email: string, password: string) => Promise<void>
+  logout: () => Promise<void>
+  refreshCustomer: () => Promise<void>
 }
 
 const StoreContext = createContext<StoreState | null>(null)
+
+function savedToken(): string | null {
+  try {
+    const raw = localStorage.getItem(TOKEN_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as { accessToken: string; expiresAt: string }
+    if (new Date(parsed.expiresAt).getTime() < Date.now()) {
+      localStorage.removeItem(TOKEN_KEY)
+      return null
+    }
+    return parsed.accessToken
+  } catch {
+    return null
+  }
+}
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<ShopifyCart | null>(null)
   const [cartLoading, setCartLoading] = useState(false)
   const [cartError, setCartError] = useState<string | null>(null)
   const [cartOpen, setCartOpen] = useState(false)
-  const [accountOpen, setAccountOpen] = useState(false)
-  const [memberName, setMemberName] = useState<string | null>(null)
+  const [customer, setCustomer] = useState<SukunduCustomer | null>(null)
+  const [customerLoading, setCustomerLoading] = useState(false)
 
   // restore an existing cart on load, if one was started before
   useEffect(() => {
@@ -47,6 +72,57 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       })
       .catch(() => localStorage.removeItem(CART_ID_KEY))
   }, [])
+
+  // restore the member session, if the token is still valid
+  useEffect(() => {
+    if (!shopifyConfigured) return
+    const token = savedToken()
+    if (!token) return
+    setCustomerLoading(true)
+    fetchCustomer(token)
+      .then((c) => {
+        if (c) setCustomer(c)
+        else localStorage.removeItem(TOKEN_KEY)
+      })
+      .catch(() => undefined)
+      .finally(() => setCustomerLoading(false))
+  }, [])
+
+  const login = async (email: string, password: string) => {
+    setCustomerLoading(true)
+    try {
+      const token = await customerLogin(email, password)
+      localStorage.setItem(TOKEN_KEY, JSON.stringify(token))
+      setCustomer(await fetchCustomer(token.accessToken))
+    } finally {
+      setCustomerLoading(false)
+    }
+  }
+
+  const register = async (firstName: string, lastName: string, email: string, password: string) => {
+    setCustomerLoading(true)
+    try {
+      const token = await customerRegister(firstName, lastName, email, password)
+      localStorage.setItem(TOKEN_KEY, JSON.stringify(token))
+      setCustomer(await fetchCustomer(token.accessToken))
+    } finally {
+      setCustomerLoading(false)
+    }
+  }
+
+  const logout = async () => {
+    const token = savedToken()
+    localStorage.removeItem(TOKEN_KEY)
+    setCustomer(null)
+    if (token) await customerLogout(token)
+  }
+
+  const refreshCustomer = async () => {
+    const token = savedToken()
+    if (!token) return
+    const c = await fetchCustomer(token)
+    if (c) setCustomer(c)
+  }
 
   const addToCart = async (merchandiseId: string, quantity = 1) => {
     setCartLoading(true)
@@ -89,10 +165,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setLineQty,
         cartOpen,
         setCartOpen,
-        accountOpen,
-        setAccountOpen,
-        memberName,
-        setMemberName,
+        customer,
+        customerLoading,
+        login,
+        register,
+        logout,
+        refreshCustomer,
       }}
     >
       {children}

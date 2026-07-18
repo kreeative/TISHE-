@@ -4,7 +4,7 @@ const API_VERSION = '2025-01'
 
 export const shopifyConfigured = Boolean(DOMAIN && TOKEN)
 
-async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
+export async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
   if (!shopifyConfigured) {
     throw new Error('Shopify is not configured — missing VITE_SHOPIFY_DOMAIN or VITE_SHOPIFY_STOREFRONT_TOKEN')
   }

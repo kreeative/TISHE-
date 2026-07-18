@@ -1,4 +1,4 @@
-import { useStore } from './StoreContext'
+import { Link } from 'react-router-dom'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
 
@@ -48,7 +48,6 @@ const TIERS = [
 ]
 
 export default function Circle() {
-  const { setAccountOpen } = useStore()
 
   return (
     <section
@@ -144,9 +143,9 @@ export default function Circle() {
         {/* CTA */}
         <Reveal delay={0.4}>
           <div className="mt-14 flex flex-col items-center gap-3 text-center">
-            <button className={`${ctaGlassOnLight} px-12`} style={ctaTracking} onClick={() => setAccountOpen(true)}>
+            <Link to="/account" className={`${ctaGlassOnLight} px-12`} style={ctaTracking}>
               Join the Circle · Free
-            </button>
+            </Link>
             <p className="text-xs text-[#1B1113]/50">Free forever. Your strands start counting with your first order.</p>
           </div>
         </Reveal>

@@ -15,7 +15,7 @@ const NAV_LINKS = [
 export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { cart, setCartOpen, setAccountOpen, memberName } = useStore()
+  const { cart, setCartOpen, customer } = useStore()
   const cartCount = cart?.totalQuantity ?? 0
   const location = useLocation()
 
@@ -61,13 +61,13 @@ export default function Nav() {
         </div>
 
         <div className="flex items-center gap-5 sm:gap-6">
-          <button
+          <Link
+            to="/account"
             className="text-[#1B1113]/75 hover:text-[#5A3224] transition-colors"
-            onClick={() => setAccountOpen(true)}
-            aria-label={memberName ? `Account: ${memberName}` : 'Account'}
+            aria-label={customer ? `Account: ${customer.firstName ?? customer.email}` : 'Account'}
           >
-            <User size={20} strokeWidth={1.75} className={memberName ? 'text-[#5A3224]' : undefined} />
-          </button>
+            <User size={20} strokeWidth={1.75} className={customer ? 'text-[#5A3224]' : undefined} />
+          </Link>
           <button
             className="flex items-start gap-1 text-[#1B1113]/75 hover:text-[#5A3224] transition-colors"
             onClick={() => setCartOpen(true)}
