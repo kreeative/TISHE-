@@ -46,7 +46,7 @@ export default function Nav() {
             <NavLink key={l.to} to={l.to} className="group relative text-sm font-medium whitespace-nowrap py-1">
               {({ isActive }) => (
                 <>
-                  <span className={`transition-colors ${isActive ? 'text-[#5A3224]' : 'text-[#1B1113]/75 group-hover:text-[#5A3224]'}`}>
+                  <span className={`transition-colors ${isActive ? 'text-[#5A3224] font-semibold' : 'text-[#1B1113]/75 group-hover:text-[#5A3224]'}`}>
                     {l.label}
                   </span>
                   <span
@@ -118,7 +118,11 @@ export default function Nav() {
               >
                 <Link
                   to={l.to}
-                  className="font-display text-3xl text-[#1B1113] hover:text-[#5A3224] transition-colors"
+                  className={`font-display text-3xl transition-colors ${
+                    location.pathname === l.to
+                      ? 'text-[#5A3224] italic'
+                      : 'text-[#1B1113] hover:text-[#5A3224]'
+                  }`}
                   onClick={() => setMenuOpen(false)}
                 >
                   {l.label}
