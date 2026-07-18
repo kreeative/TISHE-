@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Mail } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { subscribeEmail } from '../lib/shopify'
 
 // Shopify-hosted legal pages (Settings → Policies in the admin).
@@ -100,7 +100,14 @@ export default function Footer() {
           <ul className="mt-4 flex flex-col">
             {SHOP_LINKS.map((l) => (
               <li key={l.to}>
-                <Link to={l.to} className={footerLink}>{l.label}</Link>
+                <NavLink
+                  to={l.to}
+                  className={({ isActive }) =>
+                    isActive ? `${footerLink} font-semibold text-[#FAF7F3]` : footerLink
+                  }
+                >
+                  {l.label}
+                </NavLink>
               </li>
             ))}
           </ul>
