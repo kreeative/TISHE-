@@ -14,7 +14,7 @@ export default function Collection() {
     <section id="collections" className="bg-[#FAF7F3] text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16">
       <div className="max-w-6xl mx-auto">
         <Reveal>
-          <p className="text-xs font-medium uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+          <p className="text-xs font-medium uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             The Collection
           </p>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
@@ -74,7 +74,7 @@ export default function Collection() {
                     {isCampaign && (
                       <span
                         className="absolute top-4 left-4 bg-white/20 backdrop-blur-md border border-white/40 text-[#FAF7F3] text-[10px] font-semibold uppercase px-3 py-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.2)]"
-                        style={{ letterSpacing: '0.25em' }}
+                        style={{ letterSpacing: '0.1em' }}
                       >
                         Campaign 01
                       </span>
@@ -86,7 +86,7 @@ export default function Collection() {
                     <h3 className="font-display text-2xl sm:text-3xl hover:text-[#5A3224] transition-colors">{p.title}</h3>
                   </Link>
                   {lengthLabel && (
-                    <span className="text-xs text-[#5A3224] font-medium whitespace-nowrap" style={{ letterSpacing: '0.15em' }}>
+                    <span className="text-xs text-[#5A3224] font-medium whitespace-nowrap" style={{ letterSpacing: '0.08em' }}>
                       {lengthLabel}
                     </span>
                   )}

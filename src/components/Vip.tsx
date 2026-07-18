@@ -15,7 +15,7 @@ export default function Vip() {
     >
       <div className="max-w-3xl mx-auto text-center flex flex-col items-center">
         <Reveal className="flex flex-col items-center">
-          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             Something big is coming
           </p>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-5 leading-[1.16]" style={{ textWrap: 'balance' }}>
@@ -34,7 +34,7 @@ export default function Vip() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="mt-10 text-sm font-semibold text-[#5A3224]"
-              style={{ letterSpacing: '0.15em' }}
+              style={{ letterSpacing: '0.08em' }}
             >
               YOU'RE ON THE LIST. WATCH YOUR INBOX
             </motion.p>

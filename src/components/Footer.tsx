@@ -96,7 +96,7 @@ export default function Footer() {
 
         {/* Shop */}
         <nav aria-label="Shop">
-          <p className={footerHeading} style={{ letterSpacing: '0.3em' }}>Shop</p>
+          <p className={footerHeading} style={{ letterSpacing: '0.06em' }}>Shop</p>
           <ul className="mt-4 flex flex-col">
             {SHOP_LINKS.map((l) => (
               <li key={l.to}>
@@ -115,7 +115,7 @@ export default function Footer() {
 
         {/* Legal */}
         <nav aria-label="Legal">
-          <p className={footerHeading} style={{ letterSpacing: '0.3em' }}>Legal</p>
+          <p className={footerHeading} style={{ letterSpacing: '0.06em' }}>Legal</p>
           <ul className="mt-4 flex flex-col">
             {LEGAL_LINKS.map((l) => (
               <li key={l.href}>
@@ -129,7 +129,7 @@ export default function Footer() {
 
         {/* Newsletter */}
         <div>
-          <p className={footerHeading} style={{ letterSpacing: '0.3em' }}>The Circle</p>
+          <p className={footerHeading} style={{ letterSpacing: '0.06em' }}>The Circle</p>
           {joined ? (
             <p className="mt-4 text-sm text-[#FAF7F3]/70 leading-[1.85]">
               Welcome to the Circle. Your 15% code is on its way to your inbox.
@@ -161,7 +161,7 @@ export default function Footer() {
                 <button
                   type="submit"
                   className="shrink-0 bg-[#FAF7F3] text-[#1B1113] text-xs font-semibold uppercase px-5 hover:bg-white transition-colors"
-                  style={{ letterSpacing: '0.15em' }}
+                  style={{ letterSpacing: '0.08em' }}
                 >
                   Join
                 </button>

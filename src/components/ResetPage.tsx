@@ -3,10 +3,8 @@ import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { useStore } from './StoreContext'
 import { customerResetByUrl } from '../lib/customer'
 import { ctaGlassOnLight, ctaTracking } from './cta'
+import PasswordInput from './PasswordInput'
 import Reveal from './Reveal'
-
-const inputClass =
-  'w-full bg-transparent border border-[#5A3224]/30 px-4 py-3.5 text-sm text-[#1B1113] placeholder:text-[#1B1113]/40 focus:outline-none focus:border-[#5A3224]'
 
 // Landing page for the tokenized link in the password-reset email.
 // The email links here as /#/reset?url=<encoded classic reset URL>.
@@ -44,7 +42,7 @@ export default function ResetPage() {
     <section className="bg-[#FAF7F3] text-[#1B1113] py-16 sm:py-24 px-5 sm:px-10 md:px-16 min-h-[70vh]">
       <div className="max-w-md mx-auto">
         <Reveal>
-          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             The Sukundu Circle
           </p>
           <h1 className="font-display text-4xl sm:text-5xl mt-4 leading-[1.16]">Choose a new password</h1>
@@ -53,30 +51,8 @@ export default function ResetPage() {
         <Reveal delay={0.1}>
           {resetUrl ? (
             <form className="flex flex-col gap-4 mt-10" onSubmit={submit}>
-              <label className="sr-only" htmlFor="new-pass">New password</label>
-              <input
-                id="new-pass"
-                type="password"
-                required
-                minLength={5}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="New password"
-                className={inputClass}
-                autoComplete="new-password"
-              />
-              <label className="sr-only" htmlFor="confirm-pass">Confirm new password</label>
-              <input
-                id="confirm-pass"
-                type="password"
-                required
-                minLength={5}
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                placeholder="Confirm new password"
-                className={inputClass}
-                autoComplete="new-password"
-              />
+              <PasswordInput id="new-pass" value={password} onChange={setPassword} placeholder="New password" autoComplete="new-password" />
+              <PasswordInput id="confirm-pass" value={confirm} onChange={setConfirm} placeholder="Confirm new password" autoComplete="new-password" />
               {error && <p className="text-sm text-[#8a2d1f] leading-relaxed">{error}</p>}
               <button type="submit" disabled={busy} className={`${ctaGlassOnLight} w-full mt-2 disabled:opacity-50`} style={ctaTracking}>
                 {busy ? 'One moment…' : 'Save New Password'}

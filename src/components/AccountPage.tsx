@@ -3,25 +3,23 @@ import { motion } from 'framer-motion'
 import { useStore } from './StoreContext'
 import { circleStatus, customerRecover } from '../lib/customer'
 import { ctaGlassOnLight, ctaTracking } from './cta'
+import PasswordInput from './PasswordInput'
 import Reveal from './Reveal'
 
 const inputClass =
   'w-full bg-transparent border border-[#5A3224]/30 px-4 py-3.5 text-sm text-[#1B1113] placeholder:text-[#1B1113]/40 focus:outline-none focus:border-[#5A3224]'
 
-function MemberCard({ name, tier, strands, since }: { name: string; tier: string; strands: number; since: string }) {
+function MemberCard({ name, tier, strands }: { name: string; tier: string; strands: number }) {
   return (
     <div
-      className="relative w-full max-w-xl aspect-[5/3] bg-cover bg-center shadow-[0_30px_70px_-28px_rgba(27,17,19,0.5)] select-none"
+      className="relative w-full max-w-xl aspect-[5/3] bg-cover bg-center shadow-[0_0_44px_-10px_rgba(27,17,19,0.35)] select-none"
       style={{ backgroundImage: "url('/images/member-card.jpg')" }}
     >
       <div className="absolute left-[7%] bottom-[9%]">
         <p className="font-display text-xl sm:text-3xl text-[#3b2318]">{name}</p>
-        <p className="text-[9px] sm:text-[11px] font-semibold uppercase text-[#3b2318]/60 mt-1" style={{ letterSpacing: '0.25em' }}>
-          Member since {since}
-        </p>
       </div>
       <div className="absolute right-[7%] bottom-[9%] text-right">
-        <p className="text-[9px] sm:text-[11px] font-semibold uppercase text-[#c99b6f]" style={{ letterSpacing: '0.3em' }}>
+        <p className="text-[9px] sm:text-[11px] font-semibold uppercase text-[#c99b6f]" style={{ letterSpacing: '0.06em' }}>
           {tier} member
         </p>
         <p className="font-display text-lg sm:text-2xl text-[#3b2318] mt-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -69,13 +67,12 @@ export default function AccountPage() {
   if (customer) {
     const status = circleStatus(customer)
     const name = [customer.firstName, customer.lastName].filter(Boolean).join(' ') || customer.email
-    const since = new Date(customer.createdAt).getFullYear().toString()
 
     return (
       <section className="bg-[#FAF7F3] text-[#1B1113] py-16 sm:py-24 px-5 sm:px-10 md:px-16 min-h-[70vh]">
         <div className="max-w-4xl mx-auto">
           <Reveal>
-            <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+            <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
               The Sukundu Circle
             </p>
             <h1 className="font-display text-4xl sm:text-5xl mt-4 leading-[1.16]">
@@ -85,7 +82,7 @@ export default function AccountPage() {
 
           <Reveal delay={0.1}>
             <div className="mt-10">
-              <MemberCard name={name} tier={status.tier} strands={status.strands} since={since} />
+              <MemberCard name={name} tier={status.tier} strands={status.strands} />
             </div>
           </Reveal>
 
@@ -152,7 +149,7 @@ export default function AccountPage() {
               <button
                 onClick={() => void logout()}
                 className="text-xs font-medium text-[#1B1113]/45 hover:text-[#5A3224] uppercase transition-colors"
-                style={{ letterSpacing: '0.15em' }}
+                style={{ letterSpacing: '0.08em' }}
               >
                 Sign out
               </button>
@@ -167,7 +164,7 @@ export default function AccountPage() {
     <section className="bg-[#FAF7F3] text-[#1B1113] py-16 sm:py-24 px-5 sm:px-10 md:px-16 min-h-[70vh]">
       <div className="max-w-md mx-auto">
         <Reveal>
-          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             The Sukundu Circle
           </p>
           <h1 className="font-display text-4xl sm:text-5xl mt-4 leading-[1.16]">
@@ -194,7 +191,7 @@ export default function AccountPage() {
                     ? 'border-[#5A3224] text-[#1B1113]'
                     : 'border-transparent text-[#1B1113]/50 hover:text-[#1B1113]/80'
                 }`}
-                style={{ letterSpacing: '0.2em' }}
+                style={{ letterSpacing: '0.08em' }}
               >
                 {t === 'signin' ? 'Sign In' : 'Create Account'}
               </button>
@@ -216,16 +213,11 @@ export default function AccountPage() {
             )}
             <label className="sr-only" htmlFor="acc-email">Email</label>
             <input id="acc-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" className={inputClass} autoComplete="email" />
-            <label className="sr-only" htmlFor="acc-pass">Password</label>
-            <input
+            <PasswordInput
               id="acc-pass"
-              type="password"
-              required
-              minLength={5}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={setPassword}
               placeholder="Password"
-              className={inputClass}
               autoComplete={tab === 'create' ? 'new-password' : 'current-password'}
             />
 

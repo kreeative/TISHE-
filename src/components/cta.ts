@@ -3,7 +3,7 @@ const ctaBase =
   'inline-block text-xs font-semibold uppercase px-7 py-3.5 text-center backdrop-blur-md border cursor-pointer ' +
   'transition-all duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0 active:duration-100'
 
-export const ctaTracking = { letterSpacing: '0.2em' } as const
+export const ctaTracking = { letterSpacing: '0.08em' } as const
 
 // glass button for dark grounds
 export const ctaGlass =

@@ -117,7 +117,7 @@ export default function Quiz() {
       style={{ background: 'radial-gradient(120% 130% at 50% 0%, #FFFDFA 0%, #FAF7F3 55%, #F7E9DA 100%)' }}
     >
       <div className="max-w-2xl mx-auto">
-        <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+        <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
           Sukundu School · 60-second quiz
         </p>
 
@@ -168,7 +168,7 @@ export default function Quiz() {
                 <button
                   onClick={() => { setPicks(picks.slice(0, -1)); setStep(step - 1) }}
                   className="mt-8 text-xs font-medium uppercase text-[#1B1113]/50 hover:text-[#5A3224] transition-colors"
-                  style={{ letterSpacing: '0.2em' }}
+                  style={{ letterSpacing: '0.08em' }}
                 >
                   ← Back
                 </button>
@@ -201,7 +201,7 @@ export default function Quiz() {
                   </div>
                   <div className="flex flex-col items-start">
                     <h3 className="font-display text-3xl">{result.title}</h3>
-                    <p className="text-xs font-semibold uppercase text-[#5A3224] mt-2" style={{ letterSpacing: '0.25em' }}>
+                    <p className="text-xs font-semibold uppercase text-[#5A3224] mt-2" style={{ letterSpacing: '0.1em' }}>
                       Recommended length: {recLength}
                     </p>
                     <p className="mt-4 text-sm text-[#1B1113]/75 leading-[1.85]">{why}</p>
@@ -217,7 +217,7 @@ export default function Quiz() {
                       <Link
                         to={`/products/${result.handle}`}
                         className="text-xs font-semibold uppercase text-[#5A3224] hover:text-[#1B1113] transition-colors"
-                        style={{ letterSpacing: '0.2em' }}
+                        style={{ letterSpacing: '0.08em' }}
                       >
                         Customize length →
                       </Link>
@@ -226,14 +226,14 @@ export default function Quiz() {
                       <button
                         onClick={restart}
                         className="text-xs font-medium uppercase text-[#1B1113]/50 hover:text-[#5A3224] transition-colors"
-                        style={{ letterSpacing: '0.2em' }}
+                        style={{ letterSpacing: '0.08em' }}
                       >
                         Retake quiz
                       </button>
                       <Link
                         to="/collections"
                         className="text-xs font-medium uppercase text-[#1B1113]/50 hover:text-[#5A3224] transition-colors"
-                        style={{ letterSpacing: '0.2em' }}
+                        style={{ letterSpacing: '0.08em' }}
                       >
                         See everything
                       </Link>

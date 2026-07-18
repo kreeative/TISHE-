@@ -78,7 +78,7 @@ export default function WelcomePopup() {
             />
 
             <div className="p-8 sm:p-10 flex flex-col items-center text-center overflow-y-auto">
-              <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+              <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
                 Welcome to the Circle
               </p>
 
@@ -90,7 +90,7 @@ export default function WelcomePopup() {
                   </p>
                   <button
                     onClick={copyCode}
-                    className="mt-5 border border-dashed border-[#5A3224]/50 px-8 py-4 text-lg font-semibold tracking-[0.25em] hover:bg-[#5A3224]/5 transition-colors"
+                    className="mt-5 border border-dashed border-[#5A3224]/50 px-8 py-4 text-lg font-semibold tracking-[0.1em] hover:bg-[#5A3224]/5 transition-colors"
                     title="Copy code"
                   >
                     {DISCOUNT_CODE}
@@ -101,7 +101,7 @@ export default function WelcomePopup() {
                   <button
                     onClick={dismiss}
                     className="mt-6 w-full bg-[#1B1113] text-[#FAF7F3] text-xs font-semibold uppercase px-8 py-4 hover:bg-[#2A1D20] transition-colors"
-                    style={{ letterSpacing: '0.2em' }}
+                    style={{ letterSpacing: '0.08em' }}
                   >
                     Start Shopping
                   </button>
@@ -111,7 +111,7 @@ export default function WelcomePopup() {
                   <h2 className="font-display text-4xl sm:text-5xl mt-4 leading-[1.16]">
                     Enjoy 15% off
                   </h2>
-                  <p className="text-sm font-semibold uppercase mt-3 text-[#1B1113]/70" style={{ letterSpacing: '0.25em' }}>
+                  <p className="text-sm font-semibold uppercase mt-3 text-[#1B1113]/70" style={{ letterSpacing: '0.1em' }}>
                     your first order
                   </p>
                   <p className="mt-5 text-sm text-[#1B1113]/70 leading-[1.85] max-w-xs">
@@ -132,7 +132,7 @@ export default function WelcomePopup() {
                     <button
                       type="submit"
                       className="w-full bg-[#1B1113] text-[#FAF7F3] text-xs font-semibold uppercase px-8 py-4 hover:bg-[#2A1D20] transition-colors"
-                      style={{ letterSpacing: '0.2em' }}
+                      style={{ letterSpacing: '0.08em' }}
                     >
                       Continue
                     </button>
@@ -140,7 +140,7 @@ export default function WelcomePopup() {
                   <button
                     onClick={dismiss}
                     className="mt-5 text-xs font-medium text-[#1B1113]/50 hover:text-[#5A3224] uppercase underline underline-offset-4 transition-colors"
-                    style={{ letterSpacing: '0.15em' }}
+                    style={{ letterSpacing: '0.08em' }}
                   >
                     Decline offer
                   </button>

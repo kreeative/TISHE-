@@ -52,7 +52,7 @@ export default function ProductPage() {
         <p className="text-sm text-[#1B1113]/50 max-w-md">
           {error ?? 'That product could not be found.'}
         </p>
-        <Link to="/collections" className="inline-block mt-6 text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.2em' }}>
+        <Link to="/collections" className="inline-block mt-6 text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.08em' }}>
           ← Back to the collection
         </Link>
       </div>
@@ -65,7 +65,7 @@ export default function ProductPage() {
         <Link
           to="/collections"
           className="inline-flex items-center gap-1 text-xs font-semibold uppercase text-[#1B1113]/50 hover:text-[#5A3224] transition-colors"
-          style={{ letterSpacing: '0.2em' }}
+          style={{ letterSpacing: '0.08em' }}
         >
           <ChevronLeft size={14} /> Collection
         </Link>
@@ -119,7 +119,7 @@ export default function ProductPage() {
               .filter((opt) => !(opt.values.length === 1 && opt.values[0] === 'Default Title'))
               .map((opt) => (
                 <div key={opt.name} className="mt-7">
-                  <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.25em' }}>
+                  <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.1em' }}>
                     {opt.name}
                   </p>
                   <div className="flex flex-wrap gap-2 mt-3">
@@ -139,7 +139,7 @@ export default function ProductPage() {
                                 ? 'bg-transparent border-[#5A3224]/10 text-[#1B1113]/25 line-through cursor-not-allowed'
                                 : 'bg-white/40 backdrop-blur-sm border-[#5A3224]/25 text-[#1B1113]/65 hover:border-[#5A3224] hover:text-[#1B1113] hover:-translate-y-0.5'
                           }`}
-                          style={{ letterSpacing: '0.15em' }}
+                          style={{ letterSpacing: '0.08em' }}
                         >
                           {value}
                         </button>

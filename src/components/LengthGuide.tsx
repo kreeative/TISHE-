@@ -29,7 +29,7 @@ export default function LengthGuide() {
     <section id="lengths" className="bg-[#FAF7F3] text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10">
       <div className="max-w-6xl mx-auto">
         <Reveal>
-          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             Sukundu School
           </p>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
@@ -55,7 +55,7 @@ export default function LengthGuide() {
                         ? 'bg-[#5A3224] border-[#5A3224] text-[#FAF7F3] shadow-[0_8px_22px_-8px_rgba(90,50,36,0.6)] -translate-y-0.5'
                         : 'bg-white/40 backdrop-blur-sm border-[#5A3224]/25 text-[#1B1113]/65 hover:border-[#5A3224] hover:text-[#1B1113] hover:-translate-y-0.5 hover:shadow-[0_6px_16px_-8px_rgba(90,50,36,0.35)]'
                     }`}
-                    style={{ letterSpacing: '0.15em', fontVariantNumeric: 'tabular-nums' }}
+                    style={{ letterSpacing: '0.08em', fontVariantNumeric: 'tabular-nums' }}
                   >
                     {l.inches}"
                   </button>
@@ -76,12 +76,12 @@ export default function LengthGuide() {
                     <span className="font-display text-6xl sm:text-7xl" style={{ fontVariantNumeric: 'tabular-nums' }}>
                       {selected.inches}"
                     </span>
-                    <span className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.3em' }}>
+                    <span className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
                       lands at {selected.lands}
                     </span>
                   </div>
                   <p className="mt-4 text-sm text-[#1B1113]/75 leading-[1.85] max-w-sm">{selected.note}</p>
-                  <p className="mt-3 text-xs font-semibold uppercase text-[#1B1113]/55" style={{ letterSpacing: '0.2em' }}>
+                  <p className="mt-3 text-xs font-semibold uppercase text-[#1B1113]/55" style={{ letterSpacing: '0.08em' }}>
                     Full look: {selected.bundles}
                   </p>
                 </motion.div>
@@ -115,7 +115,7 @@ export default function LengthGuide() {
                 <div className="h-px bg-[#FAF7F3] shadow-[0_1px_4px_rgba(27,17,19,0.55)]" />
                 <span
                   className="absolute right-0 top-0 -translate-y-1/2 bg-[#5A3224] text-[#FAF7F3] text-[10px] font-semibold uppercase px-2.5 py-1 whitespace-nowrap"
-                  style={{ letterSpacing: '0.12em' }}
+                  style={{ letterSpacing: '0.06em' }}
                 >
                   {selected.inches}" · {selected.lands}
                 </span>

@@ -59,7 +59,7 @@ export default function Circle() {
         {/* Intro row: headline left, how-it-works right */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-start">
           <Reveal>
-            <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+            <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
               The Sukundu Circle
             </p>
             <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 leading-[1.16]" style={{ textWrap: 'balance' }}>
@@ -113,7 +113,7 @@ export default function Circle() {
                 {tier.featured && (
                   <span
                     className="absolute top-0 right-0 bg-[#c99b6f] text-[#1B1113] text-[10px] font-bold uppercase px-3.5 py-1.5"
-                    style={{ letterSpacing: '0.2em' }}
+                    style={{ letterSpacing: '0.08em' }}
                   >
                     Most Rewarding
                   </span>

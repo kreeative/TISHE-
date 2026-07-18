@@ -91,7 +91,7 @@ export default function CartDrawer() {
                       onClick={() => setLineQty(line.id, 0)}
                       disabled={cartLoading}
                       className="ml-auto text-xs font-medium text-[#1B1113]/50 hover:text-[#5A3224] uppercase transition-colors disabled:opacity-40"
-                      style={{ letterSpacing: '0.15em' }}
+                      style={{ letterSpacing: '0.08em' }}
                     >
                       Remove
                     </button>
@@ -110,7 +110,7 @@ export default function CartDrawer() {
             </span>
           </div>
           {strands > 0 && (
-            <p className="text-xs font-semibold text-[#5A3224]" style={{ letterSpacing: '0.15em' }}>
+            <p className="text-xs font-semibold text-[#5A3224]" style={{ letterSpacing: '0.08em' }}>
               CIRCLE MEMBERS EARN {strands} STRANDS ON THIS ORDER
             </p>
           )}

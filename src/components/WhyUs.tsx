@@ -28,7 +28,7 @@ export default function WhyUs() {
     >
       <div className="max-w-6xl mx-auto">
         <Reveal>
-          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.35em' }}>
+          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             Sukundu, "hair" in Pulaar
           </p>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
