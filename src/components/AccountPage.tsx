@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useStore } from './StoreContext'
-import { circleStatus } from '../lib/customer'
+import { circleStatus, customerRecover } from '../lib/customer'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
 
@@ -49,6 +49,8 @@ export default function AccountPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [recoverMode, setRecoverMode] = useState(false)
+  const [recoverSent, setRecoverSent] = useState(false)
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -232,7 +234,63 @@ export default function AccountPage() {
             <button type="submit" disabled={busy || customerLoading} className={`${ctaGlassOnLight} w-full mt-2 disabled:opacity-50`} style={ctaTracking}>
               {busy ? 'One moment…' : tab === 'signin' ? 'Sign In' : 'Create My Account'}
             </button>
+
+            {tab === 'signin' && (
+              <button
+                type="button"
+                onClick={() => {
+                  setRecoverMode(true)
+                  setRecoverSent(false)
+                  setError(null)
+                }}
+                className="self-start text-xs font-medium text-[#1B1113]/50 hover:text-[#5A3224] underline underline-offset-4 transition-colors"
+              >
+                Forgot your password?
+              </button>
+            )}
           </form>
+
+          {recoverMode && (
+            <div className="mt-8 border-t border-[#5A3224]/15 pt-6">
+              {recoverSent ? (
+                <p className="text-sm text-[#1B1113]/70 leading-[1.85]">
+                  If an account exists for that email, a reset link is on its way. Check your inbox
+                  (and spam folder), follow the link to choose a new password, then come back here to
+                  sign in.
+                </p>
+              ) : (
+                <form
+                  className="flex flex-col gap-4"
+                  onSubmit={async (e) => {
+                    e.preventDefault()
+                    if (!email.trim()) return
+                    setBusy(true)
+                    await customerRecover(email.trim())
+                    setBusy(false)
+                    setRecoverSent(true)
+                  }}
+                >
+                  <p className="text-sm text-[#1B1113]/70 leading-[1.85]">
+                    Enter your email and we'll send you a secure link to choose a new password.
+                  </p>
+                  <label className="sr-only" htmlFor="recover-email">Email</label>
+                  <input
+                    id="recover-email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email address"
+                    className={inputClass}
+                    autoComplete="email"
+                  />
+                  <button type="submit" disabled={busy} className={`${ctaGlassOnLight} w-full disabled:opacity-50`} style={ctaTracking}>
+                    {busy ? 'Sending…' : 'Send Reset Link'}
+                  </button>
+                </form>
+              )}
+            </div>
+          )}
 
           <p className="mt-6 text-[11px] text-[#1B1113]/45 leading-relaxed">
             Your password is encrypted and stored by our secure commerce provider. We never see or

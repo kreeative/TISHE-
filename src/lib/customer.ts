@@ -180,3 +180,18 @@ export function circleStatus(customer: SukunduCustomer) {
   const progress = next ? Math.min(100, Math.round((spend / next.min) * 100)) : 100
   return { spend, strands, tier: tier.name, next: next ? { name: next.name, min: next.min } : null, progress }
 }
+
+// Sends Shopify's password-reset email for this address.
+// Always resolves without revealing whether the account exists.
+export async function customerRecover(email: string): Promise<void> {
+  try {
+    await shopifyFetch(
+      `mutation customerRecover($email: String!) {
+        customerRecover(email: $email) { customerUserErrors { message } }
+      }`,
+      { email },
+    )
+  } catch {
+    // deliberately silent: same UX whether or not the email exists
+  }
+}
