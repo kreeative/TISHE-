@@ -195,3 +195,32 @@ export async function customerRecover(email: string): Promise<void> {
     // deliberately silent: same UX whether or not the email exists
   }
 }
+
+// Completes a password reset on-site using the tokenized link from the
+// reset email, returning a fresh session token.
+export async function customerResetByUrl(resetUrl: string, password: string): Promise<CustomerToken> {
+  const data = await shopifyFetch<{
+    customerResetByUrl: {
+      customerAccessToken: CustomerToken | null
+      customerUserErrors: UserError[]
+    }
+  }>(
+    `mutation customerResetByUrl($resetUrl: URL!, $password: String!) {
+      customerResetByUrl(resetUrl: $resetUrl, password: $password) {
+        customerAccessToken { accessToken expiresAt }
+        customerUserErrors { message }
+      }
+    }`,
+    { resetUrl, password },
+  )
+  const token = data.customerResetByUrl.customerAccessToken
+  if (!token) {
+    throw new Error(
+      friendly(
+        data.customerResetByUrl.customerUserErrors,
+        'This reset link is invalid or has expired. Request a new one from the sign-in page.',
+      ),
+    )
+  }
+  return token
+}

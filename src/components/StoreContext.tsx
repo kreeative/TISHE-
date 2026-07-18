@@ -33,6 +33,7 @@ interface StoreState {
   register: (firstName: string, lastName: string, email: string, password: string) => Promise<void>
   logout: () => Promise<void>
   refreshCustomer: () => Promise<void>
+  adoptToken: (token: { accessToken: string; expiresAt: string }) => Promise<void>
 }
 
 const StoreContext = createContext<StoreState | null>(null)
@@ -117,6 +118,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (token) await customerLogout(token)
   }
 
+  const adoptToken = async (token: { accessToken: string; expiresAt: string }) => {
+    localStorage.setItem(TOKEN_KEY, JSON.stringify(token))
+    setCustomer(await fetchCustomer(token.accessToken))
+  }
+
   const refreshCustomer = async () => {
     const token = savedToken()
     if (!token) return
@@ -171,6 +177,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         register,
         logout,
         refreshCustomer,
+        adoptToken,
       }}
     >
       {children}
