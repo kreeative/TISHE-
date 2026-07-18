@@ -15,14 +15,14 @@ function MemberCard({ name, tier, strands }: { name: string; tier: string; stran
       className="relative w-full max-w-xl aspect-[5/3] bg-cover bg-center rounded-[4.2%/7%] overflow-hidden shadow-[0_0_44px_-10px_rgba(27,17,19,0.35)] select-none"
       style={{ backgroundImage: "url('/images/member-card.jpg')" }}
     >
+      <p className="absolute right-[7%] top-[9%] font-display italic text-lg sm:text-2xl text-[#3b2318]">
+        {tier} Member
+      </p>
       <div className="absolute left-[7%] bottom-[9%]">
-        <p className="font-display text-xl sm:text-3xl text-[#3b2318]">{name}</p>
+        <p className="text-sm sm:text-lg font-semibold text-[#3b2318]">{name}</p>
       </div>
       <div className="absolute right-[7%] bottom-[9%] text-right">
-        <p className="text-[9px] sm:text-[11px] font-semibold uppercase text-[#c99b6f]" style={{ letterSpacing: '0.06em' }}>
-          {tier} member
-        </p>
-        <p className="font-display text-lg sm:text-2xl text-[#3b2318] mt-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
+        <p className="font-display text-lg sm:text-2xl text-[#3b2318]" style={{ fontVariantNumeric: 'tabular-nums' }}>
           {strands.toLocaleString()} strands
         </p>
       </div>
