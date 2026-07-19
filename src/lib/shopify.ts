@@ -46,6 +46,13 @@ export interface ShopifyOption {
   values: string[]
 }
 
+export interface ProductMedia {
+  type: 'image' | 'video' | 'external_video'
+  url: string
+  previewUrl: string | null
+  altText: string | null
+}
+
 export interface ShopifyProduct {
   id: string
   title: string
@@ -54,6 +61,7 @@ export interface ShopifyProduct {
   tags: string[]
   featuredImage: ShopifyImage | null
   images: ShopifyImage[]
+  media: ProductMedia[]
   options: ShopifyOption[]
   priceRange: { minVariantPrice: ShopifyMoney; maxVariantPrice: ShopifyMoney }
   variants: ShopifyVariant[]
@@ -67,6 +75,16 @@ const PRODUCT_FIELDS = `
   tags
   featuredImage { url altText }
   images(first: 8) { edges { node { url altText } } }
+  media(first: 12) {
+    edges {
+      node {
+        mediaContentType
+        ... on MediaImage { image { url altText } }
+        ... on Video { sources { url mimeType } previewImage { url } }
+        ... on ExternalVideo { embedUrl previewImage { url } }
+      }
+    }
+  }
   options { name values }
   priceRange { minVariantPrice { amount currencyCode } maxVariantPrice { amount currencyCode } }
   variants(first: 50) {
@@ -83,6 +101,22 @@ function normalizeProduct(node: any): ShopifyProduct {
     tags: node.tags ?? [],
     featuredImage: node.featuredImage,
     images: (node.images?.edges ?? []).map((e: any) => e.node),
+    media: (node.media?.edges ?? [])
+      .map((e: any): any => {
+        const m = e.node
+        if (m.mediaContentType === 'IMAGE' && m.image) {
+          return { type: 'image', url: m.image.url, previewUrl: m.image.url, altText: m.image.altText }
+        }
+        if (m.mediaContentType === 'VIDEO' && m.sources?.length) {
+          const mp4 = m.sources.find((s: any) => s.mimeType === 'video/mp4') ?? m.sources[0]
+          return { type: 'video', url: mp4.url, previewUrl: m.previewImage?.url ?? null, altText: null }
+        }
+        if (m.mediaContentType === 'EXTERNAL_VIDEO' && m.embedUrl) {
+          return { type: 'external_video', url: m.embedUrl, previewUrl: m.previewImage?.url ?? null, altText: null }
+        }
+        return null
+      })
+      .filter(Boolean),
     options: node.options ?? [],
     priceRange: node.priceRange,
     variants: (node.variants?.edges ?? []).map((e: any) => e.node),

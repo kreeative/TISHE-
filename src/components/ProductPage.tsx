@@ -5,7 +5,7 @@ import { useProduct } from '../lib/useProduct'
 import { useStore } from './StoreContext'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
-import type { ShopifyVariant } from '../lib/shopify'
+import type { ProductMedia, ShopifyVariant } from '../lib/shopify'
 
 function formatMoney(amount: string, currencyCode: string) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode }).format(Number(amount))
@@ -36,7 +36,15 @@ export default function ProductPage() {
   const active = Object.keys(selection).length ? selection : initialSelection
   const matchedVariant = product ? findVariant(product.variants, active) : undefined
   const displayPrice = matchedVariant?.price ?? product?.priceRange.minVariantPrice
-  const images = product?.images.length ? product.images : product?.featuredImage ? [product.featuredImage] : []
+  // gallery: full media list (images + videos) with image-only fallback
+  const gallery: ProductMedia[] = product?.media.length
+    ? product.media
+    : (product?.images.length ? product.images : product?.featuredImage ? [product.featuredImage] : []).map((img) => ({
+        type: 'image' as const,
+        url: img.url,
+        previewUrl: img.url,
+        altText: img.altText,
+      }))
 
   if (loading) {
     return (
@@ -73,25 +81,60 @@ export default function ProductPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mt-6">
           <Reveal>
             <div className="overflow-hidden shadow-[0_1px_2px_rgba(26,18,12,0.06)]">
-              {images[activeImage] && (
-                <img
-                  src={images[activeImage].url}
-                  alt={images[activeImage].altText ?? product.title}
-                  className="w-full aspect-[4/5] object-cover"
+              {gallery[activeImage]?.type === 'video' ? (
+                <video
+                  key={gallery[activeImage].url}
+                  src={gallery[activeImage].url}
+                  poster={gallery[activeImage].previewUrl ?? undefined}
+                  controls
+                  playsInline
+                  preload="metadata"
+                  className="w-full aspect-[4/5] object-cover bg-[#1B1113]"
                 />
+              ) : gallery[activeImage]?.type === 'external_video' ? (
+                <iframe
+                  key={gallery[activeImage].url}
+                  src={gallery[activeImage].url}
+                  title={product.title}
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full aspect-[4/5] bg-[#1B1113]"
+                />
+              ) : (
+                gallery[activeImage] && (
+                  <img
+                    src={gallery[activeImage].url}
+                    alt={gallery[activeImage].altText ?? product.title}
+                    className="w-full aspect-[4/5] object-cover"
+                  />
+                )
               )}
             </div>
-            {images.length > 1 && (
-              <div className="flex gap-3 mt-4">
-                {images.map((img, i) => (
+            {gallery.length > 1 && (
+              <div className="flex flex-wrap gap-3 mt-4">
+                {gallery.map((item, i) => (
                   <button
-                    key={img.url}
+                    key={item.url}
                     onClick={() => setActiveImage(i)}
-                    className={`w-16 h-20 overflow-hidden border transition-colors ${
+                    aria-label={item.type === 'image' ? `Image ${i + 1}` : `Video ${i + 1}`}
+                    className={`relative w-16 h-20 overflow-hidden border transition-colors ${
                       i === activeImage ? 'border-[#5A3224]' : 'border-[#5A3224]/20 hover:border-[#5A3224]/50'
                     }`}
                   >
-                    <img src={img.url} alt="" className="w-full h-full object-cover" />
+                    {item.previewUrl ? (
+                      <img src={item.previewUrl} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="block w-full h-full bg-[#1B1113]" />
+                    )}
+                    {item.type !== 'image' && (
+                      <span className="absolute inset-0 grid place-items-center bg-[#1B1113]/25">
+                        <span className="grid place-items-center w-6 h-6 rounded-full bg-[#FAF7F3]/90">
+                          <svg width="9" height="10" viewBox="0 0 9 10" aria-hidden="true">
+                            <path d="M0.5 0.8 L8.4 5 L0.5 9.2 Z" fill="#1B1113" />
+                          </svg>
+                        </span>
+                      </span>
+                    )}
                   </button>
                 ))}
               </div>
