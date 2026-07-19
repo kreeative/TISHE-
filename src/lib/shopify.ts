@@ -248,3 +248,34 @@ export async function subscribeEmail(email: string): Promise<void> {
     // ignore — popup UX continues either way
   }
 }
+
+// Legal policies, written in Shopify admin (Settings → Policies) and
+// rendered on-site so they match the brand.
+export interface ShopPolicy {
+  title: string
+  body: string
+}
+
+export async function getPolicies(): Promise<Record<string, ShopPolicy | null>> {
+  const data = await shopifyFetch<{
+    shop: {
+      privacyPolicy: ShopPolicy | null
+      refundPolicy: ShopPolicy | null
+      shippingPolicy: ShopPolicy | null
+      termsOfService: ShopPolicy | null
+    }
+  }>(`{
+    shop {
+      privacyPolicy { title body }
+      refundPolicy { title body }
+      shippingPolicy { title body }
+      termsOfService { title body }
+    }
+  }`)
+  return {
+    'privacy-policy': data.shop.privacyPolicy,
+    'refund-policy': data.shop.refundPolicy,
+    'shipping-policy': data.shop.shippingPolicy,
+    'terms-of-service': data.shop.termsOfService,
+  }
+}

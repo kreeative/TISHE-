@@ -3,14 +3,13 @@ import { Mail } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { subscribeEmail } from '../lib/shopify'
 
-// Shopify-hosted legal pages (Settings → Policies in the admin).
-// These render on the shop domain independent of the storefront theme.
-const POLICY_BASE = 'https://shop.theivorysukundu.com/policies'
+// Legal pages: written in Shopify admin (Settings → Policies),
+// rendered on-site at /legal/:handle in the brand's typography.
 const LEGAL_LINKS = [
-  { label: 'Shipping Policy', href: `${POLICY_BASE}/shipping-policy` },
-  { label: 'Refunds & Returns', href: `${POLICY_BASE}/refund-policy` },
-  { label: 'Privacy Policy', href: `${POLICY_BASE}/privacy-policy` },
-  { label: 'Terms of Service', href: `${POLICY_BASE}/terms-of-service` },
+  { label: 'Shipping Policy', to: '/legal/shipping-policy' },
+  { label: 'Refunds & Returns', to: '/legal/refund-policy' },
+  { label: 'Privacy Policy', to: '/legal/privacy-policy' },
+  { label: 'Terms of Service', to: '/legal/terms-of-service' },
 ]
 
 const SHOP_LINKS = [
@@ -118,10 +117,15 @@ export default function Footer() {
           <p className={footerHeading} style={{ letterSpacing: '0.06em' }}>Legal</p>
           <ul className="mt-4 flex flex-col">
             {LEGAL_LINKS.map((l) => (
-              <li key={l.href}>
-                <a href={l.href} target="_blank" rel="noreferrer" className={footerLink}>
+              <li key={l.to}>
+                <NavLink
+                  to={l.to}
+                  className={({ isActive }) =>
+                    isActive ? `${footerLink} font-semibold text-[#FAF7F3]` : footerLink
+                  }
+                >
                   {l.label}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>

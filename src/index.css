@@ -89,3 +89,20 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero-anim, .hero-zoom { animation: none; opacity: 1; }
 }
+
+/* Shopify policy HTML rendered on-site */
+.policy-body h1, .policy-body h2, .policy-body h3 {
+  font-family: 'The Silver Editorial', serif;
+  font-weight: 400;
+  color: #1B1113;
+  margin: 2em 0 0.6em;
+  line-height: 1.25;
+}
+.policy-body h1 { font-size: 1.7rem; }
+.policy-body h2 { font-size: 1.45rem; }
+.policy-body h3 { font-size: 1.2rem; }
+.policy-body p { margin: 0.9em 0; }
+.policy-body ul, .policy-body ol { margin: 0.9em 0; padding-left: 1.4em; }
+.policy-body li { margin: 0.4em 0; }
+.policy-body a { color: #5A3224; text-decoration: underline; text-underline-offset: 3px; }
+.policy-body strong, .policy-body b { color: #1B1113; }
