@@ -229,8 +229,6 @@ export default function ProductPage() {
                   ? 'Added ✓'
                   : `Add to Bag · ${formatMoney(matchedVariant.price.amount, matchedVariant.price.currencyCode)}`}
             </button>
-
-            <p className="mt-4 text-[11px] text-[#1B1113]/45">Free shipping, already included in the price.</p>
           </Reveal>
         </div>
       </div>

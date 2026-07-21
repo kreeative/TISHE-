@@ -123,7 +123,6 @@ export default function CartDrawer() {
               Checkout
             </button>
           )}
-          <p className="text-[11px] text-[#1B1113]/45 text-center">Free shipping, already included in every price.</p>
         </div>
       </aside>
     </>
