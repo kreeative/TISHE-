@@ -33,7 +33,7 @@ export default function Nav() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[100] bg-[#FAF7F3]/95 backdrop-blur-md border-b flex items-center justify-between px-5 sm:px-8 h-16 sm:h-[72px] transition-shadow duration-300 ${
+        className={`fixed top-9 left-0 right-0 z-[100] bg-[#FAF7F3]/95 backdrop-blur-md border-b flex items-center justify-between px-5 sm:px-8 h-16 sm:h-[72px] transition-shadow duration-300 ${
           scrolled ? 'border-[#5A3224]/15 shadow-[0_8px_30px_-16px_rgba(90,50,36,0.25)]' : 'border-transparent'
         }`}
       >
@@ -107,7 +107,7 @@ export default function Nav() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden fixed inset-0 z-[90] bg-[#FAF7F3] flex flex-col items-center justify-center gap-8"
+            className="lg:hidden fixed inset-0 top-9 z-[90] bg-[#FAF7F3] flex flex-col items-center justify-center gap-8"
           >
             {NAV_LINKS.map((l, i) => (
               <motion.div

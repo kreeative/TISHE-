@@ -18,6 +18,7 @@ import ResetPage from './components/ResetPage'
 import PolicyPage from './components/PolicyPage'
 import PageTransition from './components/PageTransition'
 import WelcomePopup from './components/WelcomePopup'
+import AnnouncementBar from './components/AnnouncementBar'
 import { StoreProvider } from './components/StoreContext'
 
 function ScrollToTop() {
@@ -86,8 +87,9 @@ function App() {
       <HashRouter>
         <ScrollToTop />
         <div className="min-h-screen bg-[#FAF7F3] tracking-[-0.02em] flex flex-col" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+          <AnnouncementBar />
           <Nav />
-          <main className="pt-16 sm:pt-[72px] flex-1">
+          <main className="pt-[100px] sm:pt-[108px] flex-1">
             <AnimatedRoutes />
           </main>
           <Footer />

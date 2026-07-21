@@ -51,7 +51,7 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden bg-[#E5DCCE] h-[calc(100dvh-64px)] sm:h-[calc(100dvh-72px)]"
+      className="relative w-full overflow-hidden bg-[#E5DCCE] h-[calc(100dvh-100px)] sm:h-[calc(100dvh-108px)]"
     >
       {/* Base layer: jet-black hair on champagne */}
       <div className="absolute inset-0 hero-bg hero-bg-base bg-cover bg-no-repeat hero-zoom z-10" />
