@@ -8,7 +8,7 @@ import Collection from './components/Collection'
 import LengthGuide from './components/LengthGuide'
 import WhyUs from './components/WhyUs'
 import Circle from './components/Circle'
-import Vip from './components/Vip'
+import Contact from './components/Contact'
 import Quiz from './components/Quiz'
 import ProductPage from './components/ProductPage'
 import Footer from './components/Footer'
@@ -57,7 +57,7 @@ function CirclePage() {
 }
 
 function ContactPage() {
-  return <Vip />
+  return <Contact />
 }
 
 function AnimatedRoutes() {
