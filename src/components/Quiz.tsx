@@ -19,9 +19,8 @@ interface Step {
 }
 
 const ARCHETYPES = {
-  straight: { keywords: ['straight', 'half wig', 'half-wig', 'sleek'], why: 'Comb-in, glueless, and installed in sixty seconds. Sleek raw hair that keeps up with a fast life while your own hair rests underneath.' },
-  curl: { keywords: ['curl', 'curly', 'wave'], why: 'Springy, wash-day-proof texture with serious volume. It reverts every time and loves an active routine.' },
-  blonde: { keywords: ['613', 'blonde', 'ivory'], why: 'True platinum blonde that owns every room and every photo. Tone it icy or wear it golden.' },
+  straight: { keywords: ['yaki', 'straight', 'half wig', 'half-wig', 'sleek'], why: 'Yaki straight blends seamlessly with blown-out natural hair. Sleek, glueless, and installed in sixty seconds while your own hair rests underneath.' },
+  curl: { keywords: ['kinky', 'curl', 'curly', 'wave'], why: 'Springy kinky-curl texture with serious volume. It reverts every time and loves an active routine.' },
 } as const
 
 type Archetype = keyof typeof ARCHETYPES
@@ -32,23 +31,22 @@ const STEPS: Step[] = [
     options: [
       { label: 'Five minutes, tops', detail: 'Snap it in and go', scores: { straight: 3 } },
       { label: 'Fifteen to twenty', detail: 'A quick style moment', scores: { straight: 1, curl: 1 } },
-      { label: 'I enjoy the ritual', detail: 'Hair time is me time', scores: { curl: 1, blonde: 1 } },
+      { label: 'I enjoy the ritual', detail: 'Hair time is me time', scores: { curl: 2 } },
     ],
   },
   {
     question: "What's your season looking like?",
     options: [
-      { label: 'Gym and on the go', detail: 'Sweat-proof and breathable, please', scores: { straight: 2, curl: 1 } },
+      { label: 'Gym and on the go', detail: 'Sweat-proof and breathable, please', scores: { curl: 2 } },
       { label: 'Office polished', detail: 'Sleek, consistent, professional', scores: { straight: 2 } },
-      { label: 'Event season, always', detail: 'Photos will be taken', scores: { blonde: 2, curl: 1 } },
+      { label: 'Event season, always', detail: 'Volume and photos', scores: { curl: 2 } },
     ],
   },
   {
     question: 'Your dream texture?',
     options: [
-      { label: 'Sleek and straight', detail: 'Glass hair, always', scores: { straight: 3 } },
-      { label: 'Springy curls', detail: 'Volume with a bounce', scores: { curl: 4 } },
-      { label: 'Bold blonde', detail: '613 or nothing', scores: { blonde: 4 } },
+      { label: 'Sleek and straight', detail: 'Yaki, glass-smooth', scores: { straight: 4 } },
+      { label: 'Springy kinky curls', detail: 'Volume with a bounce', scores: { curl: 4 } },
     ],
   },
   {
@@ -96,7 +94,7 @@ export default function Quiz() {
   let result: ShopifyProduct | undefined
   let why = ''
   if (done) {
-    const totals: Record<Archetype, number> = { straight: 0, curl: 0, blonde: 0 }
+    const totals: Record<Archetype, number> = { straight: 0, curl: 0 }
     for (const p of picks) {
       for (const [id, s] of Object.entries(p.scores)) totals[id as Archetype] += s
       if (p.length) recLength = p.length
