@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 // Thin rotating strip pinned above the nav.
 const MESSAGES = [
   'Complimentary shipping on every order',
-  '15% off your first order — code WELCOME15',
+  '10% off your first order — code WELCOME10',
 ]
 
 export default function AnnouncementBar() {
