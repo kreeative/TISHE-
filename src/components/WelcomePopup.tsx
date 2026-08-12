@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { subscribeEmail } from '../lib/shopify'
 
 const STORAGE_KEY = 'tis-welcome-popup'
-const DISCOUNT_CODE = 'WELCOME15'
+const DISCOUNT_CODE = 'WELCOME10'
 
 export default function WelcomePopup() {
   const [open, setOpen] = useState(false)
@@ -109,7 +109,7 @@ export default function WelcomePopup() {
               ) : (
                 <>
                   <h2 className="font-display text-4xl sm:text-5xl mt-4 leading-[1.16]">
-                    Enjoy 15% off
+                    Enjoy 10% off
                   </h2>
                   <p className="text-sm font-semibold uppercase mt-3 text-[#1B1113]/70" style={{ letterSpacing: '0.1em' }}>
                     your first order
