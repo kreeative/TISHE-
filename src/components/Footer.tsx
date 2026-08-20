@@ -136,12 +136,12 @@ export default function Footer() {
           <p className={footerHeading} style={{ letterSpacing: '0.06em' }}>The Circle</p>
           {joined ? (
             <p className="mt-4 text-sm text-[#FAF7F3]/70 leading-[1.85]">
-              Welcome to the Circle. Your 15% code is on its way to your inbox.
+              Welcome to the Circle. Your 10% code is on its way to your inbox.
             </p>
           ) : (
             <>
               <p className="mt-4 text-sm text-[#FAF7F3]/60 leading-[1.85]">
-                15% off your first order, early access to every drop.
+                10% off your first order, early access to every drop.
               </p>
               <form
                 className="mt-4 flex"
