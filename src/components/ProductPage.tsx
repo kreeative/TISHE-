@@ -11,6 +11,25 @@ function formatMoney(amount: string, currencyCode: string) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode }).format(Number(amount))
 }
 
+// Best-selling combination, flagged with a badge on the option pills.
+// Values are matched on digits only, so 18" / 18 inch / 18 all match.
+const HOT_PICK: Record<string, string> = { length: '18', density: '250' }
+const HOT_LABEL = 'Hot'
+
+const digitsOf = (s: string) => s.replace(/[^0-9]/g, '')
+
+function isHotValue(optionName: string, value: string): boolean {
+  const key = Object.keys(HOT_PICK).find((k) => optionName.toLowerCase().includes(k))
+  return key ? digitsOf(value) === HOT_PICK[key] : false
+}
+
+// true only when every flagged option is currently selected
+function isHotCombination(selected: Record<string, string>): boolean {
+  const names = Object.keys(selected)
+  const flagged = names.filter((n) => Object.keys(HOT_PICK).some((k) => n.toLowerCase().includes(k)))
+  return flagged.length > 0 && flagged.every((n) => isHotValue(n, selected[n]))
+}
+
 function findVariant(variants: ShopifyVariant[], selection: Record<string, string>): ShopifyVariant | undefined {
   return variants.find((v) => v.selectedOptions.every((o) => selection[o.name] === o.value))
 }
@@ -165,32 +184,50 @@ export default function ProductPage() {
                   <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.1em' }}>
                     {opt.name}
                   </p>
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <div className="flex flex-wrap gap-2 mt-5">
                     {opt.values.map((value) => {
                       const isActive = active[opt.name] === value
                       const wouldMatch = findVariant(product.variants, { ...active, [opt.name]: value })
                       const disabled = !wouldMatch?.availableForSale
+                      const hot = isHotValue(opt.name, value) && !disabled
                       return (
                         <button
                           key={value}
                           disabled={disabled}
                           onClick={() => setSelection({ ...active, [opt.name]: value })}
-                          className={`px-5 py-2.5 text-xs font-semibold border transition-all duration-300 ${
+                          className={`relative px-5 py-2.5 text-xs font-semibold border transition-all duration-300 ${
                             isActive
                               ? 'bg-[#5A3224] border-[#5A3224] text-[#FAF7F3] shadow-[0_8px_22px_-8px_rgba(90,50,36,0.6)] -translate-y-0.5'
                               : disabled
                                 ? 'bg-transparent border-[#5A3224]/10 text-[#1B1113]/25 line-through cursor-not-allowed'
-                                : 'bg-white/40 backdrop-blur-sm border-[#5A3224]/25 text-[#1B1113]/65 hover:border-[#5A3224] hover:text-[#1B1113] hover:-translate-y-0.5'
+                                : hot
+                                  ? 'bg-white/40 backdrop-blur-sm border-[#c99b6f] text-[#1B1113]/80 hover:border-[#5A3224] hover:text-[#1B1113] hover:-translate-y-0.5'
+                                  : 'bg-white/40 backdrop-blur-sm border-[#5A3224]/25 text-[#1B1113]/65 hover:border-[#5A3224] hover:text-[#1B1113] hover:-translate-y-0.5'
                           }`}
                           style={{ letterSpacing: '0.08em' }}
                         >
                           {value}
+                          {hot && (
+                            <span
+                              className="absolute -top-2.5 -right-1.5 bg-[#c99b6f] text-[#1B1113] text-[8px] font-bold uppercase px-1.5 py-0.5 pointer-events-none"
+                              style={{ letterSpacing: '0.1em' }}
+                            >
+                              {HOT_LABEL}
+                            </span>
+                          )}
                         </button>
                       )
                     })}
                   </div>
                 </div>
               ))}
+
+            {isHotCombination(active) && (
+              <p className="mt-6 flex items-center gap-2 text-xs font-semibold text-[#5A3224]">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#c99b6f]" />
+                Our best-selling combination
+              </p>
+            )}
 
             <div className="mt-8 flex items-center gap-3">
               <button
