@@ -4,17 +4,76 @@ const API_VERSION = '2025-01'
 
 export const shopifyConfigured = Boolean(DOMAIN && TOKEN)
 
-export async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
+// ---------------------------------------------------------------------------
+// Buyer market
+//
+// Without an @inContext directive the Storefront API answers every request in
+// the shop's default currency, so a shopper in Paris was being quoted the same
+// raw number as one in Toronto. We ask Shopify which country the request came
+// from, then replay that country on every product and cart query so prices
+// arrive already converted for the market the visitor is actually in.
+//
+// This needs the matching markets to be switched on in Shopify (Settings ->
+// Markets). Where they are not, Shopify simply returns the default currency
+// and the site behaves exactly as it did before.
+// ---------------------------------------------------------------------------
+
+let buyerCountry: string | null = null
+let buyerCurrency: string | null = null
+let marketReady: Promise<void> | null = null
+
+export function buyerMarket(): { country: string | null; currency: string | null } {
+  return { country: buyerCountry, currency: buyerCurrency }
+}
+
+export function ensureMarket(): Promise<void> {
+  if (!shopifyConfigured) return Promise.resolve()
+  if (!marketReady) {
+    marketReady = shopifyFetch<{
+      localization: { country: { isoCode: string; currency: { isoCode: string } } }
+    }>(`{ localization { country { isoCode currency { isoCode } } } }`)
+      .then((d) => {
+        buyerCountry = d.localization?.country?.isoCode ?? null
+        buyerCurrency = d.localization?.country?.currency?.isoCode ?? null
+      })
+      .catch(() => {
+        // detection is a nicety; the default currency is a fine fallback
+      })
+  }
+  return marketReady
+}
+
+// Adds `$country` plus the @inContext directive to a named query. Anonymous
+// queries and mutations are left alone.
+function withContext(query: string): string {
+  if (!buyerCountry) return query
+  return query.replace(/^(\s*query\s+\w+\s*)(\([^)]*\))?/, (_m, head: string, args?: string) => {
+    const inner = args ? args.slice(1, -1).trim() : ''
+    const merged = inner ? `${inner}, $country: CountryCode!` : '$country: CountryCode!'
+    return `${head}(${merged}) @inContext(country: $country)`
+  })
+}
+
+export async function shopifyFetch<T>(
+  query: string,
+  variables?: Record<string, unknown>,
+  opts?: { localized?: boolean },
+): Promise<T> {
   if (!shopifyConfigured) {
     throw new Error('Shopify is not configured — missing VITE_SHOPIFY_DOMAIN or VITE_SHOPIFY_STOREFRONT_TOKEN')
   }
+  // Past orders keep the currency they were placed in, so the customer
+  // query opts out of market conversion.
+  const contextual = opts?.localized === false ? query : withContext(query)
+  const payload =
+    contextual === query ? variables : { ...(variables ?? {}), country: buyerCountry }
   const res = await fetch(`https://${DOMAIN}/api/${API_VERSION}/graphql.json`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-Shopify-Storefront-Access-Token': TOKEN as string,
     },
-    body: JSON.stringify({ query, variables }),
+    body: JSON.stringify({ query: contextual, variables: payload }),
   })
   const json = await res.json()
   if (json.errors) {
@@ -124,6 +183,7 @@ function normalizeProduct(node: any): ShopifyProduct {
 }
 
 export async function getProductByHandle(handle: string): Promise<ShopifyProduct | null> {
+  await ensureMarket()
   const data = await shopifyFetch<{ product: any }>(
     `query ProductByHandle($handle: String!) {
       product(handle: $handle) { ${PRODUCT_FIELDS} }
@@ -134,6 +194,7 @@ export async function getProductByHandle(handle: string): Promise<ShopifyProduct
 }
 
 export async function getProducts(first = 24): Promise<ShopifyProduct[]> {
+  await ensureMarket()
   const data = await shopifyFetch<{ products: { edges: { node: any }[] } }>(
     `query Products($first: Int!) {
       products(first: $first) {
@@ -198,14 +259,18 @@ function normalizeCart(node: any): ShopifyCart {
 }
 
 export async function createCart(merchandiseId: string, quantity = 1): Promise<ShopifyCart> {
+  await ensureMarket()
   const data = await shopifyFetch<{ cartCreate: { cart: any; userErrors: { message: string }[] } }>(
-    `mutation CartCreate($lines: [CartLineInput!]!) {
-      cartCreate(input: { lines: $lines }) {
+    `mutation CartCreate($lines: [CartLineInput!]!, $buyerIdentity: CartBuyerIdentityInput) {
+      cartCreate(input: { lines: $lines, buyerIdentity: $buyerIdentity }) {
         cart { ${CART_FIELDS} }
         userErrors { message }
       }
     }`,
-    { lines: [{ merchandiseId, quantity }] }
+    {
+      lines: [{ merchandiseId, quantity }],
+      buyerIdentity: buyerCountry ? { countryCode: buyerCountry } : null,
+    }
   )
   if (data.cartCreate.userErrors.length) throw new Error(data.cartCreate.userErrors[0].message)
   return normalizeCart(data.cartCreate.cart)

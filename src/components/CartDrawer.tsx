@@ -2,10 +2,7 @@ import { X, Minus, Plus, ShoppingBag } from 'lucide-react'
 import { useStore } from './StoreContext'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import { trackBeginCheckout } from '../lib/analytics'
-
-function formatMoney(amount: string, currencyCode: string) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode }).format(Number(amount))
-}
+import { formatMoney } from '../lib/money'
 
 export default function CartDrawer() {
   const { cart, cartLoading, cartError, setLineQty, cartOpen, setCartOpen } = useStore()

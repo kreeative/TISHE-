@@ -2,10 +2,7 @@ import { Link } from 'react-router-dom'
 import { useProducts } from '../lib/useProducts'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
-
-function formatMoney(amount: string, currencyCode: string) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode, maximumFractionDigits: 0 }).format(Number(amount))
-}
+import { formatMoneyShort } from '../lib/money'
 
 export default function Collection() {
   const { products, loading, error } = useProducts()
@@ -100,7 +97,7 @@ export default function Collection() {
                 <div className="mt-4 flex items-center gap-4">
                   <Link to={`/products/${p.handle}`} className={`self-start ${ctaGlassOnLight}`} style={ctaTracking}>
                     {hasRange ? 'Shop Options · from ' : 'Shop · '}
-                    {formatMoney(minPrice.amount, minPrice.currencyCode)}
+                    {formatMoneyShort(minPrice.amount, minPrice.currencyCode)}
                   </Link>
                 </div>
               </Reveal>

@@ -5,6 +5,7 @@ import { circleStatus, customerRecover } from '../lib/customer'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import PasswordInput from './PasswordInput'
 import Reveal from './Reveal'
+import { formatMoney } from '../lib/money'
 
 const inputClass =
   'w-full bg-transparent border border-[#5A3224]/30 px-4 py-3.5 text-sm text-[#1B1113] placeholder:text-[#1B1113]/40 focus:outline-none focus:border-[#5A3224]'
@@ -30,10 +31,6 @@ function MemberCard({ name, tier }: { name: string; tier: string }) {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-}
-
-function formatMoney(amount: string, currency: string) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(parseFloat(amount))
 }
 
 export default function AccountPage() {

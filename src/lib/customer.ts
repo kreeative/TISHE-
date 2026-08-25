@@ -141,6 +141,7 @@ export async function fetchCustomer(accessToken: string): Promise<SukunduCustome
       }
     }`,
     { token: accessToken },
+    { localized: false },
   )
   if (!data.customer) return null
   return {

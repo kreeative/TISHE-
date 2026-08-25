@@ -7,10 +7,7 @@ import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
 import { trackAddToCart, trackViewItem } from '../lib/analytics'
 import type { ProductMedia, ShopifyVariant } from '../lib/shopify'
-
-function formatMoney(amount: string, currencyCode: string) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode }).format(Number(amount))
-}
+import { formatMoney } from '../lib/money'
 
 // Best-selling combination, flagged with a badge on the option pills.
 // Values are matched on digits only, so 18" / 18 inch / 18 all match.

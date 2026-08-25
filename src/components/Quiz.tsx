@@ -5,6 +5,7 @@ import { useStore } from './StoreContext'
 import { useProducts } from '../lib/useProducts'
 import type { ShopifyProduct } from '../lib/shopify'
 import { ctaGlassOnLight, ctaTracking } from './cta'
+import { formatMoneyShort } from '../lib/money'
 
 interface Option {
   label: string
@@ -65,10 +66,6 @@ function matchProduct(products: ShopifyProduct[], archetype: Archetype): Shopify
     const haystack = `${p.title} ${p.tags.join(' ')}`.toLowerCase()
     return keywords.some((k) => haystack.includes(k))
   })
-}
-
-function formatMoney(amount: string, currencyCode: string) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode, maximumFractionDigits: 0 }).format(Number(amount))
 }
 
 export default function Quiz() {
@@ -210,7 +207,7 @@ export default function Quiz() {
                         disabled={!resultVariant || cartLoading}
                         onClick={() => resultVariant && addToCart(resultVariant.id)}
                       >
-                        Add to Bag{resultVariant ? ` · ${formatMoney(resultVariant.price.amount, resultVariant.price.currencyCode)}` : ''}
+                        Add to Bag{resultVariant ? ` · ${formatMoneyShort(resultVariant.price.amount, resultVariant.price.currencyCode)}` : ''}
                       </button>
                       <Link
                         to={`/products/${result.handle}`}

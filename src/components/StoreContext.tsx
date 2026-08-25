@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import {
   shopifyConfigured,
+  ensureMarket,
   createCart,
   getCart,
   addCartLine,
@@ -60,6 +61,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [cartOpen, setCartOpen] = useState(false)
   const [customer, setCustomer] = useState<SukunduCustomer | null>(null)
   const [customerLoading, setCustomerLoading] = useState(false)
+
+  // ask Shopify which country the visitor is in before anything asks for a
+  // price, so the first render is already in their currency
+  useEffect(() => {
+    void ensureMarket()
+  }, [])
 
   // restore an existing cart on load, if one was started before
   useEffect(() => {
