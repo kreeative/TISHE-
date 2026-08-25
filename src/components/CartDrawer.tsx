@@ -1,6 +1,7 @@
 import { X, Minus, Plus, ShoppingBag } from 'lucide-react'
 import { useStore } from './StoreContext'
 import { ctaGlassOnLight, ctaTracking } from './cta'
+import { trackBeginCheckout } from '../lib/analytics'
 
 function formatMoney(amount: string, currencyCode: string) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode }).format(Number(amount))
@@ -115,7 +116,18 @@ export default function CartDrawer() {
             </p>
           )}
           {cart?.checkoutUrl ? (
-            <a href={cart.checkoutUrl} className={`${ctaGlassOnLight} w-full text-center`} style={ctaTracking}>
+            <a
+              href={cart.checkoutUrl}
+              className={`${ctaGlassOnLight} w-full text-center`}
+              style={ctaTracking}
+              onClick={() =>
+                trackBeginCheckout(
+                  Number(cart.cost.subtotalAmount.amount),
+                  cart.cost.subtotalAmount.currencyCode,
+                  cart.totalQuantity,
+                )
+              }
+            >
               Checkout
             </a>
           ) : (

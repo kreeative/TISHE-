@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { subscribeEmail } from '../lib/shopify'
+import { trackSignUp } from '../lib/analytics'
 
 const STORAGE_KEY = 'tis-welcome-popup'
 const DISCOUNT_CODE = 'WELCOME10'
@@ -28,6 +29,7 @@ export default function WelcomePopup() {
     if (!email.trim()) return
     localStorage.setItem(STORAGE_KEY, 'joined')
     setJoined(true)
+    trackSignUp('welcome_popup')
     void subscribeEmail(email.trim())
   }
 

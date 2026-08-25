@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Mail } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { subscribeEmail } from '../lib/shopify'
+import { trackSignUp } from '../lib/analytics'
 
 // Legal pages: written in Shopify admin (Settings → Policies),
 // rendered on-site at /legal/:handle in the brand's typography.
@@ -149,6 +150,7 @@ export default function Footer() {
                   e.preventDefault()
                   if (!email.trim()) return
                   setJoined(true)
+                  trackSignUp('footer')
                   void subscribeEmail(email.trim())
                 }}
               >

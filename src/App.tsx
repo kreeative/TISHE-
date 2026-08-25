@@ -20,11 +20,24 @@ import PageTransition from './components/PageTransition'
 import WelcomePopup from './components/WelcomePopup'
 import AnnouncementBar from './components/AnnouncementBar'
 import { StoreProvider } from './components/StoreContext'
+import { initAnalytics, trackPageView } from './lib/analytics'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
   useEffect(() => {
     window.scrollTo(0, 0)
+  }, [pathname])
+  return null
+}
+
+// Loads the pixels once, then reports every hash route as its own page view.
+function Analytics() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    initAnalytics()
+  }, [])
+  useEffect(() => {
+    trackPageView(pathname)
   }, [pathname])
   return null
 }
@@ -86,6 +99,7 @@ function App() {
     <StoreProvider>
       <HashRouter>
         <ScrollToTop />
+        <Analytics />
         <div className="min-h-screen bg-[#FAF7F3] tracking-[-0.02em] flex flex-col" style={{ fontFamily: "'Montserrat', sans-serif" }}>
           <AnnouncementBar />
           <Nav />

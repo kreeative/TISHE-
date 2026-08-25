@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Minus, Plus, ChevronLeft } from 'lucide-react'
 import { useProduct } from '../lib/useProduct'
 import { useStore } from './StoreContext'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
+import { trackAddToCart, trackViewItem } from '../lib/analytics'
 import type { ProductMedia, ShopifyVariant } from '../lib/shopify'
 
 function formatMoney(amount: string, currencyCode: string) {
@@ -50,6 +51,17 @@ export default function ProductPage() {
     const seed: Record<string, string> = {}
     available?.selectedOptions.forEach((o) => { seed[o.name] = o.value })
     return seed
+  }, [product])
+
+  // report the product view once, when it first resolves
+  useEffect(() => {
+    if (!product) return
+    trackViewItem({
+      id: product.id,
+      name: product.title,
+      price: Number(product.priceRange.minVariantPrice.amount),
+      currency: product.priceRange.minVariantPrice.currencyCode,
+    })
   }, [product])
 
   const active = Object.keys(selection).length ? selection : initialSelection
@@ -256,6 +268,13 @@ export default function ProductPage() {
               onClick={async () => {
                 if (!matchedVariant) return
                 await addToCart(matchedVariant.id, qty)
+                trackAddToCart({
+                  id: matchedVariant.id,
+                  name: `${product.title} ${matchedVariant.title}`.trim(),
+                  price: Number(matchedVariant.price.amount),
+                  currency: matchedVariant.price.currencyCode,
+                  quantity: qty,
+                })
                 setJustAdded(true)
                 setTimeout(() => setJustAdded(false), 2000)
               }}
