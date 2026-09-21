@@ -282,6 +282,12 @@ export default function ProductPage() {
                   ? 'Added ✓'
                   : `Add to Bag · ${formatMoney(matchedVariant.price.amount, matchedVariant.price.currencyCode)}`}
             </button>
+
+            {/* Shipping is no longer included in the price, so say so here
+                rather than letting it surprise her at the checkout step. */}
+            <p className="mt-3 text-xs text-[#1B1113]/50">
+              Shipping calculated at checkout.
+            </p>
           </Reveal>
         </div>
       </div>

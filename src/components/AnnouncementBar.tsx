@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 // Thin rotating strip pinned above the nav.
 const MESSAGES = [
-  'Complimentary worldwide shipping',
+  'Install in sixty seconds',
   'Luxury raw hair, redefined',
 ]
 
