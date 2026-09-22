@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
+import { Analytics } from '@vercel/analytics/react'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import Campaign from './components/Campaign'
@@ -110,6 +111,7 @@ function App() {
           <CartDrawer />
           <WelcomePopup />
         </div>
+        <Analytics />
       </HashRouter>
     </StoreProvider>
   )
