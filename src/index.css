@@ -52,20 +52,20 @@ body {
   background-position: center bottom;
 }
 .hero-bg-base {
-  background-image: url('/images/hero-main-base-mobile.jpg');
+  background-image: url('/images/hero-cream-base-mobile.jpg');
 }
 .hero-bg-reveal {
-  background-image: url('/images/hero-main-reveal-mobile.jpg');
+  background-image: url('/images/hero-cream-reveal-mobile.jpg');
 }
 @media (orientation: landscape) {
   .hero-bg {
     background-position: right center;
   }
   .hero-bg-base {
-    background-image: url('/images/hero-main-base.jpg');
+    background-image: url('/images/hero-cream-base.jpg');
   }
   .hero-bg-reveal {
-    background-image: url('/images/hero-main-reveal.jpg');
+    background-image: url('/images/hero-cream-reveal.jpg');
   }
 }
 
