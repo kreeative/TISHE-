@@ -179,13 +179,6 @@ export default function ProductPage() {
               </p>
             )}
 
-            {product.descriptionHtml && (
-              <div
-                className="mt-5 text-sm text-[#1B1113]/75 leading-[1.85] max-w-md"
-                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
-              />
-            )}
-
             {product.options
               .filter((opt) => !(opt.values.length === 1 && opt.values[0] === 'Default Title'))
               .map((opt) => (
@@ -288,6 +281,21 @@ export default function ProductPage() {
             <p className="mt-3 text-xs text-[#1B1113]/50">
               Shipping calculated at checkout.
             </p>
+
+            {/* Full description stays on the page (and indexable) but closed,
+                so the buy box is not buried under sizing and care copy. */}
+            {product.descriptionHtml && (
+              <details className="group mt-8 max-w-md border-t border-[#5A3224]/15">
+                <summary className="flex items-center justify-between cursor-pointer list-none py-4 text-xs font-semibold uppercase text-[#1B1113] [&::-webkit-details-marker]:hidden" style={{ letterSpacing: '0.08em' }}>
+                  Product details
+                  <span className="text-lg leading-none transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                </summary>
+                <div
+                  className="product-desc pb-6 text-sm text-[#1B1113]/75 leading-[1.85]"
+                  dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+                />
+              </details>
+            )}
           </Reveal>
         </div>
       </div>

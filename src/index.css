@@ -106,3 +106,8 @@ body {
 .policy-body li { margin: 0.4em 0; }
 .policy-body a { color: #5A3224; text-decoration: underline; text-underline-offset: 3px; }
 .policy-body strong, .policy-body b { color: #1B1113; }
+
+/* Shopify product description inside the collapsed details panel */
+.product-desc h4 { margin-top: 1.25rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #1B1113; }
+.product-desc p { margin-top: 0.6rem; }
+.product-desc ul { margin-top: 0.5rem; padding-left: 1.1rem; list-style: disc; }
