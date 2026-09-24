@@ -88,12 +88,6 @@ export default function Collection() {
                     </span>
                   )}
                 </div>
-                {p.descriptionHtml && (
-                  <p
-                    className="mt-2 text-sm text-[#1B1113]/70 leading-[1.85]"
-                    dangerouslySetInnerHTML={{ __html: p.descriptionHtml }}
-                  />
-                )}
                 <div className="mt-4 flex items-center gap-4">
                   <Link to={`/products/${p.handle}`} className={`self-start ${ctaGlassOnLight}`} style={ctaTracking}>
                     {hasRange ? 'Shop Options · from ' : 'Shop · '}
