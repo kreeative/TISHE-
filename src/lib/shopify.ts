@@ -92,6 +92,7 @@ export interface ShopifyVariant {
   title: string
   availableForSale: boolean
   price: ShopifyMoney
+  compareAtPrice: ShopifyMoney | null
   selectedOptions: { name: string; value: string }[]
 }
 
@@ -147,7 +148,7 @@ const PRODUCT_FIELDS = `
   options { name values }
   priceRange { minVariantPrice { amount currencyCode } maxVariantPrice { amount currencyCode } }
   variants(first: 50) {
-    edges { node { id title availableForSale price { amount currencyCode } selectedOptions { name value } } }
+    edges { node { id title availableForSale price { amount currencyCode } compareAtPrice { amount currencyCode } selectedOptions { name value } } }
   }
 `
 

@@ -7,7 +7,7 @@ import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
 import { trackAddToCart, trackViewItem } from '../lib/analytics'
 import type { ProductMedia, ShopifyVariant } from '../lib/shopify'
-import { formatMoney } from '../lib/money'
+import { formatMoney, formatMoneyShort } from '../lib/money'
 
 // Best-selling combination, flagged with a badge on the option pills.
 // Values are matched on digits only, so 18" / 18 inch / 18 all match.
@@ -64,6 +64,9 @@ export default function ProductPage() {
   const active = Object.keys(selection).length ? selection : initialSelection
   const matchedVariant = product ? findVariant(product.variants, active) : undefined
   const displayPrice = matchedVariant?.price ?? product?.priceRange.minVariantPrice
+  // crossed-out "was" price, only when Shopify has a higher compare-at on this variant
+  const comparePrice = matchedVariant?.compareAtPrice
+  const saving = comparePrice && displayPrice ? Number(comparePrice.amount) - Number(displayPrice.amount) : 0
   // gallery: full media list (images + videos) with image-only fallback
   const gallery: ProductMedia[] = product?.media.length
     ? product.media
@@ -174,8 +177,19 @@ export default function ProductPage() {
               {product.title}
             </h1>
             {displayPrice && (
-              <p className="mt-3 text-2xl font-medium" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                {formatMoney(displayPrice.amount, displayPrice.currencyCode)}
+              <p className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                <span className="text-2xl font-medium">{formatMoney(displayPrice.amount, displayPrice.currencyCode)}</span>
+                {comparePrice && saving > 0 && (
+                  <>
+                    <s className="text-lg text-[#1B1113]/40">{formatMoney(comparePrice.amount, comparePrice.currencyCode)}</s>
+                    <span
+                      className="self-center bg-[#c99b6f] text-[#1B1113] text-[10px] font-bold uppercase px-2 py-1"
+                      style={{ letterSpacing: '0.1em' }}
+                    >
+                      Save {formatMoneyShort(saving, displayPrice.currencyCode)}
+                    </span>
+                  </>
+                )}
               </p>
             )}
 
