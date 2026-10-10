@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
+import { SALE, formatTimeLeft } from '../lib/sale'
+import { useSaleClock } from './SaleCountdown'
 
 // Thin rotating strip pinned above the nav.
 const MESSAGES = [
@@ -8,20 +11,39 @@ const MESSAGES = [
   'Luxury raw hair, redefined',
 ]
 
+const barClass = 'fixed top-0 inset-x-0 z-[120] h-9 flex items-center justify-center overflow-hidden text-[#FAF7F3] px-4'
+const barStyle = { background: 'linear-gradient(90deg, #1B1113 0%, #2A1D20 50%, #1B1113 100%)' }
+
 export default function AnnouncementBar() {
   const [i, setI] = useState(0)
+  const left = useSaleClock()
+  const onSale = left.ms > 0
 
   useEffect(() => {
-    if (MESSAGES.length < 2) return
+    if (onSale || MESSAGES.length < 2) return
     const t = setInterval(() => setI((n) => (n + 1) % MESSAGES.length), 4500)
     return () => clearInterval(t)
-  }, [])
+  }, [onSale])
+
+  // While a sale runs the strip stops rotating and counts down instead.
+  if (onSale) {
+    return (
+      <Link to="/collections" className={barClass} style={barStyle} aria-label={`${SALE.name}: ${SALE.headline}`}>
+        <p
+          className="text-[10px] sm:text-[11px] font-semibold uppercase text-center whitespace-nowrap flex items-center gap-2"
+          style={{ letterSpacing: '0.14em' }}
+        >
+          <span>Fall Sale · up to $70 off</span>
+          <span className="text-[#c99b6f]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+            {formatTimeLeft(left)}
+          </span>
+        </p>
+      </Link>
+    )
+  }
 
   return (
-    <div
-      className="fixed top-0 inset-x-0 z-[120] h-9 flex items-center justify-center overflow-hidden text-[#FAF7F3] px-4"
-      style={{ background: 'linear-gradient(90deg, #1B1113 0%, #2A1D20 50%, #1B1113 100%)' }}
-    >
+    <div className={barClass} style={barStyle}>
       <AnimatePresence mode="wait">
         <motion.p
           key={i}

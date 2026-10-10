@@ -3,6 +3,7 @@ import { useProducts } from '../lib/useProducts'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
 import { formatMoneyShort } from '../lib/money'
+import { isOnSale } from '../lib/sale'
 
 export default function Collection() {
   const { products, loading, error } = useProducts()
@@ -43,11 +44,24 @@ export default function Collection() {
             const minPrice = p.priceRange.minVariantPrice
             const maxPrice = p.priceRange.maxVariantPrice
             const hasRange = minPrice.amount !== maxPrice.amount
-            const lengths = p.variants
-              .map((v) => v.selectedOptions.find((o) => o.name.toLowerCase() === 'length')?.value)
-              .filter(Boolean)
-            const lengthLabel = lengths.length > 1 ? `${lengths[0]} – ${lengths[lengths.length - 1]}` : lengths[0]
+            // shortest to longest inch value across every variant, so mixed
+            // sets like 20" / 22" / 24" don't end up as the label's upper bound
+            const inches = p.variants
+              .flatMap((v) => (v.selectedOptions.find((o) => o.name.toLowerCase() === 'length')?.value ?? '').match(/\d+/g) ?? [])
+              .map(Number)
+            const shortest = inches.length ? Math.min(...inches) : 0
+            const longest = inches.length ? Math.max(...inches) : 0
+            const lengthLabel = !inches.length ? '' : shortest === longest ? `${shortest}"` : `${shortest}" – ${longest}"`
             const isCampaign = p.tags.some((t) => t.toLowerCase() === 'campaign')
+            // on sale: show the cheapest variant's old price struck through
+            const onSale = isOnSale(p.handle)
+            const cheapest = p.variants.reduce<(typeof p.variants)[number] | undefined>(
+              (best, v) => (!best || Number(v.price.amount) < Number(best.price.amount) ? v : best),
+              undefined,
+            )
+            const wasPrice = onSale && cheapest?.compareAtPrice && Number(cheapest.compareAtPrice.amount) > Number(cheapest.price.amount)
+              ? cheapest.compareAtPrice
+              : null
 
             return (
               <Reveal key={p.id} delay={i * 0.1} className="group flex flex-col">
@@ -68,6 +82,14 @@ export default function Collection() {
                       className="absolute inset-0 opacity-70 group-hover:opacity-90 transition-opacity duration-500 pointer-events-none"
                       style={{ background: 'linear-gradient(180deg, rgba(26,18,12,0.28) 0%, rgba(26,18,12,0) 35%, rgba(26,18,12,0) 70%, rgba(26,18,12,0.25) 100%)' }}
                     />
+                    {onSale && (
+                      <span
+                        className="absolute top-4 right-4 bg-[#c99b6f] text-[#1B1113] text-[10px] font-bold uppercase px-3 py-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.2)]"
+                        style={{ letterSpacing: '0.1em' }}
+                      >
+                        Fall Sale
+                      </span>
+                    )}
                     {isCampaign && (
                       <span
                         className="absolute top-4 left-4 bg-white/20 backdrop-blur-md border border-white/40 text-[#FAF7F3] text-[10px] font-semibold uppercase px-3 py-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.2)]"
@@ -91,6 +113,9 @@ export default function Collection() {
                 <div className="mt-4 flex items-center gap-4">
                   <Link to={`/products/${p.handle}`} className={`self-start ${ctaGlassOnLight}`} style={ctaTracking}>
                     {hasRange ? 'Shop Options · from ' : 'Shop · '}
+                    {wasPrice && (
+                      <s className="opacity-50 mr-1.5">{formatMoneyShort(wasPrice.amount, wasPrice.currencyCode)}</s>
+                    )}
                     {formatMoneyShort(minPrice.amount, minPrice.currencyCode)}
                   </Link>
                 </div>

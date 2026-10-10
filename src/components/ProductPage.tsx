@@ -8,6 +8,8 @@ import Reveal from './Reveal'
 import { trackAddToCart, trackViewItem } from '../lib/analytics'
 import type { ProductMedia, ShopifyVariant } from '../lib/shopify'
 import { formatMoney, formatMoneyShort } from '../lib/money'
+import { SALE, formatTimeLeft, isSaleProduct } from '../lib/sale'
+import { useSaleClock } from './SaleCountdown'
 
 // Best-selling combination, flagged with a badge on the option pills.
 // Values are matched on digits only, so 18" / 18 inch / 18 all match.
@@ -67,6 +69,11 @@ export default function ProductPage() {
   // crossed-out "was" price, only when Shopify has a higher compare-at on this variant
   const comparePrice = matchedVariant?.compareAtPrice
   const saving = comparePrice && displayPrice ? Number(comparePrice.amount) - Number(displayPrice.amount) : 0
+  // a sale product only shows its old price while the countdown is running
+  const saleClock = useSaleClock()
+  const saleProduct = isSaleProduct(handle)
+  const saleRunning = saleProduct && saleClock.ms > 0
+  const showCompare = !!comparePrice && saving > 0 && (!saleProduct || saleRunning)
   // gallery: full media list (images + videos) with image-only fallback
   const gallery: ProductMedia[] = product?.media.length
     ? product.media
@@ -179,7 +186,7 @@ export default function ProductPage() {
             {displayPrice && (
               <p className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1" style={{ fontVariantNumeric: 'tabular-nums' }}>
                 <span className="text-2xl font-medium">{formatMoney(displayPrice.amount, displayPrice.currencyCode)}</span>
-                {comparePrice && saving > 0 && (
+                {showCompare && comparePrice && (
                   <>
                     <s className="text-lg text-[#1B1113]/40">{formatMoney(comparePrice.amount, comparePrice.currencyCode)}</s>
                     <span
@@ -190,6 +197,12 @@ export default function ProductPage() {
                     </span>
                   </>
                 )}
+              </p>
+            )}
+            {saleRunning && (
+              <p className="mt-3 flex items-center gap-2 text-xs font-semibold text-[#5A3224]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#c99b6f]" />
+                {SALE.name} ends in {formatTimeLeft(saleClock)}
               </p>
             )}
 
