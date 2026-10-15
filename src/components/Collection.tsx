@@ -19,7 +19,7 @@ export default function Collection() {
             Textures worth the obsession
           </h2>
           <p className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/70 leading-[1.85]">
-            Raw, single-donor hair in three signature finishes. Every bundle is hand-inspected before it ships.
+            Raw Vietnamese hair from a single donor, cuticle-aligned Indian hair, and glueless half wigs. Every texture is labelled exactly as it is.
           </p>
         </Reveal>
 

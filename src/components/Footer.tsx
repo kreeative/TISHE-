@@ -62,8 +62,8 @@ export default function Footer() {
         <div className="flex flex-col gap-5">
           <img src="/images/logo-mark.webp" alt="The Ivory Sukundu" className="h-14 w-auto self-start" />
           <p className="text-sm text-[#FAF7F3]/60 leading-[1.85] max-w-[260px]">
-            Luxury raw hair, redefined. Glueless half wigs and raw bundles, installed in sixty
-            seconds and made to last for years.
+            Luxury hair, redefined. Raw Vietnamese and Indian bundles, and glueless half wigs
+            that go on in sixty seconds.
           </p>
           <div className="flex items-center gap-5 mt-1">
             <a

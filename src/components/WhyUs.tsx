@@ -4,18 +4,18 @@ import Reveal from './Reveal'
 const REASONS = [
   {
     icon: Leaf,
-    title: 'Ethically sourced',
-    body: 'Single-donor raw hair with full traceability, sourced with respect for both nature and community.',
+    title: 'Honestly labelled',
+    body: 'Raw Vietnamese hair from a single donor, and cuticle-aligned Indian hair. Every product tells you exactly what it is and where it comes from.',
   },
   {
     icon: Feather,
     title: 'Luxuriously soft',
-    body: 'Cuticles aligned and fully intact. No silicone coating that washes off after two wears.',
+    body: 'Cuticles aligned in one direction, so the hair stays soft and resists tangling wash after wash.',
   },
   {
     icon: ShieldCheck,
     title: 'Built to last',
-    body: 'Bleach it, press it, wear it daily. Two years and counting with basic care.',
+    body: 'With basic care our hair lasts well beyond a single install, and raw Vietnamese hair can last for years.',
   },
 ]
 
@@ -58,7 +58,7 @@ export default function WhyUs() {
         <Reveal delay={0.3}>
           <p className="mt-14 sm:mt-20 max-w-xl text-base sm:text-lg text-[#1B1113]/85 leading-[1.85]">
             Experience unmatched quality in every strand. Indulge in texture so soft it promises to
-            elevate your hair game to new heights. Choose The Ivory Sukundu for the raw hair you deserve.
+            elevate your hair game to new heights. Choose The Ivory Sukundu for the hair you deserve.
           </p>
         </Reveal>
       </div>
