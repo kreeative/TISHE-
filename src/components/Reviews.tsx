@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Star } from 'lucide-react'
 import Reveal from './Reveal'
 import { useReviews } from '../lib/useReviews'
@@ -70,6 +71,15 @@ export default function Reviews() {
                       </a>
                     ))}
                   </div>
+                )}
+                {r.look && (
+                  <Link
+                    to={`/products/${r.look.handle}${r.look.variant ? `?variant=${encodeURIComponent(r.look.variant)}` : ''}`}
+                    className="mt-5 self-start text-xs font-semibold uppercase text-[#5A3224] hover:text-[#1B1113] transition-colors"
+                    style={{ letterSpacing: '0.08em' }}
+                  >
+                    Shop the look: {r.look.label} →
+                  </Link>
                 )}
                 <p className="mt-auto pt-5 text-xs text-[#1B1113]/55">
                   <span className="font-semibold text-[#1B1113]/80">{r.name}</span>

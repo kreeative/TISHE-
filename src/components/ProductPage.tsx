@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { Minus, Plus, ChevronLeft } from 'lucide-react'
 import { useProduct } from '../lib/useProduct'
 import { useStore } from './StoreContext'
@@ -12,6 +12,7 @@ import { SALE, formatTimeLeft, isSaleProduct } from '../lib/sale'
 import { useSaleClock } from './SaleCountdown'
 import { Stars, reviewCountLabel } from './Reviews'
 import { useReviews } from '../lib/useReviews'
+import { findVariantByTitle, parseShopTheModel, selectionOf } from '../lib/shopTheModel'
 
 // Best-selling combination, flagged with a badge on the option pills.
 // Values are matched on digits only, so 18" / 18 inch / 18 all match.
@@ -45,14 +46,26 @@ export default function ProductPage() {
   const [qty, setQty] = useState(1)
   const [justAdded, setJustAdded] = useState(false)
 
-  // seed the option selection once the product loads
+  const [params] = useSearchParams()
+  const requestedVariant = params.get('variant')
+
+  // seed the option selection once the product loads: the variant named in
+  // the link (?variant=3 Bundles / 22"), otherwise the first one in stock
   const initialSelection = useMemo(() => {
     if (!product) return {}
-    const available = product.variants.find((v) => v.availableForSale) ?? product.variants[0]
-    const seed: Record<string, string> = {}
-    available?.selectedOptions.forEach((o) => { seed[o.name] = o.value })
-    return seed
-  }, [product])
+    const chosen =
+      findVariantByTitle(product.variants, requestedVariant) ??
+      product.variants.find((v) => v.availableForSale) ??
+      product.variants[0]
+    return chosen ? selectionOf(chosen) : {}
+  }, [product, requestedVariant])
+
+  // a "shop the look" link can point back at this same page with another variant
+  useEffect(() => {
+    if (!requestedVariant) return
+    setSelection({})
+    document.getElementById('buy-box')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [requestedVariant])
 
   // report the product view once, when it first resolves
   useEffect(() => {
@@ -86,6 +99,10 @@ export default function ProductPage() {
         previewUrl: img.url,
         altText: img.altText,
       }))
+  // photos whose alt text ends in "Shop the model: <variant>" get a button
+  // that selects that variant, and the rest of the alt text as a caption
+  const look = parseShopTheModel(gallery[activeImage]?.altText)
+  const lookVariant = look && product ? findVariantByTitle(product.variants, look.variantTitle) : undefined
 
   if (loading) {
     return (
@@ -121,7 +138,7 @@ export default function ProductPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mt-6">
           <Reveal>
-            <div className="overflow-hidden shadow-[0_1px_2px_rgba(26,18,12,0.06)]">
+            <div className="relative overflow-hidden shadow-[0_1px_2px_rgba(26,18,12,0.06)]">
               {gallery[activeImage]?.type === 'video' ? (
                 <video
                   key={gallery[activeImage].url}
@@ -150,7 +167,21 @@ export default function ProductPage() {
                   />
                 )
               )}
+              {lookVariant && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelection(selectionOf(lookVariant))
+                    document.getElementById('buy-box')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }}
+                  className="absolute left-4 bottom-4 bg-[#FAF7F3]/90 backdrop-blur-sm text-[#1B1113] text-[10px] font-semibold uppercase px-3.5 py-2 shadow-[0_6px_20px_-6px_rgba(26,18,12,0.45)] hover:bg-[#FAF7F3] transition-colors"
+                  style={{ letterSpacing: '0.1em' }}
+                >
+                  Shop the model · {lookVariant.title}
+                </button>
+              )}
             </div>
+            {look?.caption && <p className="mt-3 text-xs italic text-[#1B1113]/55">{look.caption}</p>}
             {gallery.length > 1 && (
               <div className="flex flex-wrap gap-3 mt-4">
                 {gallery.map((item, i) => (
@@ -183,7 +214,7 @@ export default function ProductPage() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <h1 className="font-display text-4xl sm:text-5xl leading-[1.16]" style={{ textWrap: 'balance' }}>
+            <h1 id="buy-box" className="font-display text-4xl sm:text-5xl leading-[1.16] scroll-mt-28" style={{ textWrap: 'balance' }}>
               {product.title}
             </h1>
             {displayPrice && (

@@ -12,6 +12,14 @@ export interface Review {
   verified: boolean
   createdAt: string
   photos: { thumb: string; full: string }[]
+  // the product the reviewer bought, for a "shop the look" link
+  look: ReviewLook | null
+}
+
+export interface ReviewLook {
+  handle: string
+  variant?: string
+  label: string
 }
 
 export interface ReviewSummary {
@@ -36,6 +44,25 @@ interface JudgemeReview {
   verified_buyer?: boolean
   created_at: string
   pictures_urls?: JudgemePicture[]
+  product_url?: string
+  product_title?: string
+}
+
+// Store reviews are not tied to a product in Judge.me, so the product a
+// reviewer bought is added here by review id. Product reviews link on their own.
+const REVIEW_LOOKS: Record<string, ReviewLook> = {
+  // Sophie N., October 2026: order #1003
+  '84559ce9-ab50-4fc9-a1f6-e21345ed81f8': {
+    handle: 'burmese-curly-bundles',
+    variant: '3 Bundles / 22"',
+    label: '3 bundles of 22" Burmese curly',
+  },
+}
+
+function lookFor(r: JudgemeReview): ReviewLook | null {
+  if (REVIEW_LOOKS[r.uuid]) return REVIEW_LOOKS[r.uuid]
+  const handle = r.product_url?.match(/\/products\/([^/?#]+)/)?.[1]
+  return handle ? { handle, label: r.product_title ?? 'this product' } : null
 }
 
 // "Sophie Noutevi" becomes "Sophie N.", the usual way reviews show a name
@@ -75,6 +102,7 @@ export function getReviews(): Promise<ReviewSummary> {
               full: p.huge ?? p.original ?? p.compact ?? '',
             }))
             .filter((p) => p.thumb),
+          look: lookFor(r),
         })),
       }
     })
