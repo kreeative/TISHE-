@@ -5,6 +5,7 @@ import Nav from './components/Nav'
 import Hero from './components/Hero'
 import Campaign from './components/Campaign'
 import Collection from './components/Collection'
+import Reviews from './components/Reviews'
 import LengthGuide from './components/LengthGuide'
 import WhyUs from './components/WhyUs'
 import Circle from './components/Circle'
@@ -48,6 +49,7 @@ function HomePage() {
       <Hero />
       <Campaign />
       <Collection />
+      <Reviews />
     </>
   )
 }
@@ -60,6 +62,7 @@ function CollectionsPage() {
   return (
     <>
       <Collection />
+      <Reviews />
       <LengthGuide />
     </>
   )
@@ -87,7 +90,7 @@ function AnimatedRoutes() {
         <Route path="/account" element={<PageTransition><AccountPage /></PageTransition>} />
         <Route path="/reset" element={<PageTransition><ResetPage /></PageTransition>} />
         <Route path="/legal/:handle" element={<PageTransition><PolicyPage /></PageTransition>} />
-        <Route path="/products/:handle" element={<PageTransition><ProductPage /></PageTransition>} />
+        <Route path="/products/:handle" element={<PageTransition><ProductPage /><Reviews /></PageTransition>} />
         <Route path="*" element={<PageTransition><HomePage /></PageTransition>} />
       </Routes>
     </AnimatePresence>

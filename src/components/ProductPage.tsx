@@ -10,6 +10,8 @@ import type { ProductMedia, ShopifyVariant } from '../lib/shopify'
 import { formatMoney, formatMoneyShort } from '../lib/money'
 import { SALE, formatTimeLeft, isSaleProduct } from '../lib/sale'
 import { useSaleClock } from './SaleCountdown'
+import { Stars, reviewCountLabel } from './Reviews'
+import { useReviews } from '../lib/useReviews'
 
 // Best-selling combination, flagged with a badge on the option pills.
 // Values are matched on digits only, so 18" / 18 inch / 18 all match.
@@ -71,6 +73,7 @@ export default function ProductPage() {
   const saving = comparePrice && displayPrice ? Number(comparePrice.amount) - Number(displayPrice.amount) : 0
   // a sale product only shows its old price while the countdown is running
   const saleClock = useSaleClock()
+  const reviews = useReviews()
   const saleProduct = isSaleProduct(handle)
   const saleRunning = saleProduct && saleClock.ms > 0
   const showCompare = !!comparePrice && saving > 0 && (!saleProduct || saleRunning)
@@ -198,6 +201,18 @@ export default function ProductPage() {
                   </>
                 )}
               </p>
+            )}
+            {reviews && reviews.count > 0 && (
+              <button
+                type="button"
+                onClick={() => document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth' })}
+                className="mt-3 flex items-center gap-2 text-xs text-[#1B1113]/60 hover:text-[#5A3224] transition-colors"
+              >
+                <Stars rating={reviews.average} size={13} />
+                <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+                  {reviews.average.toFixed(1)} · {reviewCountLabel(reviews.count)}
+                </span>
+              </button>
             )}
             {saleRunning && (
               <p className="mt-3 flex items-center gap-2 text-xs font-semibold text-[#5A3224]" style={{ fontVariantNumeric: 'tabular-nums' }}>
