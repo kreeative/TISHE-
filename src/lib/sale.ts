@@ -1,28 +1,23 @@
-// The current promotion. The sale prices themselves live in Shopify (price
-// lowered, old price kept as compare-at); this file only drives the countdown
-// and the struck-through prices, and both switch themselves off at endsAt so
-// the site never keeps advertising a sale that has finished.
+// The current promotion, set in the dashboard (Site → Sale). Sale prices
+// themselves are the product prices, with the old price kept as "was"; this
+// only drives the countdown, the badge and the struck-through prices, and all
+// three switch themselves off at endsAt so the site never keeps advertising a
+// sale that has finished.
 
-export const SALE = {
-  name: 'The Fall Sale',
-  headline: 'Up to $70 off half wigs',
-  // Sunday October 18, 11:59 pm Toronto time (EDT, UTC-4)
-  endsAt: '2026-10-19T03:59:00Z',
-  handles: ['the-kinky-curly-sukundu-half-wig', 'untitled-jul21_09-54-40'],
+export interface Sale {
+  name: string
+  // short line in the announcement bar while the sale runs
+  banner: string
+  endsAt: string
+  handles: string[]
 }
 
-const END = Date.parse(SALE.endsAt)
-
-export function saleActive(now: number = Date.now()): boolean {
-  return now < END
+export function isSaleProduct(sale: Sale | null, handle: string | undefined): boolean {
+  return !!sale && !!handle && sale.handles.includes(handle)
 }
 
-export function isSaleProduct(handle: string | undefined): boolean {
-  return !!handle && SALE.handles.includes(handle)
-}
-
-export function isOnSale(handle: string | undefined, now?: number): boolean {
-  return isSaleProduct(handle) && saleActive(now)
+export function isOnSale(sale: Sale | null, handle: string | undefined, now: number = Date.now()): boolean {
+  return isSaleProduct(sale, handle) && saleTimeLeft(sale, now).ms > 0
 }
 
 export interface TimeLeft {
@@ -33,8 +28,9 @@ export interface TimeLeft {
   seconds: number
 }
 
-export function saleTimeLeft(now: number = Date.now()): TimeLeft {
-  const ms = Math.max(0, END - now)
+export function saleTimeLeft(sale: Sale | null, now: number = Date.now()): TimeLeft {
+  const end = sale ? Date.parse(sale.endsAt) : 0
+  const ms = Math.max(0, (Number.isNaN(end) ? 0 : end) - now)
   const s = Math.floor(ms / 1000)
   return {
     ms,

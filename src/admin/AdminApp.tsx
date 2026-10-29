@@ -13,6 +13,9 @@ import {
   type Stats,
 } from './adminApi'
 import OrderDetail from './OrderDetail'
+import { ProductEditor, ProductList } from './Products'
+import Discounts from './Discounts'
+import SiteSettings from './SiteSettings'
 import { Card, CopyButton, ErrorNote, Stat, StatusChip, field, primary, secondary, tracking } from './ui'
 
 // The owner's dashboard at /#/admin, outside the shop's header and footer.
@@ -53,6 +56,9 @@ export default function AdminApp() {
         <nav className="max-w-5xl mx-auto px-4 sm:px-6 flex gap-6 overflow-x-auto text-xs font-semibold uppercase" style={tracking}>
           {[
             ['/admin', 'Orders'],
+            ['/admin/products', 'Products'],
+            ['/admin/discounts', 'Promo codes'],
+            ['/admin/site', 'Site'],
             ['/admin/customers', 'Customers'],
             ['/admin/subscribers', 'Subscribers'],
             ['/admin/settings', 'Settings'],
@@ -73,6 +79,10 @@ export default function AdminApp() {
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <Routes>
           <Route path="orders/:id" element={<OrderDetail token={session.token} />} />
+          <Route path="products" element={<ProductList token={session.token} />} />
+          <Route path="products/:id" element={<ProductEditor token={session.token} />} />
+          <Route path="discounts" element={<Discounts token={session.token} />} />
+          <Route path="site" element={<SiteSettings token={session.token} />} />
           <Route path="customers" element={<Customers token={session.token} />} />
           <Route path="subscribers" element={<Subscribers token={session.token} />} />
           <Route path="settings" element={<Settings token={session.token} email={session.email} />} />

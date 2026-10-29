@@ -1,7 +1,8 @@
-import { findVariant, shippingData, type CatalogProduct, type CatalogVariant, type Currency } from './catalog.js'
+import { findVariant, type CatalogProduct, type CatalogVariant, type Currency } from './catalog.js'
 import { checkCode, findCode, needsEmail, type CodeRule, type History } from './discounts.js'
 import { HttpError, email as cleanEmail, str } from './http.js'
 import { provinceTax, type ProvinceTax } from './tax.js'
+import type { StoreDoc } from './store.js'
 
 // Prices a bag on the server from the catalog. The browser only sends variant
 // ids and quantities, so a tampered request can't change what is charged.
@@ -60,13 +61,13 @@ export function parsePriceRequest(body: Record<string, unknown>): PriceRequest {
   }
 }
 
-export function needsHistory(req: PriceRequest): boolean {
-  return Boolean(req.code && req.email && needsEmail(findCode(req.code)))
+export function needsHistory(req: PriceRequest, doc: StoreDoc): boolean {
+  return Boolean(req.code && req.email && needsEmail(findCode(doc.discounts, req.code)))
 }
 
 // history is the shopper's past orders, looked up by email when a code needs it
-export function price(req: PriceRequest, history: History | null): Priced {
-  const ship = shippingData()
+export function price(req: PriceRequest, history: History | null, doc: StoreDoc): Priced {
+  const ship = doc.shipping
   const zone = ship.zones.find((z) => z.countries.includes(req.country))
   if (!zone) throw new HttpError(400, "We don't ship to that country yet. Write to hello@theivorysukundu.com and we'll see what we can do.")
   if (req.country === 'CA' && !ship.provinces.some((p) => p.code === req.province)) {
@@ -74,7 +75,7 @@ export function price(req: PriceRequest, history: History | null): Priced {
   }
 
   const lines: PricedLine[] = req.items.map(({ variantId, quantity }) => {
-    const match = findVariant(variantId)
+    const match = findVariant(doc.products, variantId)
     if (!match || !match.variant.availableForSale) {
       throw new HttpError(409, 'Something in your bag is no longer available. Please remove it and try again.', 'unavailable')
     }
@@ -83,13 +84,17 @@ export function price(req: PriceRequest, history: History | null): Priced {
   })
   const subtotal = lines.reduce((n, l) => n + l.originalUnit * l.quantity, 0)
 
-  const rule = req.code ? findCode(req.code) : null
+  const rule = req.code ? findCode(doc.discounts, req.code) : null
   if (rule) checkCode(rule, subtotal / 100, zone.currency, history)
 
-  if (rule?.kind === 'percent' && rule.percent) {
-    const pct = rule.percent
-    for (const l of lines) l.unit = Math.round((l.originalUnit * (100 - pct)) / 100)
-  }
+  // an amount off is spread over the items in proportion to their price
+  const share =
+    rule?.kind === 'percent' && rule.percent
+      ? rule.percent / 100
+      : rule?.kind === 'amount' && rule.amount
+        ? Math.min(1, cents(rule.amount[zone.currency]) / subtotal)
+        : 0
+  if (share) for (const l of lines) l.unit = Math.round(l.originalUnit * (1 - share))
   const discounted = lines.reduce((n, l) => n + l.unit * l.quantity, 0)
   const freeShipping = rule?.kind === 'free_shipping'
   const shipping = freeShipping ? 0 : cents(zone.rate)

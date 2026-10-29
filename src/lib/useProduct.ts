@@ -1,4 +1,4 @@
-import { productByHandle, type Product } from './catalog'
+import type { Product } from './catalog'
 import { useStore } from '../components/StoreContext'
 
 interface UseProductResult {
@@ -8,7 +8,7 @@ interface UseProductResult {
 }
 
 export function useProduct(handle: string | undefined): UseProductResult {
-  const { currency } = useStore()
-  const product = productByHandle(handle, currency)
+  const { products } = useStore()
+  const product = products.find((p) => p.handle === handle) ?? null
   return { product, loading: false, error: product ? null : 'That product could not be found.' }
 }

@@ -7,12 +7,15 @@ import { processOrder } from './_lib/process.js'
 import { listContacts, sendEmail } from './_lib/email.js'
 import { sendShippingEmail, sendSignInLink } from './_lib/notify.js'
 import { esc, layout, p, textOf } from './_lib/templates.js'
+import { loadStore, saveImage, saveStore } from './_lib/store.js'
+import { cleanCode } from './_lib/discounts.js'
+import { cleanProduct, cleanShipping, cleanSite } from './_lib/editing.js'
 
 // The owner's dashboard API. Everything except link/redeem needs the admin
 // session token from the dashboard sign-in email.
 //
 //   link     { email }                 email a sign-in link (admin emails only)
-//   redeem   { token }                 swap it for a 7-day session
+//   redeem   { token }                 swap it for a 30-day session
 //   overview                           orders, stats and setup status
 //   order    { id }                    one order with items and supplier messages
 //   update   { id, status?, supplierRef?, carrier?, tracking?, note?, notify? }
@@ -20,6 +23,11 @@ import { esc, layout, p, textOf } from './_lib/templates.js'
 //   subscribers                        the Circle mailing list
 //   email    { to, subject, message }  write to a customer from the store address
 //   setup                              connect the Stripe webhook
+//   store                              everything editable: products, codes, site, shipping
+//   saveProduct { product } · deleteProduct { id }
+//   saveCode { rule, previousCode? } · deleteCode { code }
+//   saveSite { announcements, sale } · saveShipping { rates }
+//   upload   { handle, full, thumb }   save a product photo (base64 JPEG)
 
 const STATUSES: OrderStatus[] = ['new', 'ordered', 'shipped', 'delivered', 'cancelled']
 const WEBHOOK_EVENTS = ['checkout.session.completed', 'checkout.session.async_payment_succeeded'] as const
@@ -105,7 +113,7 @@ export default handler(async (request) => {
 
   if (action === 'redeem') {
     const address = verifyToken(str(body.token, 1000), 'admin-login')
-    return json({ ...issueToken(address, 'admin', 60 * 24 * 7), email: address })
+    return json({ ...issueToken(address, 'admin', 60 * 24 * 30), email: address })
   }
 
   const admin = verifyToken(bearer(request), 'admin')
@@ -191,6 +199,84 @@ export default handler(async (request) => {
 
   if (action === 'setup') {
     return json({ webhook: await webhookStatus(true) })
+  }
+
+  if (action === 'store') {
+    const doc = await loadStore(true)
+    // how often each code has been used, from paid orders
+    const usage: Record<string, number> = {}
+    if (env.stripeConfigured()) {
+      for (const o of await listOrders()) if (o.code && o.status !== 'cancelled') usage[o.code] = (usage[o.code] ?? 0) + 1
+    }
+    return json({ doc, usage, blob: Boolean(process.env.BLOB_READ_WRITE_TOKEN) })
+  }
+
+  if (action === 'saveProduct') {
+    const doc = await saveStore((d) => {
+      const product = cleanProduct((body.product ?? {}) as Record<string, unknown>, d.products)
+      const i = d.products.findIndex((p) => p.id === product.id)
+      if (i >= 0) d.products[i] = product
+      else d.products.push(product)
+    })
+    return json({ doc })
+  }
+
+  if (action === 'deleteProduct') {
+    const id = str(body.id, 200)
+    return json({ doc: await saveStore((d) => void (d.products = d.products.filter((p) => p.id !== id))) })
+  }
+
+  if (action === 'moveProduct') {
+    const id = str(body.id, 200)
+    const step = body.direction === 'up' ? -1 : 1
+    const doc = await saveStore((d) => {
+      const i = d.products.findIndex((p) => p.id === id)
+      const j = i + step
+      if (i < 0 || j < 0 || j >= d.products.length) return
+      ;[d.products[i], d.products[j]] = [d.products[j], d.products[i]]
+    })
+    return json({ doc })
+  }
+
+  if (action === 'saveCode') {
+    const rule = cleanCode((body.rule ?? {}) as Record<string, unknown>)
+    const previous = str(body.previousCode, 40).toUpperCase()
+    const doc = await saveStore((d) => {
+      if (d.discounts.some((c) => c.code === rule.code && c.code !== previous)) {
+        throw new HttpError(409, `${rule.code} already exists.`)
+      }
+      const i = d.discounts.findIndex((c) => c.code === (previous || rule.code))
+      if (i >= 0) d.discounts[i] = rule
+      else d.discounts.push(rule)
+    })
+    return json({ doc })
+  }
+
+  if (action === 'deleteCode') {
+    const code = str(body.code, 40).toUpperCase()
+    return json({ doc: await saveStore((d) => void (d.discounts = d.discounts.filter((c) => c.code !== code))) })
+  }
+
+  if (action === 'saveSite') {
+    const site = cleanSite(body)
+    return json({ doc: await saveStore((d) => void (d.site = site)) })
+  }
+
+  if (action === 'saveShipping') {
+    return json({ doc: await saveStore((d) => void (d.shipping = cleanShipping(body, d.shipping))) })
+  }
+
+  if (action === 'upload') {
+    const decode = (v: unknown) => {
+      const b64 = str(v, 6_000_000).replace(/^data:image\/jpeg;base64,/, '')
+      const buf = Buffer.from(b64, 'base64')
+      // JPEG files start with FF D8
+      if (buf.length < 100 || buf[0] !== 0xff || buf[1] !== 0xd8) throw new HttpError(400, 'Upload a JPEG photo.')
+      return buf
+    }
+    const handle = str(body.handle, 80)
+    const [url, thumb] = await Promise.all([saveImage(handle, decode(body.full)), saveImage(handle, decode(body.thumb))])
+    return json({ url, thumb })
   }
 
   throw new HttpError(400, 'Unknown action')

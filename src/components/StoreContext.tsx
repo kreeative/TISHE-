@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { buildCart, loadLines, saveLines, type Cart, type StoredLine } from '../lib/cart'
-import type { Currency } from '../lib/catalog'
-import { currencyFor, guessCountry, shipsTo } from '../lib/shipping'
+import { BUNDLED_PRODUCTS, buildProducts, type Currency, type Product, type RawProduct } from '../lib/catalog'
+import { SHIPPING, currencyFor, guessCountry, shipsTo, type ShippingData } from '../lib/shipping'
+import type { Sale } from '../lib/sale'
 import { api } from '../lib/api'
 import { shopifyCheckoutUrl } from '../lib/shopify'
 import { trackBeginCheckout } from '../lib/analytics'
@@ -18,6 +19,25 @@ export interface CheckoutDetails {
 
 const PREFS_KEY = 'tis-ship-to'
 
+// what /api/store serves: the catalog and settings as edited in the dashboard
+interface LiveStore {
+  products: RawProduct[]
+  site: { announcements: string[]; sale: Sale | null }
+  shipping: ShippingData
+  freeShipping: { code: string; minSubtotal: Record<Currency, number> | null; firstOrderOnly: boolean } | null
+}
+
+// what the site shows before the live version arrives (or if it can't load)
+const BUNDLED: LiveStore = {
+  products: BUNDLED_PRODUCTS,
+  site: {
+    announcements: ['1st order over $200 ships free · FREESHIP200', 'Install in sixty seconds', 'Luxury raw hair, redefined'],
+    sale: null,
+  },
+  shipping: SHIPPING,
+  freeShipping: { code: 'FREESHIP200', minSubtotal: { USD: 200, CAD: 280 }, firstOrderOnly: true },
+}
+
 function savedShipTo(): { country: string; province: string } | null {
   try {
     const s = JSON.parse(localStorage.getItem(PREFS_KEY) ?? 'null')
@@ -33,6 +53,11 @@ interface StoreState {
   province: string
   currency: Currency
   setShipTo: (country: string, province?: string) => void
+  products: Product[]
+  announcements: string[]
+  sale: Sale | null
+  shipping: ShippingData
+  freeShipping: LiveStore['freeShipping']
   cart: Cart
   cartLoading: boolean
   cartError: string | null
@@ -54,6 +79,17 @@ const StoreContext = createContext<StoreState | null>(null)
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [shipTo, setShipToState] = useState(() => savedShipTo() ?? { country: guessCountry(), province: 'ON' })
   const [lines, setLines] = useState<StoredLine[]>(() => loadLines())
+  const [live, setLive] = useState<LiveStore>(BUNDLED)
+
+  useEffect(() => {
+    api<LiveStore>('store')
+      .then((data) => {
+        if (Array.isArray(data.products) && data.products.length) setLive(data)
+      })
+      .catch(() => {
+        // keep the bundled catalog
+      })
+  }, [])
   const [cartLoading, setCartLoading] = useState(false)
   const [cartError, setCartError] = useState<string | null>(null)
   const [cartOpen, setCartOpen] = useState(false)
@@ -61,7 +97,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [customerLoading, setCustomerLoading] = useState(false)
 
   const currency = currencyFor(shipTo.country)
-  const cart = useMemo(() => buildCart(lines, currency), [lines, currency])
+  const products = useMemo(() => buildProducts(live.products, currency), [live.products, currency])
+  const cart = useMemo(() => buildCart(lines, products, currency), [lines, products, currency])
 
   const setShipTo = (country: string, province?: string) => {
     const next = { country, province: province ?? shipTo.province }
@@ -183,6 +220,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         province: shipTo.province,
         currency,
         setShipTo,
+        products,
+        announcements: live.site.announcements,
+        sale: live.site.sale,
+        shipping: live.shipping,
+        freeShipping: live.freeShipping,
         cart,
         cartLoading,
         cartError,

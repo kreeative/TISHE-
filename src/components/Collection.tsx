@@ -4,9 +4,11 @@ import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
 import { formatMoneyShort } from '../lib/money'
 import { isOnSale } from '../lib/sale'
+import { useStore } from './StoreContext'
 
 export default function Collection() {
   const { products } = useProducts()
+  const { sale } = useStore()
 
   return (
     <section id="collections" className="bg-[#FAF7F3] text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16">
@@ -38,7 +40,7 @@ export default function Collection() {
             const lengthLabel = !inches.length ? '' : shortest === longest ? `${shortest}"` : `${shortest}" – ${longest}"`
             const isCampaign = p.tags.some((t) => t.toLowerCase() === 'campaign')
             // on sale: show the cheapest variant's old price struck through
-            const onSale = isOnSale(p.handle)
+            const onSale = isOnSale(sale, p.handle)
             const cheapest = p.variants.reduce<(typeof p.variants)[number] | undefined>(
               (best, v) => (!best || Number(v.price.amount) < Number(best.price.amount) ? v : best),
               undefined,
@@ -73,7 +75,7 @@ export default function Collection() {
                         className="absolute top-4 right-4 bg-[#c99b6f] text-[#1B1113] text-[10px] font-bold uppercase px-3 py-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.2)]"
                         style={{ letterSpacing: '0.1em' }}
                       >
-                        Fall Sale
+                        {sale?.name ?? 'Sale'}
                       </span>
                     )}
                     {isCampaign && (

@@ -7,6 +7,8 @@ import type { Currency } from './catalog'
 
 export const SHIPPING = data
 
+export type ShippingData = typeof data
+
 export interface ShipCountry {
   code: string
   name: string
@@ -32,8 +34,9 @@ export function currencyFor(country: string): Currency {
   return zoneOf(country)?.currency === 'CAD' ? 'CAD' : 'USD'
 }
 
-export function shippingRate(country: string): number | null {
-  return zoneOf(country)?.rate ?? null
+// rates come from the live settings when given (they're edited in the dashboard)
+export function shippingRate(country: string, live: ShippingData = data): number | null {
+  return live.zones.find((z) => z.countries.includes(country))?.rate ?? null
 }
 
 const CANADIAN_ZONES = /^America\/(Toronto|Montreal|Vancouver|Edmonton|Winnipeg|Halifax|St_Johns|Regina|Moncton|Glace_Bay|Goose_Bay|Whitehorse|Dawson|Dawson_Creek|Creston|Fort_Nelson|Yellowknife|Iqaluit|Rankin_Inlet|Resolute|Cambridge_Bay|Inuvik|Swift_Current|Atikokan|Blanc-Sablon|Nipigon|Thunder_Bay|Rainy_River)$/

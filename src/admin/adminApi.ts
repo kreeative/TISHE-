@@ -136,3 +136,83 @@ export function cents(amount: number, currency = 'CAD'): string {
 export function shortDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' })
 }
+
+// ---------------------------------------------------------------------------
+// Editing the store: products, promo codes, site settings, shipping
+// ---------------------------------------------------------------------------
+
+export type Currency = 'USD' | 'CAD'
+
+export interface CodeRule {
+  code: string
+  kind: 'percent' | 'amount' | 'free_shipping'
+  percent?: number
+  amount?: Record<Currency, number>
+  minSubtotal?: Record<Currency, number>
+  firstOrderOnly?: boolean
+  returningOnly?: boolean
+  oncePerCustomer?: boolean
+  active: boolean
+  startsAt?: string
+  endsAt?: string
+  label: string
+}
+
+export interface EditVariant {
+  id: string
+  title: string
+  availableForSale: boolean
+  price: Record<Currency, string>
+  compareAtPrice: Record<Currency, string> | null
+  selectedOptions: { name: string; value: string }[]
+}
+
+export interface EditMedia {
+  type: 'image' | 'video' | 'external_video'
+  url: string
+  previewUrl: string | null
+  poster?: string | null
+  altText: string | null
+}
+
+export interface EditProduct {
+  id: string
+  title: string
+  handle: string
+  supplier: string
+  hidden?: boolean
+  descriptionHtml: string
+  tags: string[]
+  media: EditMedia[]
+  options: { name: string; values: string[] }[]
+  variants: EditVariant[]
+}
+
+export interface StoreDoc {
+  updatedAt: string
+  products: EditProduct[]
+  discounts: CodeRule[]
+  site: {
+    announcements: string[]
+    sale: { name: string; banner: string; endsAt: string; handles: string[] } | null
+  }
+  shipping: {
+    zones: { id: string; label: string; currency: Currency; rate: number; countries: string[] }[]
+  }
+}
+
+type DocResponse = { doc: StoreDoc }
+
+export const storeApi = {
+  load: (t: string) => api<{ doc: StoreDoc; usage: Record<string, number>; blob: boolean }>('admin', { action: 'store' }, t),
+  saveProduct: (t: string, product: Partial<EditProduct>) => api<DocResponse>('admin', { action: 'saveProduct', product }, t),
+  deleteProduct: (t: string, id: string) => api<DocResponse>('admin', { action: 'deleteProduct', id }, t),
+  moveProduct: (t: string, id: string, direction: 'up' | 'down') => api<DocResponse>('admin', { action: 'moveProduct', id, direction }, t),
+  saveCode: (t: string, rule: Partial<CodeRule>, previousCode?: string) =>
+    api<DocResponse>('admin', { action: 'saveCode', rule, previousCode }, t),
+  deleteCode: (t: string, code: string) => api<DocResponse>('admin', { action: 'deleteCode', code }, t),
+  saveSite: (t: string, site: StoreDoc['site']) => api<DocResponse>('admin', { action: 'saveSite', ...site }, t),
+  saveShipping: (t: string, rates: Record<string, number>) => api<DocResponse>('admin', { action: 'saveShipping', rates }, t),
+  upload: (t: string, handle: string, full: string, thumb: string) =>
+    api<{ url: string; thumb: string }>('admin', { action: 'upload', handle, full, thumb }, t),
+}

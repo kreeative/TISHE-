@@ -8,12 +8,13 @@ import Reveal from './Reveal'
 import { trackAddToCart, trackViewItem } from '../lib/analytics'
 import type { ProductMedia, ProductVariant } from '../lib/catalog'
 import { formatMoney, formatMoneyShort } from '../lib/money'
-import { SALE, formatTimeLeft, isSaleProduct } from '../lib/sale'
+import { formatTimeLeft, isSaleProduct } from '../lib/sale'
 import { useSaleClock } from './SaleCountdown'
 import { Stars, reviewCountLabel } from './Reviews'
 import { useReviews } from '../lib/useReviews'
 import { findVariantByTitle, parseShopTheModel, selectionOf } from '../lib/shopTheModel'
-import { shippingRate } from '../lib/shipping'
+import { shippingRate, type ShippingData } from '../lib/shipping'
+import type { Currency } from '../lib/catalog'
 
 // Best-selling combination, flagged with a badge on the option pills.
 // Values are matched on digits only, so 18" / 18 inch / 18 all match.
@@ -35,11 +36,19 @@ function isHotCombination(selected: Record<string, string>): boolean {
 }
 
 // one line under the button: this shopper's shipping rate and the free-shipping code
-function shipNote(country: string, currency: string): string {
-  const rate = shippingRate(country)
+function shipNote(
+  country: string,
+  currency: Currency,
+  shipping: ShippingData,
+  free: { code: string; minSubtotal: Record<Currency, number> | null; firstOrderOnly: boolean } | null,
+): string {
+  const rate = shippingRate(country, shipping)
   const where = new Intl.DisplayNames(['en'], { type: 'region' }).of(country) ?? country
-  const minimum = currency === 'CAD' ? 'CA$280' : 'US$200'
-  return `${rate === null ? 'Shipping is shown in your bag.' : `Shipping to ${where}: ${formatMoneyShort(rate, currency)}.`} First order over ${minimum} ships free with code FREESHIP200.`
+  const base = rate === null ? 'Shipping is shown in your bag.' : `Shipping to ${where}: ${formatMoneyShort(rate, currency)}.`
+  if (!free) return base
+  const min = free.minSubtotal?.[currency]
+  const order = free.firstOrderOnly ? 'First order' : 'Orders'
+  return `${base} ${min ? `${order} over ${formatMoneyShort(min, currency)}` : order} ${min ? 'ships' : 'ship'} free with code ${free.code}.`
 }
 
 function findVariant(variants: ProductVariant[], selection: Record<string, string>): ProductVariant | undefined {
@@ -49,7 +58,7 @@ function findVariant(variants: ProductVariant[], selection: Record<string, strin
 export default function ProductPage() {
   const { handle } = useParams<{ handle: string }>()
   const { product, loading, error } = useProduct(handle)
-  const { addToCart, cartLoading, cartError, country, currency } = useStore()
+  const { addToCart, cartLoading, cartError, country, currency, shipping, freeShipping } = useStore()
   const [selection, setSelection] = useState<Record<string, string>>({})
   const [activeImage, setActiveImage] = useState(0)
   const [qty, setQty] = useState(1)
@@ -96,7 +105,7 @@ export default function ProductPage() {
   // a sale product only shows its old price while the countdown is running
   const saleClock = useSaleClock()
   const reviews = useReviews()
-  const saleProduct = isSaleProduct(handle)
+  const saleProduct = isSaleProduct(saleClock.sale, handle)
   const saleRunning = saleProduct && saleClock.ms > 0
   const showCompare = !!comparePrice && saving > 0 && (!saleProduct || saleRunning)
   // gallery: full media list (images + videos) with image-only fallback
@@ -263,7 +272,7 @@ export default function ProductPage() {
             {saleRunning && (
               <p className="mt-3 flex items-center gap-2 text-xs font-semibold text-[#5A3224]" style={{ fontVariantNumeric: 'tabular-nums' }}>
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#c99b6f]" />
-                {SALE.name} ends in {formatTimeLeft(saleClock)}
+                {saleClock.sale?.name} ends in {formatTimeLeft(saleClock)}
               </p>
             )}
 
@@ -367,7 +376,7 @@ export default function ProductPage() {
             {/* Shipping is no longer included in the price, so say so here
                 rather than letting it surprise her at the checkout step. */}
             <p className="mt-3 text-xs text-[#1B1113]/50">
-              {shipNote(country, currency)}
+              {shipNote(country, currency, shipping, freeShipping)}
             </p>
 
             {/* Full description stays on the page (and indexable) but closed,

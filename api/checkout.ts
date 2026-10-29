@@ -5,8 +5,8 @@ import { stripe, SOURCE } from './_lib/stripe.js'
 import { needsHistory, parsePriceRequest, price } from './_lib/pricing.js'
 import { historyFor } from './_lib/orders.js'
 import { stripeTaxRate } from './_lib/tax.js'
-import { shippingData } from './_lib/catalog.js'
 import { absolute, money } from './_lib/templates.js'
+import { loadStore } from './_lib/store.js'
 
 // POST { action: 'quote' | 'create', items, country, province, code, email }
 //   quote  → the totals for the bag, to show before paying
@@ -14,8 +14,9 @@ import { absolute, money } from './_lib/templates.js'
 export default handler(async (request) => {
   const body = await readBody(request)
   const req = parsePriceRequest(body)
-  const history = needsHistory(req) && req.email ? await historyFor(req.email) : null
-  const priced = price(req, history)
+  const doc = await loadStore()
+  const history = needsHistory(req, doc) && req.email ? await historyFor(req.email) : null
+  const priced = price(req, history, doc)
 
   if (str(body.action) === 'quote') {
     return json({
@@ -34,7 +35,7 @@ export default handler(async (request) => {
   const taxRates = priced.tax ? [await stripeTaxRate(priced.tax)] : undefined
   const rule = priced.rule
   const site = env.siteUrl()
-  const province = shippingData().provinces.find((p) => p.code === req.province)
+  const province = doc.shipping.provinces.find((p) => p.code === req.province)
 
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = priced.lines.map((l) => ({
     quantity: l.quantity,
@@ -45,8 +46,8 @@ export default handler(async (request) => {
       product_data: {
         name: l.product.title,
         description:
-          rule?.kind === 'percent' && l.unit < l.originalUnit
-            ? `${l.variant.title} · ${rule.code} −${rule.percent}% (was ${money(l.originalUnit, priced.currency)})`
+          rule && l.unit < l.originalUnit
+            ? `${l.variant.title} · ${rule.code} (was ${money(l.originalUnit, priced.currency)})`
             : l.variant.title,
         images: l.product.featuredImage ? [absolute(l.product.featuredImage.thumb)] : undefined,
         metadata: {

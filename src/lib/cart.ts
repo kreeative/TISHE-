@@ -43,10 +43,10 @@ export function saveLines(lines: StoredLine[]) {
   }
 }
 
-export function buildCart(stored: StoredLine[], currency: Currency): Cart {
+export function buildCart(stored: StoredLine[], products: Product[], currency: Currency): Cart {
   const lines: CartLine[] = []
   for (const l of stored) {
-    const match = findVariantById(l.variantId, currency)
+    const match = findVariantById(products, l.variantId)
     if (!match || !match.variant.availableForSale) continue
     lines.push({ ...l, ...match, lineTotal: Number(match.variant.price.amount) * l.quantity })
   }

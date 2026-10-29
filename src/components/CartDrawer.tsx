@@ -33,7 +33,7 @@ const fieldClass =
 const labelClass = 'block text-[10px] font-semibold uppercase text-[#1B1113]/55 mb-1.5'
 
 export default function CartDrawer() {
-  const { cart, cartLoading, cartError, setLineQty, cartOpen, setCartOpen, checkout, customer, country, province, setShipTo } =
+  const { cart, cartLoading, cartError, setLineQty, cartOpen, setCartOpen, checkout, customer, country, province, setShipTo, shipping } =
     useStore()
   const lines = cart.lines
   const strands = Math.round(cart.subtotal)
@@ -101,7 +101,7 @@ export default function CartDrawer() {
     if (cartOpen && lines.length) void fetchQuote(appliedCode || codeInput.trim())
   }, [cartOpen, linesKey, country, province])
 
-  const rate = shippingRate(country)
+  const rate = shippingRate(country, shipping)
   const currency = cart.currencyCode
 
   const startCheckout = async () => {
