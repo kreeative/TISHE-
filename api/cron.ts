@@ -48,7 +48,7 @@ async function digest(toOrder: Order[], chase: Order[]): Promise<boolean> {
   blocks.push(button('Open the dashboard', dashboard))
   const count = detailed.length + chase.length
   return sendEmail({
-    to: env.ownerEmail(),
+    to: env.ownerEmails(),
     subject: `Today: ${count} ${count === 1 ? 'order needs' : 'orders need'} you`,
     tags: { type: 'daily_digest' },
     html: layout({ preheader: 'Your store to-do list for today', title: 'Your to-do list', body: blocks.join('') }),

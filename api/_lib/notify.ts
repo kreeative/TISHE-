@@ -83,7 +83,7 @@ export async function sendOrderEmails(order: Order): Promise<void> {
   const suppliers = supplierMessages(order)
   const dashboard = `${env.siteUrl()}/#/admin/orders/${order.id}`
   await sendEmail({
-    to: env.ownerEmail(),
+    to: env.ownerEmails(),
     replyTo: order.email || undefined,
     subject: `New order ${number} · ${money(order.total, order.currency)} · ${order.name || order.email}`,
     idempotencyKey: `order-alert/${order.id}`,

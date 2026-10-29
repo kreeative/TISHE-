@@ -26,8 +26,8 @@ export const env = {
   sessionSecret: () => required('SESSION_SECRET'),
   // who may sign in to the dashboard
   adminEmails: () => list(process.env.ADMIN_EMAILS || 'hello@theivorysukundu.com'),
-  // where new-order alerts and the daily digest go
-  ownerEmail: () => process.env.OWNER_EMAIL || 'hello@theivorysukundu.com',
+  // where new-order alerts and the daily to-do email go (comma-separated)
+  ownerEmails: () => list(process.env.OWNER_EMAIL || 'hello@theivorysukundu.com'),
   siteUrl: () => (process.env.SITE_URL || 'https://www.theivorysukundu.com').replace(/\/$/, ''),
   emailFrom: () => process.env.EMAIL_FROM || 'The Ivory Sukundu <orders@theivorysukundu.com>',
   replyTo: () => process.env.EMAIL_REPLY_TO || 'hello@theivorysukundu.com',
