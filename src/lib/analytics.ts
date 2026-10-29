@@ -136,9 +136,7 @@ export function trackAddToCart(item: ItemInfo) {
   })
 }
 
-// Fired as the visitor leaves for the Shopify-hosted checkout. This is the
-// last thing we can see; the purchase itself is reported by Shopify's own
-// TikTok and Meta channels.
+// Fired as the visitor leaves for the hosted checkout.
 export function trackBeginCheckout(value: number, currency: string, quantity: number) {
   if (GA4_ID) window.gtag?.('event', 'begin_checkout', { currency, value })
   window.ttq?.track('InitiateCheckout', { value, currency, quantity })
@@ -149,4 +147,18 @@ export function trackSignUp(source: string) {
   if (GA4_ID) window.gtag?.('event', 'sign_up', { method: source })
   window.ttq?.track('CompleteRegistration', { description: source })
   window.fbq?.('track', 'Lead', { content_name: source })
+}
+
+// Fired once on the thank-you page, after Stripe confirms the payment.
+export function trackPurchase(orderId: string, value: number, currency: string, items: ItemInfo[]) {
+  if (GA4_ID) {
+    window.gtag?.('event', 'purchase', {
+      transaction_id: orderId,
+      currency,
+      value,
+      items: items.map((i) => ({ item_id: i.id, item_name: i.name, price: i.price, quantity: i.quantity })),
+    })
+  }
+  window.ttq?.track('CompletePayment', { value, currency, content_type: 'product', contents: items.map((i) => ({ content_id: i.id, quantity: i.quantity })) })
+  window.fbq?.('track', 'Purchase', { value, currency, content_ids: items.map((i) => i.id), content_type: 'product' })
 }

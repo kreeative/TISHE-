@@ -6,13 +6,14 @@ import { useStore } from './StoreContext'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
 import { trackAddToCart, trackViewItem } from '../lib/analytics'
-import type { ProductMedia, ShopifyVariant } from '../lib/shopify'
+import type { ProductMedia, ProductVariant } from '../lib/catalog'
 import { formatMoney, formatMoneyShort } from '../lib/money'
 import { SALE, formatTimeLeft, isSaleProduct } from '../lib/sale'
 import { useSaleClock } from './SaleCountdown'
 import { Stars, reviewCountLabel } from './Reviews'
 import { useReviews } from '../lib/useReviews'
 import { findVariantByTitle, parseShopTheModel, selectionOf } from '../lib/shopTheModel'
+import { shippingRate } from '../lib/shipping'
 
 // Best-selling combination, flagged with a badge on the option pills.
 // Values are matched on digits only, so 18" / 18 inch / 18 all match.
@@ -33,14 +34,22 @@ function isHotCombination(selected: Record<string, string>): boolean {
   return flagged.length > 0 && flagged.every((n) => isHotValue(n, selected[n]))
 }
 
-function findVariant(variants: ShopifyVariant[], selection: Record<string, string>): ShopifyVariant | undefined {
+// one line under the button: this shopper's shipping rate and the free-shipping code
+function shipNote(country: string, currency: string): string {
+  const rate = shippingRate(country)
+  const where = new Intl.DisplayNames(['en'], { type: 'region' }).of(country) ?? country
+  const minimum = currency === 'CAD' ? 'CA$280' : 'US$200'
+  return `${rate === null ? 'Shipping is shown in your bag.' : `Shipping to ${where}: ${formatMoneyShort(rate, currency)}.`} First order over ${minimum} ships free with code FREESHIP200.`
+}
+
+function findVariant(variants: ProductVariant[], selection: Record<string, string>): ProductVariant | undefined {
   return variants.find((v) => v.selectedOptions.every((o) => selection[o.name] === o.value))
 }
 
 export default function ProductPage() {
   const { handle } = useParams<{ handle: string }>()
   const { product, loading, error } = useProduct(handle)
-  const { addToCart, cartLoading, cartError } = useStore()
+  const { addToCart, cartLoading, cartError, country, currency } = useStore()
   const [selection, setSelection] = useState<Record<string, string>>({})
   const [activeImage, setActiveImage] = useState(0)
   const [qty, setQty] = useState(1)
@@ -81,7 +90,7 @@ export default function ProductPage() {
   const active = Object.keys(selection).length ? selection : initialSelection
   const matchedVariant = product ? findVariant(product.variants, active) : undefined
   const displayPrice = matchedVariant?.price ?? product?.priceRange.minVariantPrice
-  // crossed-out "was" price, only when Shopify has a higher compare-at on this variant
+  // crossed-out "was" price, only when the catalog has a higher compare-at on this variant
   const comparePrice = matchedVariant?.compareAtPrice
   const saving = comparePrice && displayPrice ? Number(comparePrice.amount) - Number(displayPrice.amount) : 0
   // a sale product only shows its old price while the countdown is running
@@ -96,7 +105,7 @@ export default function ProductPage() {
     : (product?.images.length ? product.images : product?.featuredImage ? [product.featuredImage] : []).map((img) => ({
         type: 'image' as const,
         url: img.url,
-        previewUrl: img.url,
+        previewUrl: img.thumb,
         altText: img.altText,
       }))
   // photos whose alt text ends in "Shop the model: <variant>" get a button
@@ -143,7 +152,7 @@ export default function ProductPage() {
                 <video
                   key={gallery[activeImage].url}
                   src={gallery[activeImage].url}
-                  poster={gallery[activeImage].previewUrl ?? undefined}
+                  poster={gallery[activeImage].poster ?? gallery[activeImage].previewUrl ?? undefined}
                   controls
                   playsInline
                   preload="metadata"
@@ -162,6 +171,12 @@ export default function ProductPage() {
                 gallery[activeImage] && (
                   <img
                     src={gallery[activeImage].url}
+                    srcSet={
+                      gallery[activeImage].previewUrl
+                        ? `${gallery[activeImage].previewUrl} 640w, ${gallery[activeImage].url} 1600w`
+                        : undefined
+                    }
+                    sizes="(min-width: 1024px) 50vw, 100vw"
                     alt={gallery[activeImage].altText ?? product.title}
                     className="w-full aspect-[4/5] object-cover"
                   />
@@ -352,7 +367,7 @@ export default function ProductPage() {
             {/* Shipping is no longer included in the price, so say so here
                 rather than letting it surprise her at the checkout step. */}
             <p className="mt-3 text-xs text-[#1B1113]/50">
-              Shipping calculated at checkout. First order over $200 ships free with code FREESHIP200.
+              {shipNote(country, currency)}
             </p>
 
             {/* Full description stays on the page (and indexable) but closed,

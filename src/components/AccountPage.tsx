@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useStore } from './StoreContext'
-import { circleStatus, customerRecover } from '../lib/customer'
+import { circleStatus, redeemSignInLink, requestSignInLink } from '../lib/account'
 import { ctaGlassOnLight, ctaTracking } from './cta'
-import PasswordInput from './PasswordInput'
 import Reveal from './Reveal'
 import { formatMoney } from '../lib/money'
 
@@ -34,24 +34,38 @@ function formatDate(iso: string) {
 }
 
 export default function AccountPage() {
-  const { customer, customerLoading, login, register, logout } = useStore()
-  const [tab, setTab] = useState<'signin' | 'create'>('signin')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
+  const { customer, customerLoading, signIn, logout } = useStore()
+  const { search } = useLocation()
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const [recoverMode, setRecoverMode] = useState(false)
-  const [recoverSent, setRecoverSent] = useState(false)
+
+  // the sign-in email links to /#/account?login=<token>
+  const loginToken = new URLSearchParams(search).get('login')
+  const redeemed = useRef(false)
+  useEffect(() => {
+    if (!loginToken || redeemed.current) return
+    redeemed.current = true
+    setBusy(true)
+    redeemSignInLink(loginToken)
+      .then((session) => signIn(session))
+      .catch((err) => setError(err instanceof Error ? err.message : 'This link has expired. Ask for a new one below.'))
+      .finally(() => {
+        setBusy(false)
+        navigate('/account', { replace: true })
+      })
+  }, [loginToken, signIn, navigate])
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!email.trim()) return
     setError(null)
     setBusy(true)
     try {
-      if (tab === 'create') await register(firstName.trim(), lastName.trim(), email.trim(), password)
-      else await login(email.trim(), password)
+      await requestSignInLink(email.trim())
+      setSent(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {
@@ -96,7 +110,7 @@ export default function AccountPage() {
                   <div className="flex items-baseline justify-between text-sm">
                     <span className="font-semibold">{status.tier}</span>
                     <span className="text-[#1B1113]/55">
-                      {formatMoney(String(Math.max(0, status.next.min - status.spend)), 'USD')} to {status.next.name}
+                      {formatMoney(Math.max(0, status.next.min - status.spend), 'USD')} to {status.next.name}
                     </span>
                   </div>
                   <div className="mt-2 h-1 bg-[#5A3224]/15 overflow-hidden">
@@ -127,14 +141,12 @@ export default function AccountPage() {
               ) : (
                 <div className="mt-5 divide-y divide-[#5A3224]/12 border-t border-b border-[#5A3224]/12">
                   {customer.orders.map((o) => (
-                    <div key={o.id} className="py-4 flex flex-wrap items-baseline gap-x-6 gap-y-1">
-                      <span className="font-semibold text-sm w-20">{o.name}</span>
-                      <span className="text-sm text-[#1B1113]/55">{formatDate(o.processedAt)}</span>
-                      <span className="text-sm text-[#1B1113]/55 capitalize">
-                        {(o.fulfillmentStatus || 'processing').toLowerCase().replace(/_/g, ' ')}
-                      </span>
+                    <div key={o.number} className="py-4 flex flex-wrap items-baseline gap-x-6 gap-y-1">
+                      <span className="font-semibold text-sm w-20">{o.number}</span>
+                      <span className="text-sm text-[#1B1113]/55">{formatDate(o.date)}</span>
+                      <span className="text-sm text-[#1B1113]/55">{o.status}</span>
                       <span className="ml-auto text-sm font-semibold" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                        {formatMoney(o.total.amount, o.total.currencyCode)}
+                        {formatMoney(o.total, o.currency)}
                       </span>
                     </div>
                   ))}
@@ -149,7 +161,7 @@ export default function AccountPage() {
                 Continue Shopping
               </a>
               <button
-                onClick={() => void logout()}
+                onClick={logout}
                 className="text-xs font-medium text-[#1B1113]/45 hover:text-[#5A3224] uppercase transition-colors"
                 style={{ letterSpacing: '0.08em' }}
               >
@@ -169,126 +181,55 @@ export default function AccountPage() {
           <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             The Sukundu Circle
           </p>
-          <h1 className="font-display text-4xl sm:text-5xl mt-4 leading-[1.16]">
-            {tab === 'signin' ? 'Welcome back' : 'Join the Circle'}
-          </h1>
+          <h1 className="font-display text-4xl sm:text-5xl mt-4 leading-[1.16]">Your account</h1>
           <p className="mt-5 text-sm text-[#1B1113]/70 leading-[1.85]">
-            {tab === 'signin'
-              ? 'Sign in to see your member card, strands, and orders.'
-              : 'Free forever. Earn a strand for every dollar, unlock tiers, and keep your card on file.'}
+            No password to remember. Enter the email you order with and we'll send you a link that signs you in
+            to see your member card, strands and orders.
           </p>
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="flex gap-8 mt-10 border-b border-[#5A3224]/15">
-            {(['signin', 'create'] as const).map((t) => (
+          {sent ? (
+            <div className="mt-10 border-t border-[#5A3224]/15 pt-6">
+              <p className="text-sm text-[#1B1113]/75 leading-[1.85]">
+                Check your inbox. If <strong>{email.trim()}</strong> is on file, a sign-in link is on its way. It expires in
+                30 minutes. Not there? Look in your spam folder.
+              </p>
               <button
-                key={t}
-                onClick={() => {
-                  setTab(t)
-                  setError(null)
-                }}
-                className={`pb-3 -mb-px text-xs font-semibold uppercase whitespace-nowrap transition-colors border-b-2 ${
-                  tab === t
-                    ? 'border-[#5A3224] text-[#1B1113]'
-                    : 'border-transparent text-[#1B1113]/50 hover:text-[#1B1113]/80'
-                }`}
-                style={{ letterSpacing: '0.08em' }}
+                onClick={() => setSent(false)}
+                className="mt-6 text-xs font-medium text-[#1B1113]/50 hover:text-[#5A3224] underline underline-offset-4 transition-colors"
               >
-                {t === 'signin' ? 'Sign In' : 'Create Account'}
+                Use a different email
               </button>
-            ))}
-          </div>
-
-          <form className="flex flex-col gap-4 mt-8" onSubmit={submit}>
-            {tab === 'create' && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="sr-only" htmlFor="acc-first">First name</label>
-                  <input id="acc-first" required value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First name" className={inputClass} autoComplete="given-name" />
-                </div>
-                <div>
-                  <label className="sr-only" htmlFor="acc-last">Last name</label>
-                  <input id="acc-last" required value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last name" className={inputClass} autoComplete="family-name" />
-                </div>
-              </div>
-            )}
-            <label className="sr-only" htmlFor="acc-email">Email</label>
-            <input id="acc-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email address" className={inputClass} autoComplete="email" />
-            <PasswordInput
-              id="acc-pass"
-              value={password}
-              onChange={setPassword}
-              placeholder="Password"
-              autoComplete={tab === 'create' ? 'new-password' : 'current-password'}
-            />
-
-            {error && <p className="text-sm text-[#8a2d1f] leading-relaxed">{error}</p>}
-
-            <button type="submit" disabled={busy || customerLoading} className={`${ctaGlassOnLight} w-full mt-2 disabled:opacity-50`} style={ctaTracking}>
-              {busy ? 'One moment…' : tab === 'signin' ? 'Sign In' : 'Create My Account'}
-            </button>
-
-            {tab === 'signin' && (
-              <button
-                type="button"
-                onClick={() => {
-                  setRecoverMode(true)
-                  setRecoverSent(false)
-                  setError(null)
-                }}
-                className="self-start text-xs font-medium text-[#1B1113]/50 hover:text-[#5A3224] underline underline-offset-4 transition-colors"
-              >
-                Forgot your password?
-              </button>
-            )}
-          </form>
-
-          {recoverMode && (
-            <div className="mt-8 border-t border-[#5A3224]/15 pt-6">
-              {recoverSent ? (
-                <p className="text-sm text-[#1B1113]/70 leading-[1.85]">
-                  If an account exists for that email, a reset link is on its way. Check your inbox
-                  (and spam folder), follow the link to choose a new password, then come back here to
-                  sign in.
-                </p>
-              ) : (
-                <form
-                  className="flex flex-col gap-4"
-                  onSubmit={async (e) => {
-                    e.preventDefault()
-                    if (!email.trim()) return
-                    setBusy(true)
-                    await customerRecover(email.trim())
-                    setBusy(false)
-                    setRecoverSent(true)
-                  }}
-                >
-                  <p className="text-sm text-[#1B1113]/70 leading-[1.85]">
-                    Enter your email and we'll send you a secure link to choose a new password.
-                  </p>
-                  <label className="sr-only" htmlFor="recover-email">Email</label>
-                  <input
-                    id="recover-email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email address"
-                    className={inputClass}
-                    autoComplete="email"
-                  />
-                  <button type="submit" disabled={busy} className={`${ctaGlassOnLight} w-full disabled:opacity-50`} style={ctaTracking}>
-                    {busy ? 'Sending…' : 'Send Reset Link'}
-                  </button>
-                </form>
-              )}
             </div>
+          ) : (
+            <form className="flex flex-col gap-4 mt-10" onSubmit={submit}>
+              <label className="sr-only" htmlFor="acc-email">Email</label>
+              <input
+                id="acc-email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email address"
+                className={inputClass}
+                autoComplete="email"
+              />
+              {error && <p className="text-sm text-[#8a2d1f] leading-relaxed">{error}</p>}
+              <button
+                type="submit"
+                disabled={busy || customerLoading}
+                className={`${ctaGlassOnLight} w-full mt-2 disabled:opacity-50`}
+                style={ctaTracking}
+              >
+                {busy ? 'One moment…' : 'Email Me a Sign-in Link'}
+              </button>
+            </form>
           )}
 
           <p className="mt-6 text-[11px] text-[#1B1113]/45 leading-relaxed">
-            Your password is encrypted and stored by our secure commerce provider. We never see or
-            keep it ourselves.
+            Your account is created with your first order. Membership is free: every $1 you spend earns a
+            strand, and strands unlock the Gold and Heritage tiers.
           </p>
         </Reveal>
       </div>

@@ -1,190 +1,202 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import {
-  shopifyConfigured,
-  ensureMarket,
-  createCart,
-  getCart,
-  addCartLine,
-  updateCartLine,
-  removeCartLine,
-  type ShopifyCart,
-} from '../lib/shopify'
-import {
-  customerLogin,
-  customerLogout,
-  customerRegister,
-  fetchCustomer,
-  type SukunduCustomer,
-} from '../lib/customer'
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { buildCart, loadLines, saveLines, type Cart, type StoredLine } from '../lib/cart'
+import type { Currency } from '../lib/catalog'
+import { currencyFor, guessCountry, shipsTo } from '../lib/shipping'
+import { api } from '../lib/api'
+import { shopifyCheckoutUrl } from '../lib/shopify'
+import { trackBeginCheckout } from '../lib/analytics'
+import { clearSession, fetchCustomer, saveSession, savedSession, type Customer } from '../lib/account'
 
-const CART_ID_KEY = 'sukundu_cart_id'
-const TOKEN_KEY = 'sukundu_customer_token'
+// Stripe takes payments once VITE_CHECKOUT=stripe is set in Vercel; until
+// then the bag is handed to the old Shopify checkout.
+export const STRIPE_CHECKOUT = import.meta.env.VITE_CHECKOUT === 'stripe'
 
-interface StoreState {
-  cart: ShopifyCart | null
-  cartLoading: boolean
-  cartError: string | null
-  addToCart: (merchandiseId: string, quantity?: number) => Promise<void>
-  setLineQty: (lineId: string, quantity: number) => Promise<void>
-  cartOpen: boolean
-  setCartOpen: (open: boolean) => void
-  customer: SukunduCustomer | null
-  customerLoading: boolean
-  login: (email: string, password: string) => Promise<void>
-  register: (firstName: string, lastName: string, email: string, password: string) => Promise<void>
-  logout: () => Promise<void>
-  refreshCustomer: () => Promise<void>
-  adoptToken: (token: { accessToken: string; expiresAt: string }) => Promise<void>
+export interface CheckoutDetails {
+  code?: string
+  email?: string
 }
 
-const StoreContext = createContext<StoreState | null>(null)
+const PREFS_KEY = 'tis-ship-to'
 
-function savedToken(): string | null {
+function savedShipTo(): { country: string; province: string } | null {
   try {
-    const raw = localStorage.getItem(TOKEN_KEY)
-    if (!raw) return null
-    const parsed = JSON.parse(raw) as { accessToken: string; expiresAt: string }
-    if (new Date(parsed.expiresAt).getTime() < Date.now()) {
-      localStorage.removeItem(TOKEN_KEY)
-      return null
-    }
-    return parsed.accessToken
+    const s = JSON.parse(localStorage.getItem(PREFS_KEY) ?? 'null')
+    return s && shipsTo(s.country) ? s : null
   } catch {
     return null
   }
 }
 
+interface StoreState {
+  // where the order ships, which also sets the currency (CAD for Canada, USD elsewhere)
+  country: string
+  province: string
+  currency: Currency
+  setShipTo: (country: string, province?: string) => void
+  cart: Cart
+  cartLoading: boolean
+  cartError: string | null
+  addToCart: (variantId: string, quantity?: number) => Promise<void>
+  setLineQty: (variantId: string, quantity: number) => Promise<void>
+  clearCart: () => void
+  cartOpen: boolean
+  setCartOpen: (open: boolean) => void
+  checkout: (details: CheckoutDetails) => Promise<void>
+  customer: Customer | null
+  customerLoading: boolean
+  signIn: (session: { token: string; expiresAt: number }) => Promise<void>
+  logout: () => void
+  refreshCustomer: () => Promise<void>
+}
+
+const StoreContext = createContext<StoreState | null>(null)
+
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<ShopifyCart | null>(null)
+  const [shipTo, setShipToState] = useState(() => savedShipTo() ?? { country: guessCountry(), province: 'ON' })
+  const [lines, setLines] = useState<StoredLine[]>(() => loadLines())
   const [cartLoading, setCartLoading] = useState(false)
   const [cartError, setCartError] = useState<string | null>(null)
   const [cartOpen, setCartOpen] = useState(false)
-  const [customer, setCustomer] = useState<SukunduCustomer | null>(null)
+  const [customer, setCustomer] = useState<Customer | null>(null)
   const [customerLoading, setCustomerLoading] = useState(false)
 
-  // ask Shopify which country the visitor is in before anything asks for a
-  // price, so the first render is already in their currency
-  useEffect(() => {
-    void ensureMarket()
-  }, [])
+  const currency = currencyFor(shipTo.country)
+  const cart = useMemo(() => buildCart(lines, currency), [lines, currency])
 
-  // restore an existing cart on load, if one was started before
-  useEffect(() => {
-    if (!shopifyConfigured) return
-    const savedId = localStorage.getItem(CART_ID_KEY)
-    if (!savedId) return
-    getCart(savedId)
-      .then((c) => {
-        if (c) setCart(c)
-        else localStorage.removeItem(CART_ID_KEY)
-      })
-      .catch(() => localStorage.removeItem(CART_ID_KEY))
-  }, [])
-
-  // restore the member session, if the token is still valid
-  useEffect(() => {
-    if (!shopifyConfigured) return
-    const token = savedToken()
-    if (!token) return
-    setCustomerLoading(true)
-    fetchCustomer(token)
-      .then((c) => {
-        if (c) setCustomer(c)
-        else localStorage.removeItem(TOKEN_KEY)
-      })
-      .catch(() => undefined)
-      .finally(() => setCustomerLoading(false))
-  }, [])
-
-  const login = async (email: string, password: string) => {
-    setCustomerLoading(true)
+  const setShipTo = (country: string, province?: string) => {
+    const next = { country, province: province ?? shipTo.province }
+    setShipToState(next)
     try {
-      const token = await customerLogin(email, password)
-      localStorage.setItem(TOKEN_KEY, JSON.stringify(token))
-      setCustomer(await fetchCustomer(token.accessToken))
-    } finally {
-      setCustomerLoading(false)
+      localStorage.setItem(PREFS_KEY, JSON.stringify(next))
+    } catch {
+      // private mode
     }
   }
 
-  const register = async (firstName: string, lastName: string, email: string, password: string) => {
-    setCustomerLoading(true)
-    try {
-      const token = await customerRegister(firstName, lastName, email, password)
-      localStorage.setItem(TOKEN_KEY, JSON.stringify(token))
-      setCustomer(await fetchCustomer(token.accessToken))
-    } finally {
-      setCustomerLoading(false)
+  // ask the server which country the visitor is in, unless they already chose
+  useEffect(() => {
+    if (savedShipTo()) return
+    api<{ country: string }>('geo')
+      .then(({ country }) => {
+        if (country && shipsTo(country) && !savedShipTo()) setShipToState((s) => ({ ...s, country }))
+      })
+      .catch(() => {
+        // keep the guess
+      })
+  }, [])
+
+  const update = (next: StoredLine[]) => {
+    setLines(next)
+    saveLines(next)
+  }
+
+  // another tab changed the bag
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === 'tis-cart') setLines(loadLines())
     }
-  }
-
-  const logout = async () => {
-    const token = savedToken()
-    localStorage.removeItem(TOKEN_KEY)
-    setCustomer(null)
-    if (token) await customerLogout(token)
-  }
-
-  const adoptToken = async (token: { accessToken: string; expiresAt: string }) => {
-    localStorage.setItem(TOKEN_KEY, JSON.stringify(token))
-    setCustomer(await fetchCustomer(token.accessToken))
-  }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
 
   const refreshCustomer = async () => {
-    const token = savedToken()
+    const token = savedSession()
     if (!token) return
-    const c = await fetchCustomer(token)
-    if (c) setCustomer(c)
-  }
-
-  const addToCart = async (merchandiseId: string, quantity = 1) => {
-    setCartLoading(true)
-    setCartError(null)
+    setCustomerLoading(true)
     try {
-      const next = cart
-        ? await addCartLine(cart.id, merchandiseId, quantity)
-        : await createCart(merchandiseId, quantity)
-      localStorage.setItem(CART_ID_KEY, next.id)
-      setCart(next)
-      setCartOpen(true)
-    } catch (err) {
-      setCartError(err instanceof Error ? err.message : 'Could not add that to your bag.')
+      setCustomer(await fetchCustomer(token))
+    } catch {
+      clearSession()
+      setCustomer(null)
     } finally {
-      setCartLoading(false)
+      setCustomerLoading(false)
     }
   }
 
-  const setLineQty = async (lineId: string, quantity: number) => {
-    if (!cart) return
+  // restore the member session, if it is still valid
+  useEffect(() => {
+    void refreshCustomer()
+  }, [])
+
+  const signIn = async (session: { token: string; expiresAt: number }) => {
+    saveSession(session.token, session.expiresAt)
+    await refreshCustomer()
+  }
+
+  const logout = () => {
+    clearSession()
+    setCustomer(null)
+  }
+
+  const addToCart = async (variantId: string, quantity = 1) => {
+    setCartError(null)
+    const existing = lines.find((l) => l.variantId === variantId)
+    update(
+      existing
+        ? lines.map((l) => (l.variantId === variantId ? { ...l, quantity: l.quantity + quantity } : l))
+        : [...lines, { variantId, quantity }],
+    )
+    setCartOpen(true)
+  }
+
+  const setLineQty = async (variantId: string, quantity: number) => {
+    setCartError(null)
+    update(
+      quantity <= 0
+        ? lines.filter((l) => l.variantId !== variantId)
+        : lines.map((l) => (l.variantId === variantId ? { ...l, quantity } : l)),
+    )
+  }
+
+  const clearCart = () => update([])
+
+  const checkout = async (details: CheckoutDetails) => {
+    if (!cart.lines.length) return
     setCartLoading(true)
     setCartError(null)
+    trackBeginCheckout(cart.subtotal, cart.currencyCode, cart.totalQuantity)
+    const items = cart.lines.map((l) => ({ variantId: l.variantId, quantity: l.quantity }))
     try {
-      const next = quantity <= 0 ? await removeCartLine(cart.id, lineId) : await updateCartLine(cart.id, lineId, quantity)
-      setCart(next)
+      const url = STRIPE_CHECKOUT
+        ? (
+            await api<{ url: string }>('checkout', {
+              items,
+              country: shipTo.country,
+              province: shipTo.country === 'CA' ? shipTo.province : undefined,
+              code: details.code,
+              email: details.email || customer?.email,
+            })
+          ).url
+        : await shopifyCheckoutUrl(items)
+      window.location.href = url
     } catch (err) {
-      setCartError(err instanceof Error ? err.message : 'Could not update your bag.')
-    } finally {
+      setCartError(err instanceof Error ? err.message : 'Could not start checkout.')
       setCartLoading(false)
+      throw err
     }
   }
 
   return (
     <StoreContext.Provider
       value={{
+        country: shipTo.country,
+        province: shipTo.province,
+        currency,
+        setShipTo,
         cart,
         cartLoading,
         cartError,
         addToCart,
         setLineQty,
+        clearCart,
         cartOpen,
         setCartOpen,
+        checkout,
         customer,
         customerLoading,
-        login,
-        register,
+        signIn,
         logout,
         refreshCustomer,
-        adoptToken,
       }}
     >
       {children}

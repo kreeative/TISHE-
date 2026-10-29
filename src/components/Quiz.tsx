@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useStore } from './StoreContext'
 import { useProducts } from '../lib/useProducts'
-import type { ShopifyProduct } from '../lib/shopify'
+import type { Product } from '../lib/catalog'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import { formatMoneyShort } from '../lib/money'
 
@@ -60,7 +60,7 @@ const STEPS: Step[] = [
   },
 ]
 
-function matchProduct(products: ShopifyProduct[], archetype: Archetype): ShopifyProduct | undefined {
+function matchProduct(products: Product[], archetype: Archetype): Product | undefined {
   const { keywords } = ARCHETYPES[archetype]
   return products.find((p) => {
     const haystack = `${p.title} ${p.tags.join(' ')}`.toLowerCase()
@@ -88,7 +88,7 @@ export default function Quiz() {
   const done = step >= STEPS.length
 
   let recLength = '20"'
-  let result: ShopifyProduct | undefined
+  let result: Product | undefined
   let why = ''
   if (done) {
     const totals: Record<Archetype, number> = { straight: 0, curl: 0 }

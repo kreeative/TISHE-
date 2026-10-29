@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Mail } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
-import { subscribeEmail } from '../lib/shopify'
+import { subscribeEmail } from '../lib/subscribe'
 import { trackSignUp } from '../lib/analytics'
 
 // Legal pages: written in Shopify admin (Settings → Policies),
@@ -151,7 +151,7 @@ export default function Footer() {
                   if (!email.trim()) return
                   setJoined(true)
                   trackSignUp('footer')
-                  void subscribeEmail(email.trim())
+                  void subscribeEmail(email.trim(), 'footer')
                 }}
               >
                 <label className="sr-only" htmlFor="footer-email">Email address</label>

@@ -6,7 +6,7 @@ import { formatMoneyShort } from '../lib/money'
 import { isOnSale } from '../lib/sale'
 
 export default function Collection() {
-  const { products, loading, error } = useProducts()
+  const { products } = useProducts()
 
   return (
     <section id="collections" className="bg-[#FAF7F3] text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16">
@@ -22,22 +22,6 @@ export default function Collection() {
             Raw Vietnamese hair from a single donor, cuticle-aligned Indian hair, and glueless half wigs. Every texture is labelled exactly as it is.
           </p>
         </Reveal>
-
-        {loading && (
-          <p className="mt-16 text-sm text-[#1B1113]/50">Loading the collection…</p>
-        )}
-
-        {!loading && error && (
-          <p className="mt-16 text-sm text-[#1B1113]/50 max-w-md">
-            The shop isn't connected yet. Once products are added in Shopify, they'll appear here automatically.
-          </p>
-        )}
-
-        {!loading && !error && products.length === 0 && (
-          <p className="mt-16 text-sm text-[#1B1113]/50 max-w-md">
-            No products in the store yet. Add some in Shopify and they'll show up here automatically.
-          </p>
-        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12 sm:mt-16">
           {products.map((p, i) => {
@@ -72,7 +56,9 @@ export default function Collection() {
                   >
                     {p.featuredImage && (
                       <img
-                        src={p.featuredImage.url}
+                        src={p.featuredImage.thumb}
+                        srcSet={`${p.featuredImage.thumb} 640w, ${p.featuredImage.url} 1600w`}
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                         alt={p.featuredImage.altText ?? p.title}
                         loading="lazy"
                         className="w-full aspect-[4/5] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"

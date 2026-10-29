@@ -1,0 +1,20 @@
+{
+  "reviews": [
+    {
+      "id": "84559ce9-ab50-4fc9-a1f6-e21345ed81f8",
+      "rating": 5,
+      "body": "The quality of the highlights is incredible! I bleached them and then dyed them, but they still look flawless.",
+      "name": "Sophie N.",
+      "verified": true,
+      "createdAt": "2026-10-20T11:34:31.503Z",
+      "photos": [
+        { "thumb": "/media/reviews/sophie-n-1-sm.jpg", "full": "/media/reviews/sophie-n-1.jpg" }
+      ],
+      "look": {
+        "handle": "burmese-curly-bundles",
+        "variant": "3 Bundles / 22\"",
+        "label": "3 bundles of 22\" Burmese curly"
+      }
+    }
+  ]
+}

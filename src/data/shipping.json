@@ -1,0 +1,125 @@
+{
+  "note": "Canada pays in CAD; every other country pays in USD, the store base currency. International and Other rates are the old Shopify CA$38 and CA$50 converted at 1.40.",
+  "freeShippingCode": "FREESHIP200",
+  "freeShippingMinimum": {
+    "USD": 200,
+    "CAD": 280
+  },
+  "zones": [
+    {
+      "id": "domestic",
+      "label": "Canada",
+      "rate": 30,
+      "countries": [
+        "CA"
+      ],
+      "currency": "CAD"
+    },
+    {
+      "id": "international",
+      "label": "International",
+      "rate": 27,
+      "countries": [
+        "US",
+        "AE",
+        "AT",
+        "AU",
+        "BE",
+        "CH",
+        "CZ",
+        "DE",
+        "DK",
+        "ES",
+        "FI",
+        "FR",
+        "GB",
+        "HK",
+        "IE",
+        "IL",
+        "IT",
+        "JP",
+        "KR",
+        "MY",
+        "NL",
+        "NO",
+        "NZ",
+        "PL",
+        "PT",
+        "SE",
+        "SG"
+      ],
+      "currency": "USD"
+    },
+    {
+      "id": "other",
+      "label": "Africa and China",
+      "rate": 36,
+      "countries": [
+        "CI",
+        "EG",
+        "GH",
+        "GN",
+        "ML",
+        "MA",
+        "NG",
+        "SN",
+        "CN"
+      ],
+      "currency": "USD"
+    }
+  ],
+  "provinces": [
+    {
+      "code": "AB",
+      "name": "Alberta"
+    },
+    {
+      "code": "BC",
+      "name": "British Columbia"
+    },
+    {
+      "code": "MB",
+      "name": "Manitoba"
+    },
+    {
+      "code": "NB",
+      "name": "New Brunswick"
+    },
+    {
+      "code": "NL",
+      "name": "Newfoundland and Labrador"
+    },
+    {
+      "code": "NS",
+      "name": "Nova Scotia"
+    },
+    {
+      "code": "NT",
+      "name": "Northwest Territories"
+    },
+    {
+      "code": "NU",
+      "name": "Nunavut"
+    },
+    {
+      "code": "ON",
+      "name": "Ontario"
+    },
+    {
+      "code": "PE",
+      "name": "Prince Edward Island"
+    },
+    {
+      "code": "QC",
+      "name": "Quebec"
+    },
+    {
+      "code": "SK",
+      "name": "Saskatchewan"
+    },
+    {
+      "code": "YT",
+      "name": "Yukon"
+    }
+  ]
+}

@@ -24,10 +24,10 @@ export function reviewCountLabel(count: number): string {
 
 const dateFmt = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 
-// Published Judge.me reviews. Renders nothing until there is at least one.
+// Published reviews. Renders nothing until there is at least one.
 export default function Reviews() {
   const data = useReviews()
-  if (!data || data.count === 0) return null
+  if (data.count === 0) return null
 
   return (
     <section

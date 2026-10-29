@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { subscribeEmail } from '../lib/shopify'
+import { subscribeEmail } from '../lib/subscribe'
 import { trackSignUp } from '../lib/analytics'
 
 const STORAGE_KEY = 'tis-welcome-popup'
@@ -30,7 +30,7 @@ export default function WelcomePopup() {
     localStorage.setItem(STORAGE_KEY, 'joined')
     setJoined(true)
     trackSignUp('welcome_popup')
-    void subscribeEmail(email.trim())
+    void subscribeEmail(email.trim(), 'welcome_popup')
   }
 
   const copyCode = async () => {

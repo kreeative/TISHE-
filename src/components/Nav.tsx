@@ -16,7 +16,7 @@ export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { cart, setCartOpen, customer } = useStore()
-  const cartCount = cart?.totalQuantity ?? 0
+  const cartCount = cart.totalQuantity
   const location = useLocation()
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function Nav() {
           <Link
             to="/account"
             className="text-[#1B1113]/75 hover:text-[#5A3224] transition-colors"
-            aria-label={customer ? `Account: ${customer.firstName ?? customer.email}` : 'Account'}
+            aria-label={customer ? `Account: ${customer.firstName || customer.email}` : 'Account'}
           >
             <User size={20} strokeWidth={1.75} className={customer ? 'text-[#5A3224]' : undefined} />
           </Link>

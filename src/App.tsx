@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import Nav from './components/Nav'
@@ -15,13 +15,16 @@ import ProductPage from './components/ProductPage'
 import Footer from './components/Footer'
 import CartDrawer from './components/CartDrawer'
 import AccountPage from './components/AccountPage'
-import ResetPage from './components/ResetPage'
 import PolicyPage from './components/PolicyPage'
+import OrderConfirmed from './components/OrderConfirmed'
 import PageTransition from './components/PageTransition'
 import WelcomePopup from './components/WelcomePopup'
 import AnnouncementBar from './components/AnnouncementBar'
 import { StoreProvider } from './components/StoreContext'
 import { initAnalytics, trackPageView } from './lib/analytics'
+
+// the dashboard is only downloaded by whoever opens it
+const AdminApp = lazy(() => import('./admin/AdminApp'))
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -88,12 +91,41 @@ function AnimatedRoutes() {
         <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
         <Route path="/quiz" element={<PageTransition><Quiz /></PageTransition>} />
         <Route path="/account" element={<PageTransition><AccountPage /></PageTransition>} />
-        <Route path="/reset" element={<PageTransition><ResetPage /></PageTransition>} />
         <Route path="/legal/:handle" element={<PageTransition><PolicyPage /></PageTransition>} />
+        <Route path="/order/confirmed" element={<PageTransition><OrderConfirmed /></PageTransition>} />
         <Route path="/products/:handle" element={<PageTransition><ProductPage /><Reviews /></PageTransition>} />
         <Route path="*" element={<PageTransition><HomePage /></PageTransition>} />
       </Routes>
     </AnimatePresence>
+  )
+}
+
+// The shop, with its header and footer; or the dashboard on its own.
+function Shell() {
+  const { pathname } = useLocation()
+  if (pathname.startsWith('/admin')) {
+    return (
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/admin/*" element={<AdminApp />} />
+        </Routes>
+      </Suspense>
+    )
+  }
+  return (
+    <>
+      <Analytics />
+      <div className="min-h-screen bg-[#FAF7F3] tracking-[-0.02em] flex flex-col" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+        <AnnouncementBar />
+        <Nav />
+        <main className="pt-[100px] sm:pt-[108px] flex-1">
+          <AnimatedRoutes />
+        </main>
+        <Footer />
+        <CartDrawer />
+        <WelcomePopup />
+      </div>
+    </>
   )
 }
 
@@ -102,17 +134,7 @@ function App() {
     <StoreProvider>
       <HashRouter>
         <ScrollToTop />
-        <Analytics />
-        <div className="min-h-screen bg-[#FAF7F3] tracking-[-0.02em] flex flex-col" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-          <AnnouncementBar />
-          <Nav />
-          <main className="pt-[100px] sm:pt-[108px] flex-1">
-            <AnimatedRoutes />
-          </main>
-          <Footer />
-          <CartDrawer />
-          <WelcomePopup />
-        </div>
+        <Shell />
       </HashRouter>
     </StoreProvider>
   )

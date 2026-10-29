@@ -1,4 +1,4 @@
-import type { ShopifyVariant } from './shopify'
+import type { ProductVariant } from './catalog'
 
 // A product photo becomes "shop the model" when its alt text in Shopify ends
 // with `Shop the model: <variant title>`, e.g.
@@ -21,13 +21,13 @@ function normalizeTitle(s: string): string {
   return s.replace(/[“”″]/g, '"').replace(/\s+/g, ' ').trim().toLowerCase()
 }
 
-export function findVariantByTitle(variants: ShopifyVariant[], title: string | null | undefined): ShopifyVariant | undefined {
+export function findVariantByTitle(variants: ProductVariant[], title: string | null | undefined): ProductVariant | undefined {
   if (!title) return undefined
   const wanted = normalizeTitle(title)
   return variants.find((v) => normalizeTitle(v.title) === wanted)
 }
 
-export function selectionOf(variant: ShopifyVariant): Record<string, string> {
+export function selectionOf(variant: ProductVariant): Record<string, string> {
   const s: Record<string, string> = {}
   variant.selectedOptions.forEach((o) => {
     s[o.name] = o.value
