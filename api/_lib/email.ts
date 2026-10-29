@@ -42,20 +42,32 @@ export async function sendEmail(email: Email): Promise<boolean> {
   return true
 }
 
-// Adds an address to the Resend contact list. Resolves true only when the
-// contact is new, so the welcome email goes out once per address.
+// Adds an address to the store's list in Resend. Resolves true only when the
+// address is new to the list, so the welcome email goes out once per person.
 export async function addContact(email: string, source: string): Promise<boolean> {
   const key = env.resendKey()
   if (!key) return false
+  const segment = env.resendSegment()
+  const headers = { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }
   const res = await fetch('https://api.resend.com/contacts', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, unsubscribed: false, properties: { source } }),
+    headers,
+    body: JSON.stringify({ email, unsubscribed: false, properties: { source }, segments: [{ id: segment }] }),
   })
   if (res.ok) return true
   const body = await res.text()
-  if (!/already exists/i.test(body)) console.error(`Resend contact for ${source}: ${res.status} ${body}`)
-  return false
+  if (!/already exists/i.test(body)) {
+    console.error(`Resend contact for ${source}: ${res.status} ${body}`)
+    return false
+  }
+  // known to Resend already (perhaps through another brand): welcome them only
+  // if they were not yet on this store's list
+  const segments = await fetch(`https://api.resend.com/contacts/${encodeURIComponent(email)}/segments`, { headers })
+  if (!segments.ok) return false
+  const list = (await segments.json()) as { data?: { id: string }[] }
+  if (list.data?.some((s) => s.id === segment)) return false
+  const added = await fetch(`https://api.resend.com/contacts/${encodeURIComponent(email)}/segments/${segment}`, { method: 'POST', headers })
+  return added.ok
 }
 
 export interface Contact {
@@ -72,6 +84,7 @@ export async function listContacts(): Promise<Contact[]> {
   for (let page = 0; page < 10; page++) {
     const url = new URL('https://api.resend.com/contacts')
     url.searchParams.set('limit', '100')
+    url.searchParams.set('segment_id', env.resendSegment())
     if (after) url.searchParams.set('after', after)
     const res = await fetch(url, { headers: { Authorization: `Bearer ${key}` } })
     if (!res.ok) break
