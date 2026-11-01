@@ -105,8 +105,8 @@ export default handler(async (request) => {
   if (action === 'link') {
     const address = email(body.email)
     if (address && env.adminEmails().includes(address)) {
-      const { token } = issueToken(address, 'admin-login', 30)
-      await sendSignInLink(address, `${env.siteUrl()}/#/admin?login=${token}`, true)
+      const { token } = issueToken(address, 'admin-login', 60 * 24)
+      await sendSignInLink(address, `${env.siteUrl()}/#/admin?login=${token}`, true, '24 hours')
     }
     return json({ ok: true })
   }

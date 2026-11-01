@@ -129,7 +129,7 @@ function Login({ onSignedIn }: { onSignedIn: (s: AdminSession) => void }) {
         <h1 className="font-display text-4xl mt-3">Dashboard</h1>
         {sent ? (
           <p className="mt-6 text-sm text-[#1B1113]/75 leading-[1.85]">
-            If {email.trim()} has access, a sign-in link is in that inbox now. It expires in 30 minutes.
+            If {email.trim()} has access, a sign-in link is in that inbox now (check the Updates tab in Gmail too). It works for 24 hours, and once you're in you stay signed in on this phone for 30 days.
           </p>
         ) : (
           <form

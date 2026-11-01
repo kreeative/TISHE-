@@ -192,8 +192,8 @@ export default function AccountPage() {
           {sent ? (
             <div className="mt-10 border-t border-[#5A3224]/15 pt-6">
               <p className="text-sm text-[#1B1113]/75 leading-[1.85]">
-                Check your inbox. If <strong>{email.trim()}</strong> is on file, a sign-in link is on its way. It expires in
-                30 minutes. Not there? Look in your spam folder.
+                Check your inbox. If <strong>{email.trim()}</strong> is on file, a sign-in link is on its way. It works for
+                2 hours. Not there? Look in your spam folder.
               </p>
               <button
                 onClick={() => setSent(false)}

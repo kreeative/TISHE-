@@ -211,21 +211,21 @@ export async function sendWelcome(email: string): Promise<boolean> {
   })
 }
 
-export async function sendSignInLink(email: string, url: string, forAdmin: boolean): Promise<boolean> {
+export async function sendSignInLink(email: string, url: string, forAdmin: boolean, validFor: string): Promise<boolean> {
   return sendEmail({
     to: email,
     subject: forAdmin ? 'Your dashboard sign-in link' : 'Your sign-in link',
     tags: { type: forAdmin ? 'admin_sign_in' : 'sign_in' },
     html: layout({
-      preheader: 'This link expires in 30 minutes.',
+      preheader: `This link works for ${validFor}.`,
       title: forAdmin ? 'Sign in to your dashboard' : 'Sign in to the Circle',
       body: [
         p(forAdmin ? 'Tap the button to open your store dashboard.' : 'Tap the button to see your member card, strands and orders.'),
         button('Sign in', url),
-        small("This link expires in 30 minutes. If you didn't ask for it, you can ignore this email."),
+        small(`This link works for ${validFor}. If you didn't ask for it, you can ignore this email.`),
       ].join(''),
     }),
-    text: textOf([forAdmin ? 'Sign in to your dashboard:' : 'Sign in to the Circle:', url, '', 'This link expires in 30 minutes.']),
+    text: textOf([forAdmin ? 'Sign in to your dashboard:' : 'Sign in to the Circle:', url, '', `This link works for ${validFor}.`]),
   })
 }
 

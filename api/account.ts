@@ -18,8 +18,8 @@ export default handler(async (request) => {
     if (!address) throw new HttpError(400, 'Please enter a valid email address.')
     const known = legacyCustomer(address).orders > 0 || (await ordersForEmail(address)).length > 0
     if (known) {
-      const { token } = issueToken(address, 'login', 30)
-      await sendSignInLink(address, `${env.siteUrl()}/#/account?login=${token}`, false)
+      const { token } = issueToken(address, 'login', 120)
+      await sendSignInLink(address, `${env.siteUrl()}/#/account?login=${token}`, false, '2 hours')
     }
     // same answer either way, so the form can't be used to test who has ordered
     return json({ ok: true })
