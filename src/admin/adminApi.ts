@@ -44,8 +44,7 @@ export interface AdminOrder {
   net: number
   code: string
   country: string
-  taxProvince: string
-  provinceMismatch: boolean
+  taxLabel: string
   supplierRef: string
   carrier: string
   tracking: string

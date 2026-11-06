@@ -4,13 +4,20 @@ import { env } from './_lib/env.js'
 import { stripe, SOURCE } from './_lib/stripe.js'
 import { needsHistory, parsePriceRequest, price } from './_lib/pricing.js'
 import { historyFor } from './_lib/orders.js'
-import { stripeTaxRate } from './_lib/tax.js'
 import { absolute, money } from './_lib/templates.js'
 import { loadStore } from './_lib/store.js'
 
-// POST { action: 'quote' | 'create', items, country, province, code, email }
+// Product tax codes for Stripe Tax: general tangible goods, and shipping
+const TAX_CODE_GOODS = 'txcd_99999999'
+const TAX_CODE_SHIPPING = 'txcd_92010001'
+
+// POST { action: 'quote' | 'create', items, country, code, email }
 //   quote  → the totals for the bag, to show before paying
 //   create → a Stripe Checkout Session; the browser is sent to its url
+//
+// Stripe Tax adds GST/HST for Canadian addresses (shipping included) and
+// zero-rates exports; Adaptive Pricing shows shoppers outside Canada and the
+// US their own currency on the checkout page.
 export default handler(async (request) => {
   const body = await readBody(request)
   const req = parsePriceRequest(body)
@@ -23,8 +30,7 @@ export default handler(async (request) => {
       subtotal: priced.subtotal / 100,
       discount: priced.discount / 100,
       shipping: priced.shipping / 100,
-      tax: priced.taxAmount / 100,
-      taxLabel: priced.tax?.label ?? '',
+      taxAtCheckout: priced.taxAtCheckout,
       total: priced.total / 100,
       currency: priced.currency,
       code: priced.rule ? { code: priced.rule.code, label: priced.rule.label } : null,
@@ -32,17 +38,15 @@ export default handler(async (request) => {
   }
 
   const currency = priced.currency.toLowerCase()
-  const taxRates = priced.tax ? [await stripeTaxRate(priced.tax)] : undefined
   const rule = priced.rule
   const site = env.siteUrl()
-  const province = doc.shipping.provinces.find((p) => p.code === req.province)
 
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = priced.lines.map((l) => ({
     quantity: l.quantity,
-    tax_rates: taxRates,
     price_data: {
       currency,
       unit_amount: l.unit,
+      tax_behavior: 'exclusive',
       product_data: {
         name: l.product.title,
         description:
@@ -50,6 +54,7 @@ export default handler(async (request) => {
             ? `${l.variant.title} · ${rule.code} (was ${money(l.originalUnit, priced.currency)})`
             : l.variant.title,
         images: l.product.featuredImage ? [absolute(l.product.featuredImage.thumb)] : undefined,
+        tax_code: TAX_CODE_GOODS,
         metadata: {
           variant_id: l.variant.id,
           variant_title: l.variant.title,
@@ -60,21 +65,6 @@ export default handler(async (request) => {
       },
     },
   }))
-  if (priced.shipping > 0) {
-    lineItems.push({
-      quantity: 1,
-      tax_rates: taxRates,
-      price_data: {
-        currency,
-        unit_amount: priced.shipping,
-        product_data: {
-          name: 'Shipping',
-          description: `Tracked delivery · ${priced.zone.label}`,
-          metadata: { kind: 'shipping', zone: priced.zone.id },
-        },
-      },
-    })
-  }
 
   // stays within Stripe's 500-character metadata limit
   const summary = priced.lines
@@ -86,26 +76,37 @@ export default handler(async (request) => {
     mode: 'payment',
     line_items: lineItems,
     customer_email: req.email ?? undefined,
+    automatic_tax: { enabled: true },
+    adaptive_pricing: { enabled: true },
     shipping_address_collection: { allowed_countries: [req.country as Stripe.Checkout.SessionCreateParams.ShippingAddressCollection.AllowedCountry] },
-    shipping_options: priced.freeShipping
-      ? [
-          {
-            shipping_rate_data: {
-              type: 'fixed_amount',
-              fixed_amount: { amount: 0, currency },
-              display_name: `Free shipping · ${rule?.code}`,
-            },
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: { amount: priced.shipping, currency },
+          display_name: priced.freeShipping ? `Free tracked shipping · ${rule?.code}` : 'Tracked shipping',
+          tax_behavior: 'exclusive',
+          tax_code: TAX_CODE_SHIPPING,
+          // 5–10 business days to prepare, then 5–12 in transit
+          delivery_estimate: {
+            minimum: { unit: 'business_day', value: 10 },
+            maximum: { unit: 'business_day', value: 22 },
           },
-        ]
-      : undefined,
-    phone_number_collection: { enabled: true },
-    custom_text: {
-      shipping_address: {
-        message:
-          req.country === 'CA'
-            ? `GST/HST is charged for ${province?.name ?? req.province}. Your address should be in this province.`
-            : 'Your courier may need your phone number to deliver.',
+        },
       },
+    ],
+    phone_number_collection: { enabled: true },
+    // the checkout page in the shop's own colours
+    branding_settings: {
+      display_name: 'The Ivory Sukundu',
+      logo: { type: 'url', url: `${site}/images/logo-lockup-brown.png` },
+      background_color: '#FAF7F3',
+      button_color: '#1B1113',
+      border_style: 'rectangular',
+      font_family: 'montserrat',
+    },
+    custom_text: {
+      shipping_address: { message: 'Your courier may need your phone number to deliver.' },
       submit: { message: 'Every order is prepared for you and ships within 5–10 business days.' },
     },
     locale: 'auto',
@@ -116,7 +117,6 @@ export default handler(async (request) => {
       summary,
       code: rule?.code ?? '',
       country: req.country,
-      province: req.province ?? '',
       subtotal: String(priced.subtotal),
       discount: String(priced.discount),
       shipping: String(priced.shipping),

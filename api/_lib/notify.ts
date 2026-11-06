@@ -15,7 +15,7 @@ function orderTotals(order: Order): [string, string, boolean?][] {
   const rows: [string, string, boolean?][] = [['Subtotal', money(order.subtotal, order.currency)]]
   if (order.discount) rows.push([`Discount${order.code ? ` (${order.code})` : ''}`, `−${money(order.discount, order.currency)}`])
   rows.push(['Shipping', order.shippingAmount ? money(order.shippingAmount, order.currency) : 'Free'])
-  if (order.tax) rows.push([order.taxProvince && ['ON', 'NB', 'NL', 'NS', 'PE'].includes(order.taxProvince) ? 'HST' : 'GST', money(order.tax, order.currency)])
+  if (order.tax) rows.push([order.taxLabel, money(order.tax, order.currency)])
   rows.push(['Total', money(order.total, order.currency), true])
   return rows
 }
@@ -93,9 +93,6 @@ export async function sendOrderEmails(order: Order): Promise<void> {
       title: `New order ${number}`,
       body: [
         p(`<strong>${esc(order.name)}</strong> · ${esc(order.email)}${order.phone ? ` · ${esc(order.phone)}` : ''}`),
-        order.provinceMismatch
-          ? p(`<strong style="color:#8a2d1f">Check the tax:</strong> GST/HST was charged for ${esc(order.taxProvince)}, but the address is in ${esc(order.shipping?.state ?? '')}.`)
-          : '',
         itemsHtml(order),
         totals(orderTotals(order)),
         heading('Ship to'),

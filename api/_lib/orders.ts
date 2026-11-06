@@ -68,9 +68,8 @@ export interface Order {
   net: number
   code: string
   country: string
-  // province GST/HST was charged for, and whether the address matches it
-  taxProvince: string
-  provinceMismatch: boolean
+  // "HST" or "GST" on Canadian orders, as Stripe Tax charged it
+  taxLabel: string
   supplierRef: string
   orderedAt: string
   carrier: string
@@ -82,6 +81,9 @@ export interface Order {
 }
 
 const FIRST_ORDER_NUMBER = 1004
+
+// provinces where GST and the provincial tax are combined as HST
+const HST_PROVINCES = ['ON', 'NB', 'NL', 'NS', 'PE']
 
 type SessionWithPi = Stripe.Checkout.Session & { payment_intent: Stripe.PaymentIntent | string | null }
 
@@ -145,7 +147,6 @@ export function toOrder(session: SessionWithPi, lineItems: Stripe.LineItem[] = [
     ? items.reduce((n, i) => n + (i.originalUnit - i.unitAmount) * i.quantity, 0)
     : Number(sm.discount) || 0
 
-  const taxProvince = sm.province ?? ''
   return {
     id: session.id,
     paymentIntentId: intent?.id ?? (typeof session.payment_intent === 'string' ? session.payment_intent : null),
@@ -163,7 +164,8 @@ export function toOrder(session: SessionWithPi, lineItems: Stripe.LineItem[] = [
     currency: (session.currency ?? 'cad').toUpperCase(),
     subtotal,
     discount,
-    shippingAmount: items.length ? shippingAmount : Number(sm.shipping) || 0,
+    // shipping is a Checkout shipping option (older orders had it as a line item)
+    shippingAmount: session.shipping_cost?.amount_subtotal ?? (items.length ? shippingAmount : Number(sm.shipping) || 0),
     tax: session.total_details?.amount_tax ?? 0,
     total: session.amount_total ?? 0,
     // USD orders are converted by Stripe; until then, estimate at 1.40
@@ -172,8 +174,7 @@ export function toOrder(session: SessionWithPi, lineItems: Stripe.LineItem[] = [
     net: balance?.net ?? 0,
     code: sm.code ?? '',
     country: shipping?.country || sm.country || '',
-    taxProvince,
-    provinceMismatch: Boolean(taxProvince && shipping?.country === 'CA' && shipping.state && shipping.state !== taxProvince),
+    taxLabel: shipping?.country === 'CA' ? (HST_PROVINCES.includes(shipping.state) ? 'HST' : 'GST') : 'Tax',
     supplierRef: m.tis_supplier_ref ?? '',
     orderedAt: m.tis_ordered_at ?? '',
     carrier: m.tis_carrier ?? '',

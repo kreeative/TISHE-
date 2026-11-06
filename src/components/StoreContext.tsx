@@ -38,7 +38,7 @@ const BUNDLED: LiveStore = {
   freeShipping: { code: 'FREESHIP200', minSubtotal: { USD: 200, CAD: 280 }, firstOrderOnly: true },
 }
 
-function savedShipTo(): { country: string; province: string } | null {
+function savedShipTo(): { country: string } | null {
   try {
     const s = JSON.parse(localStorage.getItem(PREFS_KEY) ?? 'null')
     return s && shipsTo(s.country) ? s : null
@@ -50,9 +50,8 @@ function savedShipTo(): { country: string; province: string } | null {
 interface StoreState {
   // where the order ships, which also sets the currency (CAD for Canada, USD elsewhere)
   country: string
-  province: string
   currency: Currency
-  setShipTo: (country: string, province?: string) => void
+  setShipTo: (country: string) => void
   products: Product[]
   announcements: string[]
   sale: Sale | null
@@ -77,7 +76,7 @@ interface StoreState {
 const StoreContext = createContext<StoreState | null>(null)
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [shipTo, setShipToState] = useState(() => savedShipTo() ?? { country: guessCountry(), province: 'ON' })
+  const [shipTo, setShipToState] = useState(() => savedShipTo() ?? { country: guessCountry() })
   const [lines, setLines] = useState<StoredLine[]>(() => loadLines())
   const [live, setLive] = useState<LiveStore>(BUNDLED)
 
@@ -100,8 +99,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const products = useMemo(() => buildProducts(live.products, currency), [live.products, currency])
   const cart = useMemo(() => buildCart(lines, products, currency), [lines, products, currency])
 
-  const setShipTo = (country: string, province?: string) => {
-    const next = { country, province: province ?? shipTo.province }
+  const setShipTo = (country: string) => {
+    const next = { country }
     setShipToState(next)
     try {
       localStorage.setItem(PREFS_KEY, JSON.stringify(next))
@@ -199,7 +198,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             await api<{ url: string }>('checkout', {
               items,
               country: shipTo.country,
-              province: shipTo.country === 'CA' ? shipTo.province : undefined,
               code: details.code,
               email: details.email || customer?.email,
             })
@@ -217,7 +215,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     <StoreContext.Provider
       value={{
         country: shipTo.country,
-        province: shipTo.province,
         currency,
         setShipTo,
         products,

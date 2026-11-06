@@ -5,7 +5,7 @@ import { STRIPE_CHECKOUT, useStore } from './StoreContext'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import { formatMoney } from '../lib/money'
 import { api, ApiError } from '../lib/api'
-import { PROVINCES, SHIP_COUNTRIES, shippingRate } from '../lib/shipping'
+import { SHIP_COUNTRIES, shippingRate } from '../lib/shipping'
 
 const PREFS_KEY = 'tis-code-prefs'
 
@@ -13,8 +13,8 @@ interface Quote {
   subtotal: number
   discount: number
   shipping: number
-  tax: number
-  taxLabel: string
+  // Canadian orders: GST/HST is added on the checkout page from the address
+  taxAtCheckout: boolean
   total: number
   currency: string
   code: { code: string; label: string } | null
@@ -33,8 +33,7 @@ const fieldClass =
 const labelClass = 'block text-[10px] font-semibold uppercase text-[#1B1113]/55 mb-1.5'
 
 export default function CartDrawer() {
-  const { cart, cartLoading, cartError, setLineQty, cartOpen, setCartOpen, checkout, customer, country, province, setShipTo, shipping } =
-    useStore()
+  const { cart, cartLoading, cartError, setLineQty, cartOpen, setCartOpen, checkout, customer, country, setShipTo, shipping } = useStore()
   const lines = cart.lines
   const strands = Math.round(cart.subtotal)
 
@@ -65,7 +64,6 @@ export default function CartDrawer() {
 
   const details = (code: string) => ({
     country,
-    province: country === 'CA' ? province : undefined,
     code: code || undefined,
     email: (email || signedInEmail).trim() || undefined,
   })
@@ -99,7 +97,7 @@ export default function CartDrawer() {
   const linesKey = lines.map((l) => `${l.variantId}x${l.quantity}`).join(',')
   useEffect(() => {
     if (cartOpen && lines.length) void fetchQuote(appliedCode || codeInput.trim())
-  }, [cartOpen, linesKey, country, province])
+  }, [cartOpen, linesKey, country])
 
   const rate = shippingRate(country, shipping)
   const currency = cart.currencyCode
@@ -203,33 +201,17 @@ export default function CartDrawer() {
 
             {STRIPE_CHECKOUT && (
               <div className="border-t border-[#5A3224]/15 pt-6 flex flex-col gap-4">
-                <div className={country === 'CA' ? 'grid grid-cols-2 gap-3' : ''}>
-                  <div>
-                    <label htmlFor="ship-country" className={labelClass} style={{ letterSpacing: '0.08em' }}>
-                      Ship to
-                    </label>
-                    <select id="ship-country" value={country} onChange={(e) => setShipTo(e.target.value)} className={fieldClass}>
-                      {SHIP_COUNTRIES.map((c) => (
-                        <option key={c.code} value={c.code}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  {country === 'CA' && (
-                    <div>
-                      <label htmlFor="ship-province" className={labelClass} style={{ letterSpacing: '0.08em' }}>
-                        Province
-                      </label>
-                      <select id="ship-province" value={province} onChange={(e) => setShipTo(country, e.target.value)} className={fieldClass}>
-                        {PROVINCES.map((p) => (
-                          <option key={p.code} value={p.code}>
-                            {p.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+                <div>
+                  <label htmlFor="ship-country" className={labelClass} style={{ letterSpacing: '0.08em' }}>
+                    Ship to
+                  </label>
+                  <select id="ship-country" value={country} onChange={(e) => setShipTo(e.target.value)} className={fieldClass}>
+                    {SHIP_COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <form
@@ -301,15 +283,15 @@ export default function CartDrawer() {
                   {quote ? (quote.shipping === 0 ? 'Free' : formatMoney(quote.shipping, currency)) : rate !== null ? formatMoney(rate, currency) : '—'}
                 </span>
               </div>
-              {quote && quote.tax > 0 && (
+              {quote?.taxAtCheckout && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#1B1113]/70">{quote.taxLabel}</span>
-                  <span style={{ fontVariantNumeric: 'tabular-nums' }}>{formatMoney(quote.tax, currency)}</span>
+                  <span className="text-[#1B1113]/70">GST/HST</span>
+                  <span className="text-[#1B1113]/55">Added at checkout</span>
                 </div>
               )}
               {quote && (
                 <div className="flex justify-between text-base font-semibold pt-1">
-                  <span>Total</span>
+                  <span>{quote.taxAtCheckout ? 'Total before tax' : 'Total'}</span>
                   <span style={{ fontVariantNumeric: 'tabular-nums' }}>{formatMoney(quote.total, currency)}</span>
                 </div>
               )}

@@ -87,11 +87,6 @@ export default function OrderDetail({ token }: { token: string }) {
 
       {notice && <p className="text-sm text-[#2f5a3a] bg-[#e3ece4] px-3 py-2">{notice}</p>}
       <ErrorNote message={error} />
-      {order.provinceMismatch && (
-        <ErrorNote
-          message={`GST/HST was charged for ${order.taxProvince}, but the address is in ${order.shipping?.state}. Check with the customer before shipping.`}
-        />
-      )}
 
       {/* step 1: send it to the supplier */}
       {(order.status === 'new' || order.status === 'ordered') && (
@@ -196,7 +191,7 @@ export default function OrderDetail({ token }: { token: string }) {
             <Row label="Subtotal" value={money(order.subtotal)} />
             {order.discount > 0 && <Row label={`Discount${order.code ? ` (${order.code})` : ''}`} value={`−${money(order.discount)}`} />}
             <Row label="Shipping" value={order.shippingAmount ? money(order.shippingAmount) : 'Free'} />
-            {order.tax > 0 && <Row label={`GST/HST (${order.taxProvince})`} value={money(order.tax)} />}
+            {order.tax > 0 && <Row label={order.taxLabel} value={money(order.tax)} />}
             <Row label="Total paid" value={money(order.total)} bold />
             {order.fee > 0 && <Row label="Stripe fee" value={`−${money(order.fee)}`} />}
             {order.net > 0 && <Row label="To your bank" value={money(order.net)} bold />}

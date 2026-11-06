@@ -1,17 +1,16 @@
 import { findVariant, type CatalogProduct, type CatalogVariant, type Currency } from './catalog.js'
 import { checkCode, findCode, needsEmail, type CodeRule, type History } from './discounts.js'
 import { HttpError, email as cleanEmail, str } from './http.js'
-import { provinceTax, type ProvinceTax } from './tax.js'
 import type { StoreDoc } from './store.js'
 
 // Prices a bag on the server from the catalog. The browser only sends variant
 // ids and quantities, so a tampered request can't change what is charged.
-// Amounts are in cents.
+// Amounts are in cents and before tax: Stripe Tax adds GST/HST at checkout,
+// once the customer's address is known.
 
 export interface PriceRequest {
   items: { variantId: string; quantity: number }[]
   country: string
-  province: string | null
   code: string | null
   email: string | null
 }
@@ -32,8 +31,8 @@ export interface Priced {
   shipping: number
   freeShipping: boolean
   zone: { id: string; label: string }
-  tax: ProvinceTax | null
-  taxAmount: number
+  // Canadian orders get GST/HST added by Stripe Tax on the checkout page
+  taxAtCheckout: boolean
   total: number
   rule: CodeRule | null
 }
@@ -55,7 +54,6 @@ export function parsePriceRequest(body: Record<string, unknown>): PriceRequest {
   return {
     items: [...merged].map(([variantId, quantity]) => ({ variantId, quantity })),
     country: str(body.country, 2).toUpperCase(),
-    province: str(body.province, 2).toUpperCase() || null,
     code: str(body.code, 40).toUpperCase() || null,
     email: cleanEmail(body.email) || null,
   }
@@ -70,9 +68,6 @@ export function price(req: PriceRequest, history: History | null, doc: StoreDoc)
   const ship = doc.shipping
   const zone = ship.zones.find((z) => z.countries.includes(req.country))
   if (!zone) throw new HttpError(400, "We don't ship to that country yet. Write to hello@theivorysukundu.com and we'll see what we can do.")
-  if (req.country === 'CA' && !ship.provinces.some((p) => p.code === req.province)) {
-    throw new HttpError(400, 'Choose your province so we can add the right GST/HST.')
-  }
 
   const lines: PricedLine[] = req.items.map(({ variantId, quantity }) => {
     const match = findVariant(doc.products, variantId)
@@ -99,13 +94,6 @@ export function price(req: PriceRequest, history: History | null, doc: StoreDoc)
   const freeShipping = rule?.kind === 'free_shipping'
   const shipping = freeShipping ? 0 : cents(zone.rate)
 
-  const tax = req.country === 'CA' && req.province ? provinceTax(req.province) : null
-  // Stripe rounds tax per line, so add it up the same way
-  const taxAmount = tax
-    ? lines.reduce((n, l) => n + Math.round((l.unit * l.quantity * tax.percent) / 100), 0) +
-      Math.round((shipping * tax.percent) / 100)
-    : 0
-
   return {
     lines,
     currency: zone.currency,
@@ -114,9 +102,8 @@ export function price(req: PriceRequest, history: History | null, doc: StoreDoc)
     shipping,
     freeShipping,
     zone: { id: zone.id, label: zone.label },
-    tax,
-    taxAmount,
-    total: discounted + shipping + taxAmount,
+    taxAtCheckout: req.country === 'CA',
+    total: discounted + shipping,
     rule,
   }
 }
