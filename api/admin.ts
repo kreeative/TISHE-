@@ -98,7 +98,21 @@ async function webhookStatus(create: boolean): Promise<boolean> {
   return true
 }
 
-export default handler(async (request) => {
+// The Jeere dashboard (jeere.kreeative.xyz) runs this same API from its own page: its origin may
+// call it from the browser, and its sign-in link brings the owner back there instead of here.
+const JEERE = 'https://jeere.kreeative.xyz'
+function cors(request: Request, response: Response): Response {
+  if (request.headers.get('origin') !== JEERE) return response
+  const headers = new Headers(response.headers)
+  headers.set('Access-Control-Allow-Origin', JEERE)
+  headers.set('Access-Control-Allow-Headers', 'authorization, content-type')
+  headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS')
+  headers.set('Access-Control-Max-Age', '86400')
+  headers.append('Vary', 'Origin')
+  return new Response(response.body, { status: response.status, headers })
+}
+
+const api = handler(async (request) => {
   const body = await readBody(request)
   const action = str(body.action)
 
@@ -106,7 +120,8 @@ export default handler(async (request) => {
     const address = email(body.email)
     if (address && env.adminEmails().includes(address)) {
       const { token } = issueToken(address, 'admin-login', 60 * 24)
-      await sendSignInLink(address, `${env.siteUrl()}/#/admin?login=${token}`, true, '24 hours')
+      const url = body.to === 'jeere' ? `${JEERE}/admin/#tishe=${token}` : `${env.siteUrl()}/#/admin?login=${token}`
+      await sendSignInLink(address, url, true, '24 hours')
     }
     return json({ ok: true })
   }
@@ -281,3 +296,10 @@ export default handler(async (request) => {
 
   throw new HttpError(400, 'Unknown action')
 })
+
+export default {
+  async fetch(request: Request): Promise<Response> {
+    if (request.method === 'OPTIONS') return cors(request, new Response(null, { status: 204 }))
+    return cors(request, await api.fetch(request))
+  },
+}
