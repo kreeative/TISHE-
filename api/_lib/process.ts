@@ -8,7 +8,7 @@ export async function processOrder(sessionId: string): Promise<Order> {
   let order = await loadOrder(sessionId)
   if (!order.paid) return order
   if (!order.number) {
-    const number = await nextOrderNumber()
+    const number = await nextOrderNumber(order.id)
     await updateOrderMeta(order, { tis_order: number, tis_status: 'new', tis_session: order.id })
     order = { ...order, number }
   }

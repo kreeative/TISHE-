@@ -244,9 +244,12 @@ export async function historyFor(email: string): Promise<History> {
   }
 }
 
-export async function nextOrderNumber(): Promise<string> {
+// The order being numbered is left out: the webhook and the thank-you page can
+// number the same order at the same moment, and must both land on the same number.
+export async function nextOrderNumber(forId = ''): Promise<string> {
   let max = FIRST_ORDER_NUMBER - 1
   for (const o of await listOrders(100)) {
+    if (o.id === forId) continue
     const n = Number(o.number)
     if (n > max) max = n
   }
