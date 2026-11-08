@@ -238,7 +238,7 @@ export default function ProductPage() {
           </Reveal>
 
           <Reveal delay={0.1}>
-            <h1 id="buy-box" className="font-display text-4xl sm:text-5xl leading-[1.16] scroll-mt-28" style={{ textWrap: 'balance' }}>
+            <h1 id="buy-box" data-tis-open={`product:${product.handle}`} className="font-display text-4xl sm:text-5xl leading-[1.16] scroll-mt-28" style={{ textWrap: 'balance' }}>
               {product.title}
             </h1>
             {displayPrice && (
@@ -388,6 +388,7 @@ export default function ProductPage() {
                   <span className="text-lg leading-none transition-transform group-open:rotate-45" aria-hidden="true">+</span>
                 </summary>
                 <div
+                  data-tis-open={`product:${product.handle}`}
                   className="product-desc pb-6 text-sm text-[#1B1113]/75 leading-[1.85]"
                   dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
                 />

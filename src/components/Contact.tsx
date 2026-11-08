@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Mail } from 'lucide-react'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
+import { Text } from './SiteContent'
 
 function Instagram({ size = 16 }: { size?: number }) {
   return (
@@ -62,16 +63,16 @@ export default function Contact() {
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-16 items-start">
         {/* Left: intro + direct channels */}
         <Reveal>
-          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
+          <Text k="contact.eyebrow" as="p" className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             We'd love to hear from you
-          </p>
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl mt-5 leading-[1.16]" style={{ textWrap: 'balance' }}>
+          </Text>
+          <Text k="contact.title" as="h1" className="font-display text-4xl sm:text-5xl md:text-6xl mt-5 leading-[1.16]" style={{ textWrap: 'balance' }}>
             Get in touch
-          </h1>
-          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
+          </Text>
+          <Text k="contact.body" as="p" className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
             Questions about length, texture, or your order? Send us a note and we'll get back to you
             within one business day.
-          </p>
+          </Text>
 
           <div className="mt-10 flex flex-col gap-4">
             <a

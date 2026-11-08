@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
+import { Text } from './SiteContent'
 
 export default function Campaign() {
   return (
@@ -14,26 +15,26 @@ export default function Campaign() {
       />
       <div className="relative max-w-3xl mx-auto">
         <Reveal>
-          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
+          <Text k="campaign.eyebrow" as="p" className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             Campaign 01 · The Half-Wig Edit
-          </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-5 leading-[1.16]" style={{ textWrap: 'balance' }}>
+          </Text>
+          <Text k="campaign.title" as="h2" className="font-display text-4xl sm:text-5xl md:text-6xl mt-5 leading-[1.16]" style={{ textWrap: 'balance' }}>
             Half the install. All the hair.
-          </h2>
-          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
+          </Text>
+          <Text k="campaign.body" as="p" className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
             Our signature half wig snaps in with combs. No glue, no lace, no salon chair. Your leave-out
             blends at the crown, your hairline breathes, and your natural hair rests protected underneath.
-          </p>
+          </Text>
           <div className="flex flex-wrap items-center gap-6 mt-8">
             <Link to="/collections" className={ctaGlassOnLight} style={ctaTracking}>
-              Shop the Half-Wig
+              <Text k="campaign.cta">Shop the Half-Wig</Text>
             </Link>
             <Link
               to="/quiz"
               className="text-xs font-semibold uppercase text-[#5A3224] hover:text-[#1B1113] transition-colors"
               style={ctaTracking}
             >
-              Not sure? Take the quiz →
+              <Text k="campaign.quiz">Not sure? Take the quiz →</Text>
             </Link>
           </div>
         </Reveal>

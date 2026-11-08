@@ -21,6 +21,8 @@ import PageTransition from './components/PageTransition'
 import WelcomePopup from './components/WelcomePopup'
 import AnnouncementBar from './components/AnnouncementBar'
 import { StoreProvider } from './components/StoreContext'
+import { SiteContentProvider } from './components/SiteContent'
+import { JEERE_FRAME } from './lib/jeere'
 import { initAnalytics, trackPageView } from './lib/analytics'
 
 // the dashboard is only downloaded by whoever opens it
@@ -35,13 +37,14 @@ function ScrollToTop() {
 }
 
 // Loads the pixels once, then reports every hash route as its own page view.
+// Not inside the Jeere editor: the owner's editing isn't a visit.
 function Analytics() {
   const { pathname } = useLocation()
   useEffect(() => {
-    initAnalytics()
+    if (!JEERE_FRAME) initAnalytics()
   }, [])
   useEffect(() => {
-    trackPageView(pathname)
+    if (!JEERE_FRAME) trackPageView(pathname)
   }, [pathname])
   return null
 }
@@ -123,7 +126,7 @@ function Shell() {
         </main>
         <Footer />
         <CartDrawer />
-        <WelcomePopup />
+        {!JEERE_FRAME && <WelcomePopup />}
       </div>
     </>
   )
@@ -133,8 +136,10 @@ function App() {
   return (
     <StoreProvider>
       <HashRouter>
-        <ScrollToTop />
-        <Shell />
+        <SiteContentProvider>
+          <ScrollToTop />
+          <Shell />
+        </SiteContentProvider>
       </HashRouter>
     </StoreProvider>
   )

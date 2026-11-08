@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Star } from 'lucide-react'
 import Reveal from './Reveal'
+import { Text } from './SiteContent'
 import { useReviews } from '../lib/useReviews'
 
 export function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
@@ -36,12 +37,12 @@ export default function Reviews() {
     >
       <div className="max-w-6xl mx-auto">
         <Reveal>
-          <p className="text-xs font-medium uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
+          <Text k="reviews.eyebrow" as="p" className="text-xs font-medium uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             Reviews
-          </p>
-          <h2 className="font-display text-4xl sm:text-5xl mt-6 leading-[1.16]" style={{ textWrap: 'balance' }}>
+          </Text>
+          <Text k="reviews.title" as="h2" className="font-display text-4xl sm:text-5xl mt-6 leading-[1.16]" style={{ textWrap: 'balance' }}>
             In their words
-          </h2>
+          </Text>
           <div className="mt-6 flex items-center gap-3 text-sm text-[#1B1113]/70">
             <Stars rating={data.average} size={16} />
             <span style={{ fontVariantNumeric: 'tabular-nums' }}>

@@ -3,8 +3,8 @@ import { bundledProducts, bundledShipping, type CatalogProduct, type ShippingDat
 import { DEFAULT_CODES, type CodeRule } from './discounts.js'
 
 // The store document: everything the owner edits in the dashboard (products,
-// prices, photos, promo codes, the announcement bar, the sale and shipping
-// rates), saved as one JSON file in Vercel Blob. Each save writes a new file
+// prices, photos, promo codes, the announcement bar, the sale, shipping
+// rates, and the page texts and pictures edited from Jeere), saved as one JSON file in Vercel Blob. Each save writes a new file
 // under a random, unguessable name and removes the old ones. Until the first
 // save, the copies bundled with the site are used.
 
@@ -28,6 +28,9 @@ export interface StoreDoc {
   discounts: CodeRule[]
   site: SiteSettings
   shipping: ShippingData
+  // page texts and pictures changed from Jeere, by key (e.g. "campaign.title");
+  // a key that isn't here shows the wording written in the site's code
+  content?: Record<string, string>
 }
 
 const PREFIX = 'store/document-'
@@ -44,6 +47,7 @@ function defaults(): StoreDoc {
       sale: null,
     },
     shipping: bundledShipping(),
+    content: {},
   }
 }
 
@@ -115,6 +119,7 @@ export function publicView(doc: StoreDoc) {
     products: doc.products.filter((p) => !p.hidden),
     site: doc.site,
     shipping: doc.shipping,
+    content: doc.content ?? {},
     freeShipping: free ? { code: free.code, minSubtotal: free.minSubtotal ?? null, firstOrderOnly: Boolean(free.firstOrderOnly) } : null,
   }
 }

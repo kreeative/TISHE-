@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ctaGlassOnLight, ctaTracking } from './cta'
 import Reveal from './Reveal'
+import { Text } from './SiteContent'
 
 const STEPS = [
   { n: '01', title: 'Join free', body: 'Ten seconds, no card, no fee.' },
@@ -59,26 +60,26 @@ export default function Circle() {
         {/* Intro row: headline left, how-it-works right */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-start">
           <Reveal>
-            <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
+            <Text k="circle.eyebrow" as="p" className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
               The Sukundu Circle
-            </p>
-            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 leading-[1.16]" style={{ textWrap: 'balance' }}>
+            </Text>
+            <Text k="circle.title" as="h2" className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 leading-[1.16]" style={{ textWrap: 'balance' }}>
               Loyalty, woven in
-            </h2>
-            <p className="mt-6 max-w-lg text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
+            </Text>
+            <Text k="circle.body" as="p" className="mt-6 max-w-lg text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
               Sukundu means hair in Pulaar. In our culture, hair is cared for in community. The Circle
               is ours: earn strands on every order, learn the craft, and grow into richer rewards.
-            </p>
+            </Text>
           </Reveal>
 
           <Reveal delay={0.15}>
             <div className="lg:pt-10 flex flex-col divide-y divide-[#5A3224]/12">
-              {STEPS.map((s) => (
+              {STEPS.map((s, i) => (
                 <div key={s.n} className="flex items-baseline gap-4 py-5">
                   <span className="font-display text-lg text-[#c99b6f] shrink-0 w-8">{s.n}</span>
                   <p className="flex flex-col lg:flex-row lg:flex-wrap lg:items-baseline lg:gap-x-3">
-                    <span className="font-display text-2xl">{s.title}</span>
-                    <span className="text-sm text-[#1B1113]/60">{s.body}</span>
+                    <Text k={`circle.step${i + 1}.title`} className="font-display text-2xl">{s.title}</Text>
+                    <Text k={`circle.step${i + 1}.body`} className="text-sm text-[#1B1113]/60">{s.body}</Text>
                   </p>
                 </div>
               ))}
@@ -144,9 +145,9 @@ export default function Circle() {
         <Reveal delay={0.4}>
           <div className="mt-14 flex flex-col items-center gap-3 text-center">
             <Link to="/account" className={`${ctaGlassOnLight} px-12`} style={ctaTracking}>
-              Join the Circle · Free
+              <Text k="circle.cta">Join the Circle · Free</Text>
             </Link>
-            <p className="text-xs text-[#1B1113]/50">Free forever. Your strands start counting with your first order.</p>
+            <Text k="circle.note" as="p" className="text-xs text-[#1B1113]/50">Free forever. Your strands start counting with your first order.</Text>
           </div>
         </Reveal>
       </div>

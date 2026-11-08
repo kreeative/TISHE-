@@ -5,6 +5,7 @@ import Reveal from './Reveal'
 import { formatMoneyShort } from '../lib/money'
 import { isOnSale } from '../lib/sale'
 import { useStore } from './StoreContext'
+import { Text } from './SiteContent'
 
 export default function Collection() {
   const { products } = useProducts()
@@ -14,15 +15,15 @@ export default function Collection() {
     <section id="collections" className="bg-[#FAF7F3] text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16">
       <div className="max-w-6xl mx-auto">
         <Reveal>
-          <p className="text-xs font-medium uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
+          <Text k="collection.eyebrow" as="p" className="text-xs font-medium uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             The Collection
-          </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
+          </Text>
+          <Text k="collection.title" as="h2" className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
             Textures worth the obsession
-          </h2>
-          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/70 leading-[1.85]">
+          </Text>
+          <Text k="collection.body" as="p" className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/70 leading-[1.85]">
             Raw Vietnamese hair from a single donor, cuticle-aligned Indian hair, and glueless half wigs. Every texture is labelled exactly as it is.
-          </p>
+          </Text>
         </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12 sm:mt-16">
@@ -50,7 +51,7 @@ export default function Collection() {
               : null
 
             return (
-              <Reveal key={p.id} delay={i * 0.1} className="group flex flex-col">
+              <Reveal key={p.id} delay={i * 0.1} className="group flex flex-col" open={`product:${p.handle}`}>
                 <Link to={`/products/${p.handle}`} className="block">
                   <div
                     className="relative overflow-hidden transition-shadow duration-500"

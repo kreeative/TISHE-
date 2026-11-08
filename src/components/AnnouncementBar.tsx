@@ -28,7 +28,7 @@ export default function AnnouncementBar() {
   // While a sale runs the strip stops rotating and counts down instead.
   if (onSale) {
     return (
-      <Link to="/collections" className={barClass} style={barStyle} aria-label={sale?.banner || sale?.name}>
+      <Link to="/collections" className={barClass} style={barStyle} aria-label={sale?.banner || sale?.name} data-tis-open="sale">
         <p
           className="text-[10px] sm:text-[11px] font-semibold uppercase text-center whitespace-nowrap flex items-center gap-2"
           style={{ letterSpacing: '0.14em' }}
@@ -42,10 +42,10 @@ export default function AnnouncementBar() {
     )
   }
 
-  if (!count) return <div className={barClass} style={barStyle} />
+  if (!count) return <div className={barClass} style={barStyle} data-tis-open="announcements" />
 
   return (
-    <div className={barClass} style={barStyle}>
+    <div className={barClass} style={barStyle} data-tis-open="announcements">
       <AnimatePresence mode="wait">
         <motion.p
           key={i}

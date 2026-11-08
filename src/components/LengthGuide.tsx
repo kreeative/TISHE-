@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Reveal from './Reveal'
+import { Text } from './SiteContent'
 
 // y = where the length lands on the reference photo, as % of image height
 const LENGTHS = [
@@ -29,15 +30,15 @@ export default function LengthGuide() {
     <section id="lengths" className="bg-[#FAF7F3] text-[#1B1113] py-20 sm:py-28 px-5 sm:px-10 md:px-16 border-b border-[#5A3224]/10">
       <div className="max-w-6xl mx-auto">
         <Reveal>
-          <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
+          <Text k="lengths.eyebrow" as="p" className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
             Sukundu School
-          </p>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
+          </Text>
+          <Text k="lengths.title" as="h2" className="font-display text-4xl sm:text-5xl md:text-6xl mt-6 max-w-2xl leading-[1.16]" style={{ textWrap: 'balance' }}>
             Find your length
-          </h2>
-          <p className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
+          </Text>
+          <Text k="lengths.body" as="p" className="mt-6 max-w-md text-sm sm:text-base text-[#1B1113]/75 leading-[1.85]">
             Tap a length to see where it lands and how many bundles build the look.
-          </p>
+          </Text>
         </Reveal>
 
         <Reveal delay={0.15} className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mt-12 items-start">
@@ -125,10 +126,10 @@ export default function LengthGuide() {
         </Reveal>
 
         <Reveal delay={0.25}>
-          <p className="mt-12 text-xs font-medium text-[#1B1113]/55 max-w-md leading-[1.85]">
+          <Text k="lengths.tip" as="p" className="mt-12 text-xs font-medium text-[#1B1113]/55 max-w-md leading-[1.85]">
             Texture tip: hair is measured stretched straight. Body wave wears about 2" shorter and
             deep curl about 4" shorter than the number on the bundle.
-          </p>
+          </Text>
         </Reveal>
       </div>
     </section>

@@ -142,3 +142,23 @@ export function cleanShipping(raw: Record<string, unknown>, current: ShippingDat
     zones: current.zones.map((z) => ({ ...z, rate: amount(rates[z.id], z.rate) })),
   }
 }
+
+// Page texts and pictures edited from Jeere: { key: value } changes, where an
+// empty value puts the wording from the site's code back. Values are shown as
+// plain text (never as HTML), or as a picture address.
+const CONTENT_KEY = /^[a-z][a-z0-9-]*(\.[a-z0-9-]+){1,3}$/
+export const MAX_CONTENT_KEYS = 400
+
+export function cleanContent(raw: unknown): Record<string, string> {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new HttpError(400, 'Nothing to save.')
+  const entries = Object.entries(raw as Record<string, unknown>)
+  if (!entries.length) throw new HttpError(400, 'Nothing to save.')
+  if (entries.length > MAX_CONTENT_KEYS) throw new HttpError(400, 'Too many changes at once.')
+  const out: Record<string, string> = {}
+  for (const [key, value] of entries) {
+    if (!CONTENT_KEY.test(key)) throw new HttpError(400, `Unknown text: ${key.slice(0, 60)}`)
+    if (value !== null && typeof value !== 'string') throw new HttpError(400, `Check the text for ${key}.`)
+    out[key] = (value ?? '').trim().slice(0, 3000)
+  }
+  return out
+}

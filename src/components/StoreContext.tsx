@@ -25,6 +25,16 @@ interface LiveStore {
   site: { announcements: string[]; sale: Sale | null }
   shipping: ShippingData
   freeShipping: { code: string; minSubtotal: Record<Currency, number> | null; firstOrderOnly: boolean } | null
+  // page texts and pictures edited from Jeere (see SiteContent)
+  content?: Record<string, string>
+}
+
+// the full store document, as the dashboard API returns it after a save
+export interface StoreDocument {
+  products?: (RawProduct & { hidden?: boolean })[]
+  site?: LiveStore['site']
+  shipping?: ShippingData
+  content?: Record<string, string>
 }
 
 // what the site shows before the live version arrives (or if it can't load)
@@ -37,6 +47,8 @@ const BUNDLED: LiveStore = {
   shipping: SHIPPING,
   freeShipping: { code: 'FREESHIP200', minSubtotal: { USD: 200, CAD: 280 }, firstOrderOnly: true },
 }
+
+const NO_CONTENT: Record<string, string> = {}
 
 function savedShipTo(): { country: string } | null {
   try {
@@ -57,6 +69,9 @@ interface StoreState {
   sale: Sale | null
   shipping: ShippingData
   freeShipping: LiveStore['freeShipping']
+  content: Record<string, string>
+  // shows a store document saved from Jeere straight away, without waiting for /api/store
+  showStore: (doc: StoreDocument) => void
   cart: Cart
   cartLoading: boolean
   cartError: string | null
@@ -98,6 +113,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const currency = currencyFor(shipTo.country)
   const products = useMemo(() => buildProducts(live.products, currency), [live.products, currency])
   const cart = useMemo(() => buildCart(lines, products, currency), [lines, products, currency])
+
+  const showStore = (doc: StoreDocument) =>
+    setLive((current) => ({
+      ...current,
+      products: Array.isArray(doc.products) && doc.products.length ? doc.products.filter((p) => !p.hidden) : current.products,
+      site: doc.site ?? current.site,
+      shipping: doc.shipping ?? current.shipping,
+      content: doc.content ?? current.content,
+    }))
 
   const setShipTo = (country: string) => {
     const next = { country }
@@ -222,6 +246,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         sale: live.site.sale,
         shipping: live.shipping,
         freeShipping: live.freeShipping,
+        content: live.content ?? NO_CONTENT,
+        showStore,
         cart,
         cartLoading,
         cartError,

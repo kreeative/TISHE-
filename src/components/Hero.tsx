@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import RevealLayer from './RevealLayer'
 import { ctaTracking } from './cta'
+import { Img, Text } from './SiteContent'
 
 const SPOTLIGHT_R = 260
 
@@ -63,7 +64,8 @@ export default function Hero() {
       <div className="absolute z-50 flex flex-col items-center sm:items-start text-center sm:text-left pointer-events-none top-10 left-1/2 -translate-x-1/2 w-full px-6 sm:px-0 sm:w-auto sm:top-1/2 sm:left-[72px] lg:left-[96px] sm:-translate-x-0 sm:-translate-y-1/2">
         <h1 className="m-0">
           <span className="sr-only">The Ivory Sukundu, Hair Extensions</span>
-          <img
+          <Img
+            k="hero.logo"
             src="/images/logo-lockup-brown.png"
             alt=""
             className="w-[64vw] max-w-[280px] sm:w-[320px] sm:max-w-none lg:w-[380px] xl:w-[420px] h-auto hero-anim hero-reveal"
@@ -75,7 +77,7 @@ export default function Hero() {
           className="pointer-events-auto inline-block text-xs font-semibold uppercase px-10 py-3.5 mt-8 sm:mt-10 text-center bg-[#FAF7F3]/90 border border-[#5A3224]/15 text-[#1B1113] shadow-[0_10px_30px_-14px_rgba(90,50,36,0.45)] backdrop-blur-sm transition-all duration-300 ease-out hover:bg-[#FAF7F3] hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-12px_rgba(90,50,36,0.5)] active:translate-y-0 hero-anim hero-fade"
           style={{ ...ctaTracking, animationDelay: '0.6s' }}
         >
-          Shop Now
+          <Text k="hero.cta">Shop Now</Text>
         </Link>
       </div>
 

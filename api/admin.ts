@@ -9,7 +9,7 @@ import { sendShippingEmail, sendSignInLink } from './_lib/notify.js'
 import { esc, layout, p, textOf } from './_lib/templates.js'
 import { loadStore, saveImage, saveStore } from './_lib/store.js'
 import { cleanCode } from './_lib/discounts.js'
-import { cleanProduct, cleanShipping, cleanSite } from './_lib/editing.js'
+import { MAX_CONTENT_KEYS, cleanContent, cleanProduct, cleanShipping, cleanSite } from './_lib/editing.js'
 
 // The owner's dashboard API. Everything except link/redeem/jeere needs the admin
 // session token from the dashboard sign-in email.
@@ -28,6 +28,7 @@ import { cleanProduct, cleanShipping, cleanSite } from './_lib/editing.js'
 //   saveProduct { product } · deleteProduct { id }
 //   saveCode { rule, previousCode? } · deleteCode { code }
 //   saveSite { announcements, sale } · saveShipping { rates }
+//   saveContent { content }           page texts/pictures edited in Jeere ({ key: value }, '' = back to the original)
 //   upload   { handle, full, thumb }   save a product photo (base64 JPEG)
 
 const STATUSES: OrderStatus[] = ['new', 'ordered', 'shipped', 'delivered', 'cancelled']
@@ -298,6 +299,20 @@ const api = handler(async (request) => {
   if (action === 'saveSite') {
     const site = cleanSite(body)
     return json({ doc: await saveStore((d) => void (d.site = site)) })
+  }
+
+  if (action === 'saveContent') {
+    const changes = cleanContent(body.content)
+    const doc = await saveStore((d) => {
+      const content = { ...(d.content ?? {}) }
+      for (const [key, value] of Object.entries(changes)) {
+        if (value) content[key] = value
+        else delete content[key]
+      }
+      if (Object.keys(content).length > MAX_CONTENT_KEYS) throw new HttpError(400, 'Too many edited texts.')
+      d.content = content
+    })
+    return json({ doc })
   }
 
   if (action === 'saveShipping') {

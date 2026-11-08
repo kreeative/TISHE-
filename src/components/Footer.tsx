@@ -3,6 +3,7 @@ import { Mail } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { subscribeEmail } from '../lib/subscribe'
 import { trackSignUp } from '../lib/analytics'
+import { Text } from './SiteContent'
 
 // Legal pages: written in Shopify admin (Settings → Policies),
 // rendered on-site at /legal/:handle in the brand's typography.
@@ -61,10 +62,10 @@ export default function Footer() {
         {/* Brand */}
         <div className="flex flex-col gap-5">
           <img src="/images/logo-mark.webp" alt="The Ivory Sukundu" className="h-14 w-auto self-start" />
-          <p className="text-sm text-[#FAF7F3]/60 leading-[1.85] max-w-[260px]">
+          <Text k="footer.about" as="p" className="text-sm text-[#FAF7F3]/60 leading-[1.85] max-w-[260px]">
             Luxury hair, redefined. Raw Vietnamese and Indian bundles, and glueless half wigs
             that go on in sixty seconds.
-          </p>
+          </Text>
           <div className="flex items-center gap-5 mt-1">
             <a
               href="https://www.instagram.com/theivorysukundu"
@@ -180,7 +181,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="relative max-w-6xl mx-auto mt-14 pt-6 border-t border-[#FAF7F3]/10 flex flex-col sm:flex-row items-center justify-between gap-3">
         <p className="text-xs text-[#FAF7F3]/45">© 2026 The Ivory Sukundu. All rights reserved.</p>
-        <p className="text-xs text-[#FAF7F3]/45">Raw hair, redefined.</p>
+        <Text k="footer.motto" as="p" className="text-xs text-[#FAF7F3]/45">Raw hair, redefined.</Text>
       </div>
     </footer>
   )
