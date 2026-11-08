@@ -26,6 +26,8 @@ export const env = {
   sessionSecret: () => required('SESSION_SECRET'),
   // who may sign in to the dashboard
   adminEmails: () => list(process.env.ADMIN_EMAILS || 'hello@theivorysukundu.com'),
+  // Jeere accounts (Supabase user ids) that open the dashboard from jeere.kreeative.xyz without an email link
+  jeereOwnerIds: () => list(process.env.JEERE_OWNER_IDS || '706a1f96-346c-4b74-83fe-2b683517f54d'),
   // where new-order alerts and the daily to-do email go (comma-separated)
   ownerEmails: () => list(process.env.OWNER_EMAIL || 'hello@theivorysukundu.com'),
   siteUrl: () => (process.env.SITE_URL || 'https://www.theivorysukundu.com').replace(/\/$/, ''),
