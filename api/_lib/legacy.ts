@@ -83,6 +83,7 @@ function toOrder(r: LegacyRecord): LegacyOrder {
     note: r.note,
     reviewRequestedAt: '',
     emailed: true,
+    emails: [],
     legacy: 'shopify',
     payment: r.payment,
   }

@@ -7,7 +7,7 @@ import { listOrders, loadOrder, supplierMessages, trackingUrl, updateOrderMeta, 
 import { processOrder } from './_lib/process.js'
 import { listContacts, sendEmail } from './_lib/email.js'
 import { sendShippingEmail, sendSignInLink } from './_lib/notify.js'
-import { esc, layout, p, textOf } from './_lib/templates.js'
+import { MAIL_TEMPLATES, PLACEHOLDERS, logMail, orderMail } from './_lib/orderMail.js'
 import { loadStore, saveImage, saveStore } from './_lib/store.js'
 import { cleanCode } from './_lib/discounts.js'
 import { MAX_CONTENT_KEYS, cleanContent, cleanProduct, cleanShipping, cleanSite } from './_lib/editing.js'
@@ -24,7 +24,12 @@ import { MAX_CONTENT_KEYS, cleanContent, cleanProduct, cleanShipping, cleanSite 
 //   update   { id, status?, supplierRef?, carrier?, tracking?, note?, notify? }
 //   customers                          everyone who has ordered, by email
 //   subscribers                        the Circle mailing list
-//   email    { to, subject, message }  write to a customer from the store address
+//   email    { to?, subject, message, orderId?, includeOrder?, preview? }
+//                                      write to a customer from the store address; with orderId the
+//                                      customer's address, {first_name}/{order}/{tracking}… and the
+//                                      order's items are filled in, and the email is logged on the order;
+//                                      preview: true returns { to, subject, html } without sending
+//   emailTemplates                     ready-made order emails ({ id, label, subject, message, includeOrder })
 //   setup                              connect the Stripe webhook
 //   store                              everything editable: products, codes, site, shipping
 //   saveProduct { product } · deleteProduct { id }
@@ -207,6 +212,10 @@ const api = handler(async (request) => {
     order = await loadOrder(order.id)
     let notified = false
     if (body.notify === true && order.tracking) notified = await sendShippingEmail(order)
+    if (notified) {
+      await logMail(order, `Your order #${order.number} is on its way`).catch((err) => console.error('mail log', err))
+      order = await loadOrder(order.id)
+    }
     return json({ order: publicOrder(order), supplierMessages: supplierMessages(order), notified })
   }
 
@@ -228,21 +237,23 @@ const api = handler(async (request) => {
     return json({ subscribers: contacts.sort((a, b) => b.createdAt.localeCompare(a.createdAt)) })
   }
 
+  if (action === 'emailTemplates') {
+    return json({ templates: MAIL_TEMPLATES, placeholders: PLACEHOLDERS })
+  }
+
   if (action === 'email') {
-    const to = email(body.to)
+    const orderId = str(body.orderId, 200)
+    const order = orderId ? (legacyOrder(orderId) ?? (await loadOrder(orderId))) : null
+    const to = email(body.to) || order?.email || ''
     const subject = str(body.subject, 200)
     const message = str(body.message, 10_000)
     if (!to || !subject || !message) throw new HttpError(400, 'Add an email address, a subject and a message.')
-    const paragraphs = message.split(/\n{2,}/).map((para) => p(esc(para).replace(/\n/g, '<br>')))
-    const sent = await sendEmail({
-      to,
-      subject,
-      tags: { type: 'owner_message' },
-      html: layout({ preheader: message.slice(0, 120), title: subject, body: paragraphs.join('') }),
-      text: textOf([message]),
-    })
+    const mail = orderMail(order, subject, message, body.includeOrder === true)
+    if (body.preview === true) return json({ to, subject: mail.subject, html: mail.html })
+    const sent = await sendEmail({ to, ...mail, tags: { type: 'owner_message' } })
     if (!sent) throw new HttpError(502, 'The email could not be sent. Check the Resend setup.')
-    return json({ ok: true })
+    if (order) await logMail(order, mail.subject).catch((err) => console.error('mail log', err))
+    return json({ ok: true, to, subject: mail.subject })
   }
 
   if (action === 'setup') {

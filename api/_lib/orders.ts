@@ -78,6 +78,8 @@ export interface Order {
   note: string
   reviewRequestedAt: string
   emailed: boolean
+  // emails the owner sent about this order from the dashboard, oldest first
+  emails: { at: string; subject: string }[]
 }
 
 const FIRST_ORDER_NUMBER = 1004
@@ -183,6 +185,18 @@ export function toOrder(session: SessionWithPi, lineItems: Stripe.LineItem[] = [
     note: m.tis_note ?? '',
     reviewRequestedAt: m.tis_review_at ?? '',
     emailed: m.tis_emailed === '1',
+    emails: parseMailLog(m.tis_mail_log),
+  }
+}
+
+export function parseMailLog(raw: string | undefined): { at: string; subject: string }[] {
+  try {
+    const log = JSON.parse(raw ?? '[]') as unknown
+    return Array.isArray(log)
+      ? log.filter((e) => Array.isArray(e) && e.length === 2).map(([at, subject]) => ({ at: String(at), subject: String(subject) }))
+      : []
+  } catch {
+    return []
   }
 }
 

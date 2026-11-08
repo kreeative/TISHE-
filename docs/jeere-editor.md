@@ -86,3 +86,48 @@ Authorization: Bearer <session token>
 
 To make another text editable, wrap it in `<Text k="section.name">original wording</Text>`
 (or `<Img k="…" src="…" />` for a picture) in the shop's code.
+
+## Old Shopify orders (#1001–#1003)
+
+The three orders from the old Shopify store are kept in the shop itself, so they stay
+available after Shopify closes: items, customer, address, totals and FedEx tracking.
+In Jeere, open them like any other order instead of linking to Shopify admin:
+
+```js
+{ "action": "legacyOrders" }                  // → { orders: [order, …] }, newest first, same shape as `order`
+{ "action": "order", "id": "7178473734309" }  // the Shopify id (as in tishe.js's SHOPIFY list)
+// → { order, supplierMessages: [] }
+```
+
+- These orders carry `legacy: 'shopify'` and `payment` ("PayPal (€167.31)", …), and
+  have `status: 'delivered'`.
+- They are read-only: `update` answers 400. `email` works (see below).
+- The list is empty until `LEGACY_ORDERS_KEY` is set in Vercel. The file
+  (`src/data/legacy-orders.enc`) is encrypted because it holds names and addresses.
+
+## Emails to the customer from an order
+
+Put this on the order page, e.g. "Écrire à la cliente" with a template picker:
+
+```js
+{ "action": "emailTemplates" }
+// → { templates: [{ id, label, subject, message, includeOrder }], placeholders: ['{first_name}', …] }
+//   preparing · shipped · delay · delivered · question
+//   label is French for the owner; subject/message are English for the customer
+
+{ "action": "email", "orderId": "<order id>", "subject": "…", "message": "…", "includeOrder": true, "preview": true }
+// → { to, subject, html }   the email exactly as the customer will get it (nothing sent)
+
+{ "action": "email", "orderId": "<order id>", "subject": "…", "message": "…", "includeOrder": true }
+// → { ok, to, subject }     sent from orders@theivorysukundu.com; replies go to hello@
+```
+
+- With `orderId`, `to` is optional: the order's email is used.
+- These placeholders are filled in from the order: `{first_name}` / `{prénom}`,
+  `{order}` / `{commande}`, `{tracking}` / `{suivi}`, `{carrier}` / `{transporteur}`,
+  `{tracking_link}` / `{lien_suivi}` and `{items}` / `{articles}`. Unknown ones stay as typed.
+- `includeOrder: true` adds the items under the message, plus a "Track my order"
+  button once there is a tracking number.
+- Every email sent from an order, and the automatic shipping email, is listed on the
+  order as `order.emails: [{ at, subject }]` (oldest first). Show it as a little history.
+- Without `orderId`, `email` works as before (`to`, `subject`, `message`).
