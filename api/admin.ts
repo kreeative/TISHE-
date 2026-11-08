@@ -2,6 +2,7 @@ import { HttpError, bearer, email, handler, json, readBody, str } from './_lib/h
 import { env } from './_lib/env.js'
 import { stripe } from './_lib/stripe.js'
 import { issueToken, verifyToken } from './_lib/tokens.js'
+import { legacyOrder, legacyOrders } from './_lib/legacy.js'
 import { listOrders, loadOrder, supplierMessages, trackingUrl, updateOrderMeta, type Order, type OrderStatus } from './_lib/orders.js'
 import { processOrder } from './_lib/process.js'
 import { listContacts, sendEmail } from './_lib/email.js'
@@ -18,7 +19,8 @@ import { MAX_CONTENT_KEYS, cleanContent, cleanProduct, cleanShipping, cleanSite 
 //   redeem   { token }                 swap it for a 30-day session
 //   jeere    { accessToken }           the owner's Jeere (Supabase) session → a 30-day session, no email
 //   overview                           orders, stats and setup status
-//   order    { id }                    one order with items and supplier messages
+//   order    { id }                    one order with items and supplier messages (old Shopify orders too, read-only)
+//   legacyOrders                       the old Shopify store's orders, in full (newest first)
 //   update   { id, status?, supplierRef?, carrier?, tracking?, note?, notify? }
 //   customers                          everyone who has ordered, by email
 //   subscribers                        the Circle mailing list
@@ -171,12 +173,19 @@ const api = handler(async (request) => {
     return json({ orders: orders.map(publicOrder), stats: stats(orders), setup })
   }
 
+  if (action === 'legacyOrders') {
+    return json({ orders: legacyOrders().map(publicOrder) })
+  }
+
   if (action === 'order') {
+    const old = legacyOrder(str(body.id, 200))
+    if (old) return json({ order: publicOrder(old), supplierMessages: [] })
     const order = await loadOrder(str(body.id, 200))
     return json({ order: publicOrder(order), supplierMessages: supplierMessages(order) })
   }
 
   if (action === 'update') {
+    if (legacyOrder(str(body.id, 200))) throw new HttpError(400, 'This order is from the old Shopify store: it can no longer be changed.')
     let order = await loadOrder(str(body.id, 200))
     const fields: Record<string, string> = {}
     const status = str(body.status) as OrderStatus
