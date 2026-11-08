@@ -11,11 +11,12 @@ import { loadStore, saveImage, saveStore } from './_lib/store.js'
 import { cleanCode } from './_lib/discounts.js'
 import { cleanProduct, cleanShipping, cleanSite } from './_lib/editing.js'
 
-// The owner's dashboard API. Everything except link/redeem needs the admin
+// The owner's dashboard API. Everything except link/redeem/jeere needs the admin
 // session token from the dashboard sign-in email.
 //
 //   link     { email }                 email a sign-in link (admin emails only)
 //   redeem   { token }                 swap it for a 30-day session
+//   jeere    { accessToken }           the owner's Jeere (Supabase) session → a 30-day session, no email
 //   overview                           orders, stats and setup status
 //   order    { id }                    one order with items and supplier messages
 //   update   { id, status?, supplierRef?, carrier?, tracking?, note?, notify? }
@@ -101,6 +102,9 @@ async function webhookStatus(create: boolean): Promise<boolean> {
 // The Jeere dashboard (jeere.kreeative.xyz) runs this same API from its own page: its origin may
 // call it from the browser, and its sign-in link brings the owner back there instead of here.
 const JEERE = 'https://jeere.kreeative.xyz'
+// Jeere's Supabase project; the key is its public (publishable) one
+const JEERE_SUPABASE = 'https://aezchxfvzfoqlvzchqyk.supabase.co'
+const JEERE_SUPABASE_KEY = 'sb_publishable_w0gqMepSQZn-DWRboBOR1w_rh6-jg_w'
 function cors(request: Request, response: Response): Response {
   if (request.headers.get('origin') !== JEERE) return response
   const headers = new Headers(response.headers)
@@ -128,6 +132,25 @@ const api = handler(async (request) => {
 
   if (action === 'redeem') {
     const address = verifyToken(str(body.token, 1000), 'admin-login')
+    return json({ ...issueToken(address, 'admin', 60 * 24 * 30), email: address })
+  }
+
+  if (action === 'jeere') {
+    // the browser only hands us its Supabase session: Supabase itself says who it belongs to
+    let res: Response
+    try {
+      res = await fetch(`${JEERE_SUPABASE}/auth/v1/user`, {
+        headers: { Authorization: `Bearer ${str(body.accessToken, 8000)}`, apikey: JEERE_SUPABASE_KEY },
+        signal: AbortSignal.timeout(8000),
+      })
+    } catch {
+      throw new HttpError(502, 'Jeere could not be reached. Try again.')
+    }
+    if (res.status !== 200) throw new HttpError(401, 'Please sign in again.', 'unauthorized')
+    const user = (await res.json().catch(() => null)) as { id?: unknown } | null
+    const id = typeof user?.id === 'string' ? user.id.toLowerCase() : ''
+    if (!id || !env.jeereOwnerIds().includes(id)) throw new HttpError(403, 'This email no longer has access.')
+    const address = env.adminEmails()[0]
     return json({ ...issueToken(address, 'admin', 60 * 24 * 30), email: address })
   }
 

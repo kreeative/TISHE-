@@ -28,6 +28,8 @@ export const env = {
   adminEmails: () => list(process.env.ADMIN_EMAILS || 'hello@theivorysukundu.com'),
   // where new-order alerts and the daily to-do email go (comma-separated)
   ownerEmails: () => list(process.env.OWNER_EMAIL || 'hello@theivorysukundu.com'),
+  // Jeere accounts (Supabase user ids) that may open the dashboard without an email link
+  jeereOwnerIds: () => list(process.env.JEERE_OWNER_IDS || '706a1f96-346c-4b74-83fe-2b683517f54d'),
   siteUrl: () => (process.env.SITE_URL || 'https://www.theivorysukundu.com').replace(/\/$/, ''),
   emailFrom: () => process.env.EMAIL_FROM || 'The Ivory Sukundu <orders@theivorysukundu.com>',
   replyTo: () => process.env.EMAIL_REPLY_TO || 'hello@theivorysukundu.com',
