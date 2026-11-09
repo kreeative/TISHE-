@@ -47,12 +47,18 @@ export interface Order {
   number: string | null
   createdAt: string
   paid: boolean
+  // fully refunded; refundedAmount says how much was given back (in the order's currency)
   refunded: boolean
+  refundedAmount: number
   status: OrderStatus
   email: string
   name: string
   phone: string
   shipping: Address | null
+  // as the customer's bank has it, when Stripe collected a full one
+  billing: Address | null
+  // how it was paid: "Visa •••• 4242", "Klarna", "PayPal (€167.31)"…
+  payment: string
   // filled in only when the full order is loaded
   items: OrderItem[]
   summary: string
@@ -73,8 +79,11 @@ export interface Order {
   supplierRef: string
   orderedAt: string
   carrier: string
+  // one or more numbers, comma-separated (trackingNumbers lists them)
   tracking: string
+  trackingNumbers: string[]
   shippedAt: string
+  deliveredAt: string
   note: string
   reviewRequestedAt: string
   emailed: boolean
@@ -91,6 +100,37 @@ type SessionWithPi = Stripe.Checkout.Session & { payment_intent: Stripe.PaymentI
 
 function pi(session: SessionWithPi): Stripe.PaymentIntent | null {
   return session.payment_intent && typeof session.payment_intent === 'object' ? session.payment_intent : null
+}
+
+const METHODS: Record<string, string> = { klarna: 'Klarna', affirm: 'Affirm', link: 'Link', afterpay_clearpay: 'Afterpay', paypal: 'PayPal', cashapp: 'Cash App' }
+
+function paymentLabel(charge: Stripe.Charge | null): string {
+  const d = charge?.payment_method_details
+  if (!d) return ''
+  if (d.type === 'card' && d.card) {
+    const brand = d.card.brand ? d.card.brand.charAt(0).toUpperCase() + d.card.brand.slice(1) : 'Card'
+    return `${brand} •••• ${d.card.last4 ?? ''}`.trim()
+  }
+  return METHODS[d.type] ?? d.type
+}
+
+function billingAddress(charge: Stripe.Charge | null): Address | null {
+  const b = charge?.billing_details
+  const a = b?.address
+  if (!a?.line1) return null
+  return {
+    name: b?.name ?? '',
+    line1: a.line1 ?? '',
+    line2: a.line2 ?? '',
+    city: a.city ?? '',
+    state: a.state ?? '',
+    postalCode: a.postal_code ?? '',
+    country: a.country ?? '',
+  }
+}
+
+export function splitTracking(tracking: string): string[] {
+  return tracking.split(/[,\s]+/).filter(Boolean)
 }
 
 function address(session: Stripe.Checkout.Session): Address | null {
@@ -156,11 +196,14 @@ export function toOrder(session: SessionWithPi, lineItems: Stripe.LineItem[] = [
     createdAt: new Date(session.created * 1000).toISOString(),
     paid: session.payment_status === 'paid',
     refunded: Boolean(charge?.refunded),
+    refundedAmount: charge?.amount_refunded ?? 0,
     status: (m.tis_status as OrderStatus) || 'new',
     email: session.customer_details?.email?.toLowerCase() ?? '',
     name: shipping?.name || session.customer_details?.name || '',
     phone: session.customer_details?.phone ?? '',
     shipping,
+    billing: billingAddress(charge),
+    payment: paymentLabel(charge),
     items,
     summary: sm.summary ?? '',
     currency: (session.currency ?? 'cad').toUpperCase(),
@@ -181,7 +224,9 @@ export function toOrder(session: SessionWithPi, lineItems: Stripe.LineItem[] = [
     orderedAt: m.tis_ordered_at ?? '',
     carrier: m.tis_carrier ?? '',
     tracking: m.tis_tracking ?? '',
+    trackingNumbers: splitTracking(m.tis_tracking ?? ''),
     shippedAt: m.tis_shipped_at ?? '',
+    deliveredAt: m.tis_delivered_at ?? '',
     note: m.tis_note ?? '',
     reviewRequestedAt: m.tis_review_at ?? '',
     emailed: m.tis_emailed === '1',
@@ -202,6 +247,10 @@ export function parseMailLog(raw: string | undefined): { at: string; subject: st
 
 export function trackingUrl(tracking: string, carrier = ''): string {
   if (!tracking) return ''
+  const numbers = splitTracking(tracking)
+  // several parcels: one page that follows them all
+  if (numbers.length > 1) return `https://t.17track.net/en#nums=${numbers.map(encodeURIComponent).join(',')}`
+  tracking = numbers[0] ?? tracking
   const c = carrier.toLowerCase()
   if (c.includes('dhl')) return `https://www.dhl.com/ca-en/home/tracking.html?tracking-id=${encodeURIComponent(tracking)}&submit=1`
   if (c.includes('canada post')) return `https://www.canadapost-postescanada.ca/track-reperage/en#/search?searchFor=${encodeURIComponent(tracking)}`

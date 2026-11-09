@@ -8,6 +8,7 @@ import { processOrder } from './_lib/process.js'
 import { listContacts, sendEmail } from './_lib/email.js'
 import { sendShippingEmail, sendSignInLink } from './_lib/notify.js'
 import { MAIL_TEMPLATES, PLACEHOLDERS, logMail, orderMail } from './_lib/orderMail.js'
+import { money } from './_lib/templates.js'
 import { loadStore, saveImage, saveStore } from './_lib/store.js'
 import { cleanCode } from './_lib/discounts.js'
 import { MAX_CONTENT_KEYS, cleanContent, cleanProduct, cleanShipping, cleanSite } from './_lib/editing.js'
@@ -30,6 +31,8 @@ import { MAX_CONTENT_KEYS, cleanContent, cleanProduct, cleanShipping, cleanSite 
 //                                      order's items are filled in, and the email is logged on the order;
 //                                      preview: true returns { to, subject, html } without sending
 //   emailTemplates                     ready-made order emails ({ id, label, subject, message, includeOrder })
+//   refund   { id, amount?, notify? }  refund through Stripe (amount in cents of the order's currency,
+//                                      default: what's left); notify emails the customer
 //   setup                              connect the Stripe webhook
 //   store                              everything editable: products, codes, site, shipping
 //   saveProduct { product } · deleteProduct { id }
@@ -198,12 +201,14 @@ const api = handler(async (request) => {
       if (!STATUSES.includes(status)) throw new HttpError(400, 'Unknown status')
       fields.tis_status = status
       if (status === 'ordered' && order.status === 'new') fields.tis_ordered_at = new Date().toISOString()
+      if (status === 'delivered' && !order.deliveredAt) fields.tis_delivered_at = new Date().toISOString()
     }
     if (typeof body.supplierRef === 'string') fields.tis_supplier_ref = str(body.supplierRef, 200)
     if (typeof body.note === 'string') fields.tis_note = str(body.note, 480)
     if (typeof body.carrier === 'string') fields.tis_carrier = str(body.carrier, 60)
     if (typeof body.tracking === 'string') {
-      const tracking = str(body.tracking, 100).replace(/\s+/g, '')
+      // one number, or several separated by commas
+      const tracking = str(body.tracking, 200).split(/[,\s]+/).filter(Boolean).join(',')
       fields.tis_tracking = tracking
       if (tracking && !order.shippedAt) fields.tis_shipped_at = new Date().toISOString()
       if (tracking && !status) fields.tis_status = 'shipped'
@@ -217,6 +222,36 @@ const api = handler(async (request) => {
       order = await loadOrder(order.id)
     }
     return json({ order: publicOrder(order), supplierMessages: supplierMessages(order), notified })
+  }
+
+  if (action === 'refund') {
+    const id = str(body.id, 200)
+    if (legacyOrder(id)) throw new HttpError(400, 'This order was paid on the old Shopify store: it can only be refunded there or through PayPal.')
+    let order = await loadOrder(id)
+    if (!order.paymentIntentId || !order.paid) throw new HttpError(400, 'This order has no payment to refund.')
+    const left = order.total - order.refundedAmount
+    if (left <= 0) throw new HttpError(400, 'This order is already fully refunded.')
+    const amount = body.amount === undefined || body.amount === null ? left : Number(body.amount)
+    if (!Number.isInteger(amount) || amount <= 0 || amount > left) {
+      throw new HttpError(400, `Choose an amount up to ${money(left, order.currency)}.`)
+    }
+    await stripe().refunds.create(
+      { payment_intent: order.paymentIntentId, amount, reason: 'requested_by_customer', metadata: { tis_order: order.number ?? '' } },
+      // a double click gives back the same refund, not a second one
+      { idempotencyKey: `refund/${order.id}/${order.refundedAmount}/${amount}` },
+    )
+    order = await loadOrder(id)
+    let notified = false
+    if (body.notify === true && order.email) {
+      const t = MAIL_TEMPLATES.find((x) => x.id === 'refunded')!
+      const mail = orderMail(order, t.subject, t.message, false)
+      notified = await sendEmail({ to: order.email, ...mail, tags: { type: 'refund' }, idempotencyKey: `refund-mail/${order.id}/${order.refundedAmount}` })
+      if (notified) {
+        await logMail(order, mail.subject).catch((err) => console.error('mail log', err))
+        order = await loadOrder(id)
+      }
+    }
+    return json({ order: publicOrder(order), supplierMessages: supplierMessages(order), refunded: amount, notified })
   }
 
   if (action === 'customers') {

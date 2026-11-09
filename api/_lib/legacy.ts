@@ -1,7 +1,7 @@
 import { createDecipheriv, createHash } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Address, Order, OrderItem } from './orders.js'
+import { splitTracking, type Address, type Order, type OrderItem } from './orders.js'
 
 // Customers who ordered on the old Shopify store (July–October 2026), keyed by
 // a SHA-256 of their lowercase email so no address is stored in the code.
@@ -44,7 +44,7 @@ interface LegacyRecord {
   note: string
 }
 
-export type LegacyOrder = Order & { legacy: 'shopify'; payment: string }
+export type LegacyOrder = Order & { legacy: 'shopify' }
 
 const HST_PROVINCES = ['ON', 'NB', 'NL', 'NS', 'PE']
 
@@ -56,11 +56,15 @@ function toOrder(r: LegacyRecord): LegacyOrder {
     createdAt: r.createdAt,
     paid: true,
     refunded: false,
+    refundedAmount: 0,
     status: 'delivered',
     email: r.email,
     name: r.name,
     phone: r.phone,
     shipping: r.shipping,
+    // Shopify had the billing address the same as the shipping one
+    billing: r.shipping,
+    payment: r.payment,
     items: r.items,
     summary: r.items.map((i) => `${i.title}${i.quantity > 1 ? ` × ${i.quantity}` : ''}`).join(', '),
     currency: 'CAD',
@@ -79,13 +83,14 @@ function toOrder(r: LegacyRecord): LegacyOrder {
     orderedAt: '',
     carrier: r.carrier,
     tracking: r.tracking,
+    trackingNumbers: splitTracking(r.tracking),
     shippedAt: r.shippedAt,
+    deliveredAt: '',
     note: r.note,
     reviewRequestedAt: '',
     emailed: true,
     emails: [],
     legacy: 'shopify',
-    payment: r.payment,
   }
 }
 

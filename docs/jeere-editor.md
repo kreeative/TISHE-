@@ -131,3 +131,45 @@ Put this on the order page, e.g. "Écrire à la cliente" with a template picker:
 - Every email sent from an order, and the automatic shipping email, is listed on the
   order as `order.emails: [{ at, subject }]` (oldest first). Show it as a little history.
 - Without `orderId`, `email` works as before (`to`, `subject`, `message`).
+
+## An order page like Shopify's
+
+The owner wants the order page in Jeere to read like Shopify's order detail. Everything
+it needs comes back from `order` (and `update`, `refund`):
+
+| Shopify block | fields |
+|---|---|
+| Header: number, date, status chips | `number`, `createdAt`, `status`, `paid`, `refunded`, `refundedAmount` |
+| Header buttons | **Rembourser** (`refund`), **Écrire à la cliente** (`email`, see above), **Plus**: mark delivered (`update { status: 'delivered' }`), cancel (`update { status: 'cancelled' }`), open in Stripe (`stripeUrl`) |
+| Fulfilled / timeline | `createdAt` → `orderedAt` (sent to supplier) → `shippedAt` → `deliveredAt`; `carrier`, `trackingNumbers` (one link each, or `trackingUrl` that follows them all) |
+| Items | `items[]`: `image`, `title`, `variant`, `unitAmount` × `quantity`, `total` |
+| Paid | `subtotal`, `discount` (+ `code`), `shippingAmount`, `tax` (`taxLabel`), `total`, `payment` ("Visa •••• 4242", "PayPal (€167.31)"); to the bank: `settled`, `fee`, `net` (CAD) |
+| Customer | `name`, `email`, `phone` |
+| Shipping address | `shipping` |
+| Billing address | `billing` (`null` = Stripe only took the card's country and postcode) |
+| History | `emails[]` (sent from the order) |
+| Private note | `note` (`update { note }`) |
+
+Amounts are in cents, in `currency`.
+
+```js
+{ "action": "refund", "id": "<order id>" }                                   // refunds what's left
+{ "action": "refund", "id": "<order id>", "amount": 5000, "notify": true }    // CA$50.00, and emails the customer
+// → { order, supplierMessages, refunded, notified }
+```
+
+- Ask the owner to confirm the amount first: money leaves the account.
+- A double click never refunds twice.
+- Old Shopify orders answer 400 (they were paid through Shopify/PayPal).
+- `notify` sends the "refunded" template, with `{refund}` = the total refunded.
+- Tracking: `update { tracking: "877824781266, ZCEHC0000451369YQ" }` takes several numbers.
+  `trackingNumbers` lists them.
+
+### Motion
+
+The owner asked for a little motion when moving between sections of the app:
+- **Changing section:** a short fade plus a 6–8px slide (about 180–220 ms, ease-out).
+- **Order list → order page:** the order slides in from the right, and back reverses it.
+- **Changes on the order page** (after "Marquer livrée", a refund, an email): a brief
+  highlight on the block that changed.
+- **Reduced motion:** with `prefers-reduced-motion: reduce`, keep only the fade.

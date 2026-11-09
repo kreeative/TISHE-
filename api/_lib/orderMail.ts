@@ -48,6 +48,13 @@ export const MAIL_TEMPLATES: MailTemplate[] = [
     includeOrder: false,
   },
   {
+    id: 'refunded',
+    label: 'Remboursement',
+    subject: 'Your refund for order #{order}',
+    message: `Hi {first_name},\n\nI've refunded {refund} for your order #{order}, to the card or account you paid with. It usually appears within 5–10 business days, depending on your bank.\n\n${SIGN}`,
+    includeOrder: false,
+  },
+  {
     id: 'question',
     label: 'Question sur la commande',
     subject: 'About your order #{order}',
@@ -59,6 +66,7 @@ export const MAIL_TEMPLATES: MailTemplate[] = [
 const first = (o: Order) => o.name.split(/\s+/)[0] || 'there'
 const items = (o: Order) => o.items.map((i) => `${i.title}${i.variant ? ` (${i.variant})` : ''}${i.quantity > 1 ? ` × ${i.quantity}` : ''}`).join(', ')
 const link = (o: Order) => trackingUrl(o.tracking, o.carrier)
+const refund = (o: Order) => money(o.refundedAmount, o.currency)
 
 // {first_name} or {prénom}, {order} or {commande}, … (case and accents ignored)
 const FIELDS: Record<string, (o: Order) => string> = {
@@ -66,17 +74,19 @@ const FIELDS: Record<string, (o: Order) => string> = {
   prenom: first,
   order: (o) => o.number ?? '',
   commande: (o) => o.number ?? '',
-  tracking: (o) => o.tracking,
-  suivi: (o) => o.tracking,
+  tracking: (o) => o.trackingNumbers.join(', '),
+  suivi: (o) => o.trackingNumbers.join(', '),
   carrier: (o) => o.carrier,
   transporteur: (o) => o.carrier,
   tracking_link: link,
   lien_suivi: link,
   items,
   articles: items,
+  refund,
+  remboursement: refund,
 }
 
-export const PLACEHOLDERS = ['{first_name}', '{order}', '{tracking}', '{carrier}', '{tracking_link}', '{items}']
+export const PLACEHOLDERS = ['{first_name}', '{order}', '{tracking}', '{carrier}', '{tracking_link}', '{items}', '{refund}']
 
 export function fillIn(text: string, order: Order): string {
   return text.replace(/\{\s*([^{}\s]{1,30})\s*\}/g, (all, name: string) => {
