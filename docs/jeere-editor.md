@@ -102,8 +102,8 @@ In Jeere, open them like any other order instead of linking to Shopify admin:
 - These orders carry `legacy: 'shopify'` and `payment` ("PayPal (€167.31)", …), and
   have `status: 'delivered'`.
 - They are read-only: `update` answers 400. `email` works (see below).
-- The list is empty until `LEGACY_ORDERS_KEY` is set in Vercel. The file
-  (`src/data/legacy-orders.enc`) is encrypted because it holds names and addresses.
+- This works now. The file (`src/data/legacy-orders.enc`) holds names and addresses,
+  so it is sealed to the store's own key: only the store can open it.
 
 ## Emails to the customer from an order
 
