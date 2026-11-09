@@ -50,6 +50,8 @@ export interface Order {
   // fully refunded; refundedAmount says how much was given back (in the order's currency)
   refunded: boolean
   refundedAmount: number
+  // each refund, when the full order is loaded
+  refunds: { at: string; amount: number }[]
   status: OrderStatus
   email: string
   name: string
@@ -197,6 +199,7 @@ export function toOrder(session: SessionWithPi, lineItems: Stripe.LineItem[] = [
     paid: session.payment_status === 'paid',
     refunded: Boolean(charge?.refunded),
     refundedAmount: charge?.amount_refunded ?? 0,
+    refunds: (charge?.refunds?.data ?? []).map((r) => ({ at: new Date(r.created * 1000).toISOString(), amount: r.amount })),
     status: (m.tis_status as OrderStatus) || 'new',
     email: session.customer_details?.email?.toLowerCase() ?? '',
     name: shipping?.name || session.customer_details?.name || '',
@@ -245,6 +248,31 @@ export function parseMailLog(raw: string | undefined): { at: string; subject: st
   }
 }
 
+// What happened to the order, oldest first, in the owner's words (the dashboards are in French).
+export function orderTimeline(o: Order & { legacy?: string }): { at: string; title: string; detail: string }[] {
+  const amount = (cents: number) =>
+    new Intl.NumberFormat('fr-CA', { style: 'currency', currency: o.currency || 'CAD' }).format(cents / 100)
+  const events: { at: string; title: string; detail: string }[] = [
+    {
+      at: o.createdAt,
+      title: o.legacy ? 'Commande passée sur l’ancienne boutique Shopify' : 'Commande passée',
+      detail: [amount(o.total), o.payment].filter(Boolean).join(' · '),
+    },
+  ]
+  if (o.orderedAt) events.push({ at: o.orderedAt, title: 'Commandée chez le fournisseur', detail: o.supplierRef ? `Référence ${o.supplierRef}` : '' })
+  if (o.shippedAt) {
+    events.push({
+      at: o.shippedAt,
+      title: o.carrier ? `Expédiée avec ${o.carrier}` : 'Expédiée',
+      detail: o.trackingNumbers.length ? `Suivi : ${o.trackingNumbers.join(', ')}` : '',
+    })
+  }
+  if (o.deliveredAt) events.push({ at: o.deliveredAt, title: 'Livrée', detail: '' })
+  for (const r of o.refunds) events.push({ at: r.at, title: 'Remboursement', detail: amount(r.amount) })
+  for (const e of o.emails) events.push({ at: e.at, title: 'E-mail envoyé à la cliente', detail: e.subject })
+  return events.sort((a, b) => a.at.localeCompare(b.at))
+}
+
 export function trackingUrl(tracking: string, carrier = ''): string {
   if (!tracking) return ''
   const numbers = splitTracking(tracking)
@@ -261,7 +289,7 @@ export function trackingUrl(tracking: string, carrier = ''): string {
 
 export async function loadOrder(sessionId: string): Promise<Order> {
   const session = (await stripe().checkout.sessions.retrieve(sessionId, {
-    expand: ['payment_intent.latest_charge.balance_transaction', 'line_items.data.price.product'],
+    expand: ['payment_intent.latest_charge.balance_transaction', 'payment_intent.latest_charge.refunds', 'line_items.data.price.product'],
   })) as SessionWithPi
   if (session.metadata?.source !== SOURCE) throw new Error(`Session ${sessionId} is not a store order`)
   return toOrder(session, session.line_items?.data ?? [])

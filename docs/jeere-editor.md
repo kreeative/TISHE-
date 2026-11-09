@@ -134,6 +134,16 @@ Put this on the order page, e.g. "Écrire à la cliente" with a template picker:
 
 ## An order page like Shopify's
 
+Every order now comes with two fields made for this page:
+
+- `readOnly: true` on the old Shopify orders (#1001–#1003). Show them as a summary: no
+  status, supplier, tracking or note fields, and no "Enregistrer". Keep only
+  "Écrire à la cliente". Today Jeere shows them with the edit form, and the owner noticed.
+- `timeline: [{ at, title, detail }]`, oldest first, already in French: "Commande passée"
+  (amount, payment), "Commandée chez le fournisseur", "Expédiée avec FedEx" (tracking),
+  "Livrée", each "Remboursement", each "E-mail envoyé à la cliente". Draw it as
+  Shopify's timeline, a vertical line with a dot and the date per step. The owner wants it.
+
 The owner wants the order page in Jeere to read like Shopify's order detail. Everything
 it needs comes back from `order` (and `update`, `refund`):
 

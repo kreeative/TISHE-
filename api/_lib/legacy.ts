@@ -61,6 +61,7 @@ function toOrder(r: LegacyRecord): LegacyOrder {
     paid: true,
     refunded: false,
     refundedAmount: 0,
+    refunds: [],
     status: 'delivered',
     email: r.email,
     name: r.name,

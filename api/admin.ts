@@ -3,7 +3,7 @@ import { env } from './_lib/env.js'
 import { stripe } from './_lib/stripe.js'
 import { issueToken, verifyToken } from './_lib/tokens.js'
 import { legacyOrder, legacyOrders, legacyPublicKey } from './_lib/legacy.js'
-import { listOrders, loadOrder, supplierMessages, trackingUrl, updateOrderMeta, type Order, type OrderStatus } from './_lib/orders.js'
+import { listOrders, loadOrder, orderTimeline, supplierMessages, trackingUrl, updateOrderMeta, type Order, type OrderStatus } from './_lib/orders.js'
 import { processOrder } from './_lib/process.js'
 import { listContacts, sendEmail } from './_lib/email.js'
 import { sendShippingEmail, sendSignInLink } from './_lib/notify.js'
@@ -45,11 +45,14 @@ import { MAX_CONTENT_KEYS, cleanContent, cleanProduct, cleanShipping, cleanSite 
 const STATUSES: OrderStatus[] = ['new', 'ordered', 'shipped', 'delivered', 'cancelled']
 const WEBHOOK_EVENTS = ['checkout.session.completed', 'checkout.session.async_payment_succeeded'] as const
 
-function publicOrder(o: Order) {
+function publicOrder(o: Order & { legacy?: string }) {
   return {
     ...o,
     trackingUrl: trackingUrl(o.tracking, o.carrier),
     stripeUrl: o.paymentIntentId ? `https://dashboard.stripe.com/payments/${o.paymentIntentId}` : '',
+    // old Shopify orders are kept to look at: nothing on them can be changed
+    readOnly: Boolean(o.legacy),
+    timeline: orderTimeline(o),
   }
 }
 
