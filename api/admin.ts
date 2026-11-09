@@ -182,7 +182,11 @@ const api = handler(async (request) => {
       testMode: env.stripeConfigured() && env.stripeKey().startsWith('sk_test_'),
     }
     if (!setup.stripe) return json({ orders: [], stats: stats([]), setup })
-    setup.webhook = await webhookStatus(false)
+    // connects Stripe's notifications the first time the dashboard opens, so nobody has to press "Réparer"
+    setup.webhook = await webhookStatus(true).catch((err) => {
+      console.error('webhook setup', err)
+      return false
+    })
     const orders = await sweep(await listOrders())
     return json({ orders: orders.map(publicOrder), stats: stats(orders), setup })
   }
