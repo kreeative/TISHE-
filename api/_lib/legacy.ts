@@ -1,4 +1,5 @@
-import { createDecipheriv, createHash } from 'node:crypto'
+import { createDecipheriv, createHash, createPrivateKey, createPublicKey, diffieHellman, hkdfSync, type KeyObject } from 'node:crypto'
+import { env } from './env.js'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { splitTracking, type Address, type Order, type OrderItem } from './orders.js'
@@ -19,8 +20,11 @@ export function legacyCustomer(email: string): { orders: number; spend: number }
 
 // The old orders themselves, in full, so the dashboards can open them after
 // Shopify is closed. They hold names and addresses, so the file
-// (src/data/legacy-orders.enc) is encrypted (AES-256-GCM) with LEGACY_ORDERS_KEY,
-// set in Vercel. Read-only: the store only shows them.
+// (src/data/legacy-orders.enc) is encrypted to the store itself: the store
+// derives an X25519 key pair from SESSION_SECRET and publishes only the public
+// half (action legacyKey); the file was sealed with it (ephemeral X25519 +
+// HKDF + AES-256-GCM), so only the store can open it. Changing SESSION_SECRET
+// means sealing the file again. Read-only: the store only shows them.
 interface LegacyRecord {
   id: string
   number: string
@@ -97,17 +101,41 @@ function toOrder(r: LegacyRecord): LegacyOrder {
 let cached: LegacyOrder[] | null = null
 
 const FILE = join(process.cwd(), 'src/data', 'legacy-orders.enc')
+// PKCS#8 header of a raw X25519 private key
+const X25519_PKCS8 = Buffer.from('302e020100300506032b656e04220420', 'hex')
+const INFO = 'tis-legacy-orders'
 
-// Newest first. Empty until both the file and LEGACY_ORDERS_KEY are there.
+function storeKey(): KeyObject {
+  const seed = Buffer.from(hkdfSync('sha256', env.sessionSecret(), INFO, 'x25519 private key', 32))
+  return createPrivateKey({ key: Buffer.concat([X25519_PKCS8, seed]), format: 'der', type: 'pkcs8' })
+}
+
+// The public half, to seal the file with (base64 SPKI). Safe to show anyone.
+export function legacyPublicKey(): string {
+  return createPublicKey(storeKey()).export({ format: 'der', type: 'spki' }).toString('base64')
+}
+
+function open(file: Record<string, string>): string {
+  const epk = Buffer.from(file.epk, 'base64')
+  const shared = diffieHellman({ privateKey: storeKey(), publicKey: createPublicKey({ key: epk, format: 'der', type: 'spki' }) })
+  const key = Buffer.from(hkdfSync('sha256', shared, epk, `${INFO} aes-256-gcm`, 32))
+  const decipher = createDecipheriv('aes-256-gcm', key, Buffer.from(file.iv, 'base64'))
+  decipher.setAuthTag(Buffer.from(file.tag, 'base64'))
+  return Buffer.concat([decipher.update(Buffer.from(file.data, 'base64')), decipher.final()]).toString('utf8')
+}
+
+// Newest first. Empty if the file is missing or can't be opened.
 export function legacyOrders(): LegacyOrder[] {
   if (cached) return cached
-  const key = process.env.LEGACY_ORDERS_KEY
-  if (!key || !existsSync(FILE)) return []
-  const file = JSON.parse(readFileSync(FILE, 'utf8')) as Record<string, string>
-  const decipher = createDecipheriv('aes-256-gcm', Buffer.from(key, 'base64'), Buffer.from(file.iv, 'base64'))
-  decipher.setAuthTag(Buffer.from(file.tag, 'base64'))
-  const text = Buffer.concat([decipher.update(Buffer.from(file.data, 'base64')), decipher.final()]).toString('utf8')
-  cached = (JSON.parse(text) as LegacyRecord[]).map(toOrder).sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+  if (!existsSync(FILE)) return []
+  try {
+    const file = JSON.parse(readFileSync(FILE, 'utf8')) as Record<string, string>
+    if (file.v !== '2' && (file.v as unknown) !== 2) return []
+    cached = (JSON.parse(open(file)) as LegacyRecord[]).map(toOrder).sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+  } catch (err) {
+    console.error('old orders unreadable', err)
+    return []
+  }
   return cached
 }
 

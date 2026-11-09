@@ -2,7 +2,7 @@ import { HttpError, bearer, email, handler, json, readBody, str } from './_lib/h
 import { env } from './_lib/env.js'
 import { stripe } from './_lib/stripe.js'
 import { issueToken, verifyToken } from './_lib/tokens.js'
-import { legacyOrder, legacyOrders } from './_lib/legacy.js'
+import { legacyOrder, legacyOrders, legacyPublicKey } from './_lib/legacy.js'
 import { listOrders, loadOrder, supplierMessages, trackingUrl, updateOrderMeta, type Order, type OrderStatus } from './_lib/orders.js'
 import { processOrder } from './_lib/process.js'
 import { listContacts, sendEmail } from './_lib/email.js'
@@ -18,6 +18,7 @@ import { MAX_CONTENT_KEYS, cleanContent, cleanProduct, cleanShipping, cleanSite 
 //
 //   link     { email }                 email a sign-in link (admin emails only)
 //   redeem   { token }                 swap it for a 30-day session
+//   legacyKey                          public key to seal the old Shopify orders file with (no secret)
 //   jeere    { accessToken }           the owner's Jeere (Supabase) session → a 30-day session, no email
 //   overview                           orders, stats and setup status
 //   order    { id }                    one order with items and supplier messages (old Shopify orders too, read-only)
@@ -144,6 +145,11 @@ const api = handler(async (request) => {
   if (action === 'redeem') {
     const address = verifyToken(str(body.token, 1000), 'admin-login')
     return json({ ...issueToken(address, 'admin', 60 * 24 * 30), email: address })
+  }
+
+  // the public key the old Shopify orders file is sealed with, and whether the store can open the file
+  if (action === 'legacyKey') {
+    return json({ publicKey: legacyPublicKey(), ok: legacyOrders().length > 0 })
   }
 
   if (action === 'jeere') {
