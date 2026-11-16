@@ -31,6 +31,8 @@ export interface StoreDoc {
   // page texts and pictures changed from Jeere, by key (e.g. "campaign.title");
   // a key that isn't here shows the wording written in the site's code
   content?: Record<string, string>
+  // products from src/data/catalog.json already copied into this document (see ADDED_FROM_CODE)
+  addedFromCode?: string[]
 }
 
 const PREFIX = 'store/document-'
@@ -55,32 +57,28 @@ const configured = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN)
 
 let cache: { doc: StoreDoc; at: number } | null = null
 
-async function newest(): Promise<{ url: string; pathname: string }[]> {
-  const { blobs } = await list({ prefix: PREFIX, limit: 100 })
-  return blobs.sort((a, b) => +new Date(b.uploadedAt) - +new Date(a.uploadedAt))
-}
+// New products written into the code (src/data/catalog.json) for the owner. Each is
+// copied into the live document once; after that she edits or deletes it in the
+// dashboard like any other, and deleting it doesn't bring it back.
+const ADDED_FROM_CODE = ['u-part-raw-vietnamese']
 
-export async function loadStore(fresh = false): Promise<StoreDoc> {
-  if (!fresh && cache && Date.now() - cache.at < CACHE_MS) return cache.doc
-  let doc = defaults()
-  if (configured()) {
-    const [latest] = await newest()
-    if (latest) {
-      const res = await fetch(`${latest.url}?t=${Date.now()}`, { cache: 'no-store' })
-      if (res.ok) doc = { ...doc, ...((await res.json()) as StoreDoc) }
-      else console.error('store document unreadable', res.status)
-    }
+async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
+  const done = new Set(doc.addedFromCode ?? [])
+  const pending = ADDED_FROM_CODE.filter((h) => !done.has(h))
+  if (!pending.length) return doc
+  const next = structuredClone(doc)
+  const bundled = bundledProducts()
+  for (const handle of pending) {
+    const product = bundled.find((p) => p.handle === handle)
+    if (product && !next.products.some((p) => p.handle === handle)) next.products.push(product)
+    next.addedFromCode = [...(next.addedFromCode ?? []), handle]
   }
-  cache = { doc, at: Date.now() }
-  return doc
+  // the bundled defaults already hold them; only a saved document needs writing
+  if (saved) await write(next).catch((err) => console.error('adding products from the code', err))
+  return next
 }
 
-// Applies a change to the latest document and saves it.
-export async function saveStore(change: (doc: StoreDoc) => void): Promise<StoreDoc> {
-  if (!configured()) throw new Error('BLOB_READ_WRITE_TOKEN is missing')
-  const doc = structuredClone(await loadStore(true))
-  change(doc)
-  doc.updatedAt = new Date().toISOString()
+async function write(doc: StoreDoc): Promise<void> {
   const old = await newest()
   await put(`${PREFIX}${Date.now()}.json`, JSON.stringify(doc), {
     access: 'public',
@@ -91,6 +89,39 @@ export async function saveStore(change: (doc: StoreDoc) => void): Promise<StoreD
   // keep the previous version as a backup, delete anything older
   const stale = old.slice(1).map((b) => b.url)
   if (stale.length) await del(stale)
+}
+
+async function newest(): Promise<{ url: string; pathname: string }[]> {
+  const { blobs } = await list({ prefix: PREFIX, limit: 100 })
+  return blobs.sort((a, b) => +new Date(b.uploadedAt) - +new Date(a.uploadedAt))
+}
+
+export async function loadStore(fresh = false): Promise<StoreDoc> {
+  if (!fresh && cache && Date.now() - cache.at < CACHE_MS) return cache.doc
+  let doc = defaults()
+  let saved = false
+  if (configured()) {
+    const [latest] = await newest()
+    if (latest) {
+      const res = await fetch(`${latest.url}?t=${Date.now()}`, { cache: 'no-store' })
+      if (res.ok) {
+        doc = { ...doc, ...((await res.json()) as StoreDoc) }
+        saved = true
+      } else console.error('store document unreadable', res.status)
+    }
+  }
+  doc = await addFromCode(doc, saved)
+  cache = { doc, at: Date.now() }
+  return doc
+}
+
+// Applies a change to the latest document and saves it.
+export async function saveStore(change: (doc: StoreDoc) => void): Promise<StoreDoc> {
+  if (!configured()) throw new Error('BLOB_READ_WRITE_TOKEN is missing')
+  const doc = structuredClone(await loadStore(true))
+  change(doc)
+  doc.updatedAt = new Date().toISOString()
+  await write(doc)
   cache = { doc, at: Date.now() }
   return doc
 }

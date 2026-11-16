@@ -2360,6 +2360,106 @@
           ]
         }
       ]
+    },
+    {
+      "id": "tis-product-u-part-raw-vietnamese",
+      "title": "Raw Vietnamese U-Part Wig",
+      "handle": "u-part-raw-vietnamese",
+      "supplier": "evelyn",
+      "descriptionHtml": "<p><strong>100% raw Vietnamese hair from a single donor, on a U-part wig.</strong> Bone straight and glossy in its natural colour, 20\" long. The U-shaped opening at the top lets you leave out a little of your own hair along the part, so the wig blends into your hairline instead of sitting on it. No lace, no glue.</p>\n\n<p>Raw means the hair is cut from one donor and never chemically processed. No acid wash, no silicone, no re-dyeing, so it moves, blends and ages the way your own hair does. Wear it sleek, curl it, or press your leave-out to match.</p>\n\n<h4>How to wear it</h4>\n<p>Braid your hair down, leaving a small section out along your part. Put the unit on, then smooth your leave-out over the opening. It goes on in minutes and comes off just as easily, so your own hair rests protected underneath.</p>\n\n<h4>Care</h4>\n<p>Wash in cool water, condition generously and let it air dry. Detangle from the ends up with a wide tooth comb, and use a heat protectant before any hot tool. Treated well, raw hair lasts years rather than months.</p>\n\n<p><em>Because this is real single-donor hair that is never re-dyed, a few strands may show soft golden or reddish tones from natural sun exposure. That is a mark of genuine raw hair.</em></p>",
+      "tags": [
+        "u-part",
+        "wig",
+        "raw hair",
+        "vietnamese",
+        "straight"
+      ],
+      "featuredImage": {
+        "url": "/media/products/u-part-raw-vietnamese/1.jpg",
+        "thumb": "/media/products/u-part-raw-vietnamese/1-sm.jpg",
+        "altText": "Raw Vietnamese straight U-part wig, 20 inches, natural black, by The Ivory Sukundu"
+      },
+      "images": [
+        {
+          "url": "/media/products/u-part-raw-vietnamese/1.jpg",
+          "thumb": "/media/products/u-part-raw-vietnamese/1-sm.jpg",
+          "altText": "Raw Vietnamese straight U-part wig, 20 inches, natural black, by The Ivory Sukundu"
+        },
+        {
+          "url": "/media/products/u-part-raw-vietnamese/2.jpg",
+          "thumb": "/media/products/u-part-raw-vietnamese/2-sm.jpg",
+          "altText": "Raw Vietnamese straight U-part wig from a low angle, showing the length and shine"
+        },
+        {
+          "url": "/media/products/u-part-raw-vietnamese/3.jpg",
+          "thumb": "/media/products/u-part-raw-vietnamese/3-sm.jpg",
+          "altText": "Raw Vietnamese U-part wig, bone straight, blended with natural leave-out"
+        },
+        {
+          "url": "/media/products/u-part-raw-vietnamese/4.jpg",
+          "thumb": "/media/products/u-part-raw-vietnamese/4-sm.jpg",
+          "altText": "Raw Vietnamese U-part wig worn sleek and straight past the shoulders"
+        }
+      ],
+      "media": [
+        {
+          "type": "image",
+          "url": "/media/products/u-part-raw-vietnamese/1.jpg",
+          "previewUrl": "/media/products/u-part-raw-vietnamese/1-sm.jpg",
+          "altText": "Raw Vietnamese straight U-part wig, 20 inches, natural black, by The Ivory Sukundu"
+        },
+        {
+          "type": "video",
+          "url": "/media/products/u-part-raw-vietnamese/video.mp4",
+          "previewUrl": "/media/products/u-part-raw-vietnamese/video-poster.jpg",
+          "poster": "/media/products/u-part-raw-vietnamese/video-poster.jpg",
+          "altText": "The raw Vietnamese U-part wig in motion"
+        },
+        {
+          "type": "image",
+          "url": "/media/products/u-part-raw-vietnamese/2.jpg",
+          "previewUrl": "/media/products/u-part-raw-vietnamese/2-sm.jpg",
+          "altText": "Raw Vietnamese straight U-part wig from a low angle, showing the length and shine"
+        },
+        {
+          "type": "image",
+          "url": "/media/products/u-part-raw-vietnamese/3.jpg",
+          "previewUrl": "/media/products/u-part-raw-vietnamese/3-sm.jpg",
+          "altText": "Raw Vietnamese U-part wig, bone straight, blended with natural leave-out"
+        },
+        {
+          "type": "image",
+          "url": "/media/products/u-part-raw-vietnamese/4.jpg",
+          "previewUrl": "/media/products/u-part-raw-vietnamese/4-sm.jpg",
+          "altText": "Raw Vietnamese U-part wig worn sleek and straight past the shoulders"
+        }
+      ],
+      "options": [
+        {
+          "name": "Length",
+          "values": [
+            "20\""
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "tis-variant-u-part-raw-vietnamese-20",
+          "title": "20\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "250.00",
+            "CAD": "350.00"
+          },
+          "compareAtPrice": null,
+          "selectedOptions": [
+            {
+              "name": "Length",
+              "value": "20\""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
