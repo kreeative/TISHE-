@@ -3,7 +3,6 @@ import { HashRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
-import Campaign from './components/Campaign'
 import Collection from './components/Collection'
 import Reviews from './components/Reviews'
 import LengthGuide from './components/LengthGuide'
@@ -53,7 +52,6 @@ function HomePage() {
   return (
     <>
       <Hero />
-      <Campaign />
       <Collection />
       <Reviews />
     </>

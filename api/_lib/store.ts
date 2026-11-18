@@ -31,7 +31,7 @@ export interface StoreDoc {
   discounts: CodeRule[]
   site: SiteSettings
   shipping: ShippingData
-  // page texts and pictures changed from Jeere, by key (e.g. "campaign.title");
+  // page texts and pictures changed from Jeere, by key (e.g. "collection.title");
   // a key that isn't here shows the wording written in the site's code
   content?: Record<string, string>
   // products from src/data/catalog.json already copied into this document (see ADDED_FROM_CODE)

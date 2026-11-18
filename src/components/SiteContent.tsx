@@ -19,7 +19,7 @@ import { useStore, type StoreDocument } from './StoreContext'
 import { JEERE_FRAME, toJeere } from '../lib/jeere'
 
 // Page texts and pictures that can be changed from Jeere. Each one has a key
-// ("campaign.title") and its original wording in the code; a value saved from
+// ("collection.title") and its original wording in the code; a value saved from
 // Jeere (store document → content) replaces it. Inside the Jeere frame, in edit
 // mode, a click on a text edits it in place and a click on a picture asks Jeere
 // for a new one. See docs/jeere-editor.md.
@@ -214,7 +214,7 @@ function useSiteContent(): SiteContentState {
 type TextTag = 'p' | 'h1' | 'h2' | 'h3' | 'span' | 'div'
 
 interface TextProps {
-  // the key it's saved under, e.g. "campaign.title"
+  // the key it's saved under, e.g. "collection.title"
   k: string
   as?: TextTag
   // the original wording

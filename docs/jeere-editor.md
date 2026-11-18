@@ -61,7 +61,7 @@ Use the same API and session as the rest of tishe.js:
 // texts and pictures: the `changes` from the last `change`/`page` message
 POST https://www.theivorysukundu.com/api/admin
 Authorization: Bearer <session token>
-{ "action": "saveContent", "content": { "campaign.title": "…", "hero.cta": "" } }
+{ "action": "saveContent", "content": { "collection.title": "…", "hero.cta": "" } }
 // → { doc }   then send { source: 'jeere', type: 'store', doc } to the frame
 ```
 
@@ -76,7 +76,7 @@ Authorization: Bearer <session token>
 
 | page | keys |
 |---|---|
-| Home | `hero.logo` (picture), `hero.cta`, `campaign.eyebrow`, `campaign.title`, `campaign.body`, `campaign.cta` |
+| Home | `hero.logo` (picture), `hero.cta` |
 | Home, Collections | `collection.eyebrow`, `collection.title`, `collection.body`, `reviews.eyebrow`, `reviews.title` |
 | Collections | `lengths.eyebrow`, `lengths.title`, `lengths.body`, `lengths.tip` |
 | Our Hair | `ourhair.eyebrow`, `ourhair.title`, `ourhair.body`, `ourhair.reason1.title` … `ourhair.reason3.body`, `ourhair.closing` |
