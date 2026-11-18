@@ -661,11 +661,16 @@
         "straight"
       ],
       "featuredImage": {
-        "url": "/media/products/u-part-raw-vietnamese/5.jpg",
-        "thumb": "/media/products/u-part-raw-vietnamese/5-sm.jpg",
-        "altText": "Raw Vietnamese U-part wig, bone straight, side view"
+        "url": "/media/products/u-part-raw-vietnamese/7.jpg",
+        "thumb": "/media/products/u-part-raw-vietnamese/7-sm.jpg",
+        "altText": "Raw Vietnamese U-part wig, bone straight, worn with a side part"
       },
       "images": [
+        {
+          "url": "/media/products/u-part-raw-vietnamese/7.jpg",
+          "thumb": "/media/products/u-part-raw-vietnamese/7-sm.jpg",
+          "altText": "Raw Vietnamese U-part wig, bone straight, worn with a side part"
+        },
         {
           "url": "/media/products/u-part-raw-vietnamese/5.jpg",
           "thumb": "/media/products/u-part-raw-vietnamese/5-sm.jpg",
@@ -683,6 +688,12 @@
         }
       ],
       "media": [
+        {
+          "type": "image",
+          "url": "/media/products/u-part-raw-vietnamese/7.jpg",
+          "previewUrl": "/media/products/u-part-raw-vietnamese/7-sm.jpg",
+          "altText": "Raw Vietnamese U-part wig, bone straight, worn with a side part"
+        },
         {
           "type": "image",
           "url": "/media/products/u-part-raw-vietnamese/5.jpg",

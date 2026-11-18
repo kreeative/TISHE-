@@ -297,6 +297,23 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // a new photo from the owner, first on the U-part and its cover in the collection
+    id: 'u-part-cover-photo-7',
+    run: (doc) => {
+      const base = '/media/products/u-part-raw-vietnamese'
+      const alt = 'Raw Vietnamese U-part wig, bone straight, worn with a side part'
+      for (const p of doc.products) {
+        if (p.handle !== 'u-part-raw-vietnamese') continue
+        p.media = [
+          { type: 'image', url: `${base}/7.jpg`, previewUrl: `${base}/7-sm.jpg`, altText: alt },
+          ...p.media.filter((m) => m.url !== `${base}/7.jpg`),
+        ]
+        p.images = [{ url: `${base}/7.jpg`, thumb: `${base}/7-sm.jpg`, altText: alt }, ...p.images.filter((im) => im.url !== `${base}/7.jpg`)]
+        p.featuredImage = p.images[0]
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
