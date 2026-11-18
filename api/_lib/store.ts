@@ -111,6 +111,18 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // the order of the collection, top to bottom: Kinky Curly, the U-part, Yaki, then the bundles as they were
+    id: 'collection-order-2026-11-18',
+    run: (doc) => {
+      const first = ['the-kinky-curly-sukundu-half-wig', 'u-part-raw-vietnamese', 'untitled-jul21_09-54-40']
+      const rank = (handle: string) => (first.includes(handle) ? first.indexOf(handle) : first.length)
+      doc.products = doc.products
+        .map((p, i) => ({ p, i }))
+        .sort((a, b) => rank(a.p.handle) - rank(b.p.handle) || a.i - b.i)
+        .map(({ p }) => p)
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
