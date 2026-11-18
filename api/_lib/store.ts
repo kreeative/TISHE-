@@ -178,6 +178,18 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // the owner's own cover for the Kinky Curly Half Wig in the collection (the gallery stays as it is)
+    id: 'kinky-cover-photo',
+    run: (doc) => {
+      const base = '/media/products/the-kinky-curly-sukundu-half-wig'
+      for (const p of doc.products) {
+        if (p.handle === 'the-kinky-curly-sukundu-half-wig') {
+          p.featuredImage = { url: `${base}/cover.jpg`, thumb: `${base}/cover-sm.jpg`, altText: 'The Kinky Curly Half Wig, worn' }
+        }
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
