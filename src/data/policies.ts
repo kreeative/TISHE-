@@ -13,7 +13,7 @@ const CONTACT = '<a href="mailto:hello@theivorysukundu.com">hello@theivorysukund
 export const POLICIES: Record<string, Policy> = {
   'shipping-policy': {
     title: 'Shipping Policy',
-    updated: 'October 29, 2026',
+    updated: 'November 18, 2026',
     body: `
 <h2>Processing time</h2>
 <p>Every order is prepared especially for you. Please allow 5–10 business days for your hair to be prepared and quality-checked before it ships.</p>
@@ -22,16 +22,8 @@ export const POLICIES: Record<string, Policy> = {
 <p>Once shipped, delivery usually takes 5–12 business days, depending on your country. Customs checks can occasionally add a few days. In total, please allow 2–4 weeks from order to delivery.</p>
 
 <h2>Shipping cost</h2>
-<p>Shipping is a flat rate per order:</p>
-<ul>
-  <li>Canada: CA$30</li>
-  <li>United States, the United Kingdom, Europe, Australia, New Zealand and Asia: US$27</li>
-  <li>Côte d'Ivoire, Egypt, Ghana, Guinea, Mali, Morocco, Nigeria, Senegal and China: US$36</li>
-</ul>
-<p>You choose your country in your bag, and the rate is shown before you pay. If your country isn't listed, write to us and we'll see what we can do.</p>
-
-<h2>Free shipping on your first order</h2>
-<p>Your first order over US$200 (CA$280 in Canada) ships free with code FREESHIP200 (one use per customer).</p>
+<p>Tracked shipping is included in every price, so every order ships free. We ship to Canada, the United States, the United Kingdom, Europe, Australia, New Zealand and Asia, as well as Côte d'Ivoire, Egypt, Ghana, Guinea, Mali, Morocco, Nigeria, Senegal and China.</p>
+<p>You choose your country in your bag. If your country isn't listed, write to us and we'll see what we can do.</p>
 
 <h2>Tracking</h2>
 <p>You'll receive a tracking number by email as soon as your order ships.</p>

@@ -378,7 +378,7 @@ export default function ProductPage() {
             {/* Shipping is no longer included in the price, so say so here
                 rather than letting it surprise her at the checkout step. */}
             <p className="mt-3 text-xs text-[#1B1113]/50">
-              {shipNote(country, currency, shipping, freeShipping, product.shippingIncluded)}
+              {shipNote(country, currency, shipping, freeShipping, Boolean(product.shippingIncluded || shipping.included))}
             </p>
 
             {/* Full description stays on the page (and indexable) but closed,

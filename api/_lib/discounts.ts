@@ -37,7 +37,8 @@ export const DEFAULT_CODES: CodeRule[] = [
     minSubtotal: { USD: 200, CAD: 280 },
     firstOrderOnly: true,
     oncePerCustomer: true,
-    active: true,
+    // every order ships free now: shipping is in the prices
+    active: false,
     label: 'free shipping on your first order',
   },
 ]

@@ -5,6 +5,7 @@
     "USD": 200,
     "CAD": 280
   },
+  "included": true,
   "zones": [
     {
       "id": "domestic",

@@ -60,6 +60,8 @@ export interface ShippingZone {
 export interface ShippingData {
   freeShippingCode: string
   freeShippingMinimum: Record<Currency, number>
+  // tracked shipping is in every price: every order ships free
+  included?: boolean
   zones: ShippingZone[]
   provinces: { code: string; name: string }[]
 }

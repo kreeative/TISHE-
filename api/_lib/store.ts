@@ -47,7 +47,7 @@ function defaults(): StoreDoc {
     products: bundledProducts(),
     discounts: DEFAULT_CODES,
     site: {
-      announcements: ['1st order over $200 ships free · FREESHIP200', 'Install in sixty seconds', 'Luxury raw hair, redefined'],
+      announcements: ['Free tracked shipping on every order', 'Install in sixty seconds', 'Luxury raw hair, redefined'],
       sale: null,
     },
     shipping: bundledShipping(),
@@ -67,19 +67,32 @@ const ADDED_FROM_CODE = ['u-part-raw-vietnamese']
 // One-time changes the owner asked for, made to the live document once each.
 const WIGS = ['the-kinky-curly-sukundu-half-wig', 'untitled-jul21_09-54-40', 'u-part-raw-vietnamese']
 const plus = (amount: string, add: number) => (Number(amount) + add).toFixed(2)
+function includeShipping(p: CatalogProduct): void {
+  if (p.shippingIncluded) return
+  p.shippingIncluded = true
+  for (const v of p.variants) {
+    v.price = { USD: plus(v.price.USD, 30), CAD: plus(v.price.CAD, 42) }
+    if (v.compareAtPrice) v.compareAtPrice = { USD: plus(v.compareAtPrice.USD, 30), CAD: plus(v.compareAtPrice.CAD, 42) }
+  }
+}
 const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
   {
     // wigs ship free: US$30 (CA$42) of shipping goes into their price
     id: 'wigs-include-shipping',
     run: (doc) => {
-      for (const p of doc.products) {
-        if (!WIGS.includes(p.handle) || p.shippingIncluded) continue
-        p.shippingIncluded = true
-        for (const v of p.variants) {
-          v.price = { USD: plus(v.price.USD, 30), CAD: plus(v.price.CAD, 42) }
-          if (v.compareAtPrice) v.compareAtPrice = { USD: plus(v.compareAtPrice.USD, 30), CAD: plus(v.compareAtPrice.CAD, 42) }
-        }
-      }
+      for (const p of doc.products) if (WIGS.includes(p.handle)) includeShipping(p)
+    },
+  },
+  {
+    // then every product: shipping is in every price, every order ships free, and the
+    // first-order free-shipping code and its banner line have nothing left to offer
+    id: 'all-include-shipping',
+    run: (doc) => {
+      for (const p of doc.products) includeShipping(p)
+      doc.shipping = { ...doc.shipping, included: true }
+      for (const c of doc.discounts) if (c.kind === 'free_shipping') c.active = false
+      const lines = doc.site.announcements.map((a) => (/freeship|ships free|free shipping/i.test(a) ? 'Free tracked shipping on every order' : a))
+      doc.site.announcements = [...new Set(lines)]
     },
   },
 ]

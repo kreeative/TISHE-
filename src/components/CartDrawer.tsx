@@ -99,7 +99,8 @@ export default function CartDrawer() {
     if (cartOpen && lines.length) void fetchQuote(appliedCode || codeInput.trim())
   }, [cartOpen, linesKey, country])
 
-  const rate = shippingRate(country, shipping)
+  // every price includes shipping when the store says so
+  const rate = shipping.included ? 0 : shippingRate(country, shipping)
   const currency = cart.currencyCode
 
   const startCheckout = async () => {
@@ -280,7 +281,7 @@ export default function CartDrawer() {
               <div className="flex justify-between text-sm">
                 <span className="text-[#1B1113]/70">Shipping</span>
                 <span style={{ fontVariantNumeric: 'tabular-nums' }}>
-                  {quote ? (quote.shipping === 0 ? 'Free' : formatMoney(quote.shipping, currency)) : rate !== null ? formatMoney(rate, currency) : '—'}
+                  {quote ? (quote.shipping === 0 ? 'Free' : formatMoney(quote.shipping, currency)) : rate !== null ? (rate === 0 ? 'Free' : formatMoney(rate, currency)) : '—'}
                 </span>
               </div>
               {quote?.taxAtCheckout && (

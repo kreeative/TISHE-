@@ -104,7 +104,7 @@ export function price(req: PriceRequest, history: History | null, doc: StoreDoc)
   if (share) for (const l of eligible) l.unit = Math.round(l.originalUnit * (1 - share))
   const discounted = lines.reduce((n, l) => n + l.unit * l.quantity, 0)
   const freeShipping = rule?.kind === 'free_shipping'
-  const shippingIncluded = lines.every((l) => l.product.shippingIncluded)
+  const shippingIncluded = Boolean(ship.included) || lines.every((l) => l.product.shippingIncluded)
   const shipping = freeShipping || shippingIncluded ? 0 : cents(zone.rate)
 
   return {

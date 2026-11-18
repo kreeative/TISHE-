@@ -41,11 +41,11 @@ export interface StoreDocument {
 const BUNDLED: LiveStore = {
   products: BUNDLED_PRODUCTS,
   site: {
-    announcements: ['1st order over $200 ships free · FREESHIP200', 'Install in sixty seconds', 'Luxury raw hair, redefined'],
+    announcements: ['Free tracked shipping on every order', 'Install in sixty seconds', 'Luxury raw hair, redefined'],
     sale: null,
   },
   shipping: SHIPPING,
-  freeShipping: { code: 'FREESHIP200', minSubtotal: { USD: 200, CAD: 280 }, firstOrderOnly: true },
+  freeShipping: null,
 }
 
 const NO_CONTENT: Record<string, string> = {}

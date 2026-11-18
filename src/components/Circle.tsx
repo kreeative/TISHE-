@@ -28,7 +28,6 @@ const TIERS = [
     threshold: 'After $500',
     perks: [
       'Everything in Ivory',
-      'Free shipping on every order',
       'Member pricing on campaign launches',
       'Annual silk maintenance kit, gifted',
     ],
