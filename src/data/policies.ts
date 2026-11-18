@@ -83,7 +83,7 @@ export const POLICIES: Record<string, Policy> = {
 
   'privacy-policy': {
     title: 'Privacy Policy',
-    updated: 'October 29, 2026',
+    updated: 'November 18, 2026',
     body: `
 <p>The Ivory Sukundu ("we", "us") sells hair extensions and half wigs through theivorysukundu.com. This policy explains what personal information we collect, why, and who helps us handle it. We are based in Ontario, Canada, and follow Canada's Personal Information Protection and Electronic Documents Act (PIPEDA).</p>
 
@@ -94,6 +94,7 @@ export const POLICIES: Record<string, Policy> = {
   <li><strong>Email signups:</strong> your email address, if you join the Sukundu Circle for offers and early access.</li>
   <li><strong>Messages:</strong> what you write to us by email or through the contact form.</li>
   <li><strong>Browsing data:</strong> your bag is kept in your own browser. Where analytics are switched on, anonymous usage data such as pages viewed and the device used.</li>
+  <li><strong>Visit counts:</strong> we count visits to our shop with our own dashboard tool, Jehre. It records the approximate city a visit comes from and never stores your device's IP address.</li>
 </ul>
 
 <h2>How we use it</h2>
@@ -110,12 +111,13 @@ export const POLICIES: Record<string, Policy> = {
   <li><strong>Stripe</strong>, for payments and fraud checks.</li>
   <li><strong>Resend</strong>, to deliver our emails.</li>
   <li><strong>Vercel</strong>, which hosts this website.</li>
+  <li><strong>Jehre</strong>, our dashboard tool, which counts visits to the shop by approximate city.</li>
   <li><strong>Our suppliers and couriers</strong>, who receive your name, shipping address and phone number so your order can be made and delivered.</li>
 </ul>
 <p>Some of these providers store data outside Canada, including in the United States, where it may be accessed under local law.</p>
 
 <h2>How long we keep it</h2>
-<p>We keep order records for six years, as required by the Canada Revenue Agency. Email signup data is kept until you unsubscribe or ask us to delete it.</p>
+<p>We keep order records for six years, as required by the Canada Revenue Agency. Email signup data is kept until you unsubscribe or ask us to delete it. Visit records are deleted after 30 days.</p>
 
 <h2>Your choices</h2>
 <p>You can ask to see, correct or delete the personal information we hold about you, or withdraw your consent to marketing at any time. Email ${CONTACT} and we will reply within 30 days.</p>
