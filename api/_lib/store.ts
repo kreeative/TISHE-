@@ -218,6 +218,19 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       doc.products = [...top, ...doc.products.filter((p) => p.handle !== 'burmese-curly-bundles')]
     },
   },
+  {
+    // the owner removed the photo with someone in the background from the U-part
+    id: 'u-part-remove-photo-3',
+    run: (doc) => {
+      const gone = (url: string) => url.endsWith('/u-part-raw-vietnamese/3.jpg')
+      for (const p of doc.products) {
+        if (p.handle !== 'u-part-raw-vietnamese') continue
+        p.media = p.media.filter((m) => !gone(m.url))
+        p.images = p.images.filter((i) => !gone(i.url))
+        if (p.featuredImage && gone(p.featuredImage.url)) p.featuredImage = p.images[0] ?? null
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
