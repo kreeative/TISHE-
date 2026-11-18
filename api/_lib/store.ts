@@ -136,6 +136,24 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // in its place, the owner's Canva video, second in the gallery; a still of it is the collection cover
+    id: 'kinky-add-canva-video',
+    run: (doc) => {
+      const base = '/media/products/the-kinky-curly-sukundu-half-wig'
+      for (const p of doc.products) {
+        if (p.handle !== 'the-kinky-curly-sukundu-half-wig' || p.media.some((m) => m.url === `${base}/5.mp4`)) continue
+        p.media.splice(Math.min(1, p.media.length), 0, {
+          type: 'video',
+          url: `${base}/5.mp4`,
+          previewUrl: `${base}/5-poster-sm.jpg`,
+          poster: `${base}/5-poster.jpg`,
+          altText: 'The Kinky Curly Half Wig, worn',
+        })
+        p.featuredImage = { url: `${base}/5-poster.jpg`, thumb: `${base}/5-poster.jpg`, altText: 'The Kinky Curly Half Wig, worn' }
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
