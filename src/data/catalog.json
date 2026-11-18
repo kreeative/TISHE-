@@ -675,6 +675,11 @@
           "url": "/media/products/u-part-raw-vietnamese/6.jpg",
           "thumb": "/media/products/u-part-raw-vietnamese/6-sm.jpg",
           "altText": "Raw Vietnamese U-part wig, bone straight, blended with the leave-out"
+        },
+        {
+          "url": "/media/products/u-part-raw-vietnamese/cap.jpg",
+          "thumb": "/media/products/u-part-raw-vietnamese/cap-sm.jpg",
+          "altText": "The U-part wig cap: the U-shaped opening for the leave-out, with combs to hold it in place"
         }
       ],
       "media": [
@@ -698,11 +703,10 @@
           "altText": "The raw Vietnamese U-part wig, moving"
         },
         {
-          "type": "video",
-          "url": "/media/products/u-part-raw-vietnamese/video.mp4",
-          "previewUrl": "/media/products/u-part-raw-vietnamese/video-poster.jpg",
-          "poster": "/media/products/u-part-raw-vietnamese/video-poster.jpg",
-          "altText": "The raw Vietnamese U-part wig in motion"
+          "type": "image",
+          "url": "/media/products/u-part-raw-vietnamese/cap.jpg",
+          "previewUrl": "/media/products/u-part-raw-vietnamese/cap-sm.jpg",
+          "altText": "The U-part wig cap: the U-shaped opening for the leave-out, with combs to hold it in place"
         }
       ],
       "options": [

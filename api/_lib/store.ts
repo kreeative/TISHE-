@@ -283,6 +283,20 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // the owner took the car video off the U-part and put a picture of the U-part cap in its place
+    id: 'u-part-cap-photo',
+    run: (doc) => {
+      const base = '/media/products/u-part-raw-vietnamese'
+      const alt = 'The U-part wig cap: the U-shaped opening for the leave-out, with combs to hold it in place'
+      for (const p of doc.products) {
+        if (p.handle !== 'u-part-raw-vietnamese') continue
+        p.media = p.media.filter((m) => m.url !== `${base}/video.mp4` && m.url !== `${base}/cap.jpg`)
+        p.media.push({ type: 'image', url: `${base}/cap.jpg`, previewUrl: `${base}/cap-sm.jpg`, altText: alt })
+        p.images = [...p.images.filter((im) => im.url !== `${base}/cap.jpg`), { url: `${base}/cap.jpg`, thumb: `${base}/cap-sm.jpg`, altText: alt }]
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
