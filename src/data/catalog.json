@@ -680,6 +680,16 @@
           "url": "/media/products/u-part-raw-vietnamese/4.jpg",
           "thumb": "/media/products/u-part-raw-vietnamese/4-sm.jpg",
           "altText": "Raw Vietnamese U-part wig worn sleek and straight past the shoulders"
+        },
+        {
+          "url": "/media/products/u-part-raw-vietnamese/5.jpg",
+          "thumb": "/media/products/u-part-raw-vietnamese/5-sm.jpg",
+          "altText": "Raw Vietnamese U-part wig, bone straight, side view"
+        },
+        {
+          "url": "/media/products/u-part-raw-vietnamese/6.jpg",
+          "thumb": "/media/products/u-part-raw-vietnamese/6-sm.jpg",
+          "altText": "Raw Vietnamese U-part wig, bone straight, blended with the leave-out"
         }
       ],
       "media": [
@@ -707,6 +717,25 @@
           "url": "/media/products/u-part-raw-vietnamese/4.jpg",
           "previewUrl": "/media/products/u-part-raw-vietnamese/4-sm.jpg",
           "altText": "Raw Vietnamese U-part wig worn sleek and straight past the shoulders"
+        },
+        {
+          "type": "image",
+          "url": "/media/products/u-part-raw-vietnamese/5.jpg",
+          "previewUrl": "/media/products/u-part-raw-vietnamese/5-sm.jpg",
+          "altText": "Raw Vietnamese U-part wig, bone straight, side view"
+        },
+        {
+          "type": "image",
+          "url": "/media/products/u-part-raw-vietnamese/6.jpg",
+          "previewUrl": "/media/products/u-part-raw-vietnamese/6-sm.jpg",
+          "altText": "Raw Vietnamese U-part wig, bone straight, blended with the leave-out"
+        },
+        {
+          "type": "video",
+          "url": "/media/products/u-part-raw-vietnamese/video2.mp4",
+          "previewUrl": "/media/products/u-part-raw-vietnamese/video2-poster.jpg",
+          "poster": "/media/products/u-part-raw-vietnamese/video2-poster.jpg",
+          "altText": "The raw Vietnamese U-part wig, moving"
         }
       ],
       "options": [

@@ -231,6 +231,31 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // two more photos and a video of the U-part from the owner (pink top), at the end of its gallery
+    id: 'u-part-add-pink-set',
+    run: (doc) => {
+      const base = '/media/products/u-part-raw-vietnamese'
+      const photos = [
+        { url: `${base}/5.jpg`, thumb: `${base}/5-sm.jpg`, altText: 'Raw Vietnamese U-part wig, bone straight, side view' },
+        { url: `${base}/6.jpg`, thumb: `${base}/6-sm.jpg`, altText: 'Raw Vietnamese U-part wig, bone straight, blended with the leave-out' },
+      ]
+      for (const p of doc.products) {
+        if (p.handle !== 'u-part-raw-vietnamese' || p.media.some((m) => m.url === `${base}/video2.mp4`)) continue
+        for (const ph of photos) {
+          p.images.push(ph)
+          p.media.push({ type: 'image', url: ph.url, previewUrl: ph.thumb, altText: ph.altText })
+        }
+        p.media.push({
+          type: 'video',
+          url: `${base}/video2.mp4`,
+          previewUrl: `${base}/video2-poster.jpg`,
+          poster: `${base}/video2-poster.jpg`,
+          altText: 'The raw Vietnamese U-part wig, moving',
+        })
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
