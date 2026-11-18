@@ -1,4 +1,4 @@
-// The Jeere editor (jeere.kreeative.xyz) shows this site in a frame and edits its
+// The Jehre editor (jehre.com; jeere.kreeative.xyz is its old address) shows this site in a frame and edits its
 // texts and pictures from there. This file only works out whether the site is in
 // that frame, and talks to it with postMessage. Jeere does the saving itself, with
 // the owner's dashboard session: the frame holds no secret and saves nothing.
@@ -6,11 +6,12 @@
 // Jeere opens  https://www.theivorysukundu.com/?jeere=edit#/   (or ?jeere=view to only look).
 // The protocol is described in docs/jeere-editor.md.
 
-export const JEERE_ORIGIN = 'https://jeere.kreeative.xyz'
+export const JEERE_ORIGIN = 'https://jehre.com'
+const JEERE_ORIGINS = [JEERE_ORIGIN, 'https://jeere.kreeative.xyz']
 
 // Jeere itself, or Jeere running on the developer's own computer
 export function allowedOrigin(origin: string): boolean {
-  return origin === JEERE_ORIGIN || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+  return JEERE_ORIGINS.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
 }
 
 function detect(): { origin: string; editing: boolean } | null {

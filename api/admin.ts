@@ -114,16 +114,23 @@ async function webhookStatus(create: boolean): Promise<boolean> {
   return true
 }
 
-// The Jeere dashboard (jeere.kreeative.xyz) runs this same API from its own page: its origin may
-// call it from the browser, and its sign-in link brings the owner back there instead of here.
-const JEERE = 'https://jeere.kreeative.xyz'
+// The Jehre dashboard (jehre.com; jeere.kreeative.xyz is its old address, still served) runs this same
+// API from its own page: its origin may call it from the browser, and its sign-in link brings the owner
+// back there instead of here.
+const JEERE = 'https://jehre.com'
+const JEERE_ORIGINS = [JEERE, 'https://jeere.kreeative.xyz']
+function jeereOrigin(request: Request): string {
+  const origin = request.headers.get('origin') || ''
+  return JEERE_ORIGINS.includes(origin) ? origin : ''
+}
 // Jeere's Supabase project; the key is its public (publishable) one
 const JEERE_SUPABASE = 'https://aezchxfvzfoqlvzchqyk.supabase.co'
 const JEERE_SUPABASE_KEY = 'sb_publishable_w0gqMepSQZn-DWRboBOR1w_rh6-jg_w'
 function cors(request: Request, response: Response): Response {
-  if (request.headers.get('origin') !== JEERE) return response
+  const origin = jeereOrigin(request)
+  if (!origin) return response
   const headers = new Headers(response.headers)
-  headers.set('Access-Control-Allow-Origin', JEERE)
+  headers.set('Access-Control-Allow-Origin', origin)
   headers.set('Access-Control-Allow-Headers', 'authorization, content-type')
   headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS')
   headers.set('Access-Control-Max-Age', '86400')
@@ -139,7 +146,7 @@ const api = handler(async (request) => {
     const address = email(body.email)
     if (address && env.adminEmails().includes(address)) {
       const { token } = issueToken(address, 'admin-login', 60 * 24)
-      const url = body.to === 'jeere' ? `${JEERE}/admin/#tishe=${token}` : `${env.siteUrl()}/#/admin?login=${token}`
+      const url = body.to === 'jeere' ? `${jeereOrigin(request) || JEERE}/admin/#tishe=${token}` : `${env.siteUrl()}/#/admin?login=${token}`
       await sendSignInLink(address, url, true, '24 hours')
     }
     return json({ ok: true })
