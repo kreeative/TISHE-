@@ -101,6 +101,8 @@ export function cleanProduct(raw: Record<string, unknown>, existing: CatalogProd
     handle,
     supplier: String(raw.supplier ?? previous?.supplier ?? 'nine').slice(0, 40),
     hidden: raw.hidden === true || undefined,
+    // kept unless the dashboard says otherwise
+    shippingIncluded: (typeof raw.shippingIncluded === 'boolean' ? raw.shippingIncluded : previous?.shippingIncluded) || undefined,
     descriptionHtml: sanitizeHtml(String(raw.descriptionHtml ?? '')),
     tags: previous?.tags ?? [],
     featuredImage: images[0] ?? null,

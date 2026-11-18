@@ -38,6 +38,8 @@ export interface CatalogProduct {
   supplier: string
   // hidden products stay in the dashboard but disappear from the shop
   hidden?: boolean
+  // the price already includes tracked shipping: a bag of only these ships free
+  shippingIncluded?: boolean
   descriptionHtml: string
   tags: string[]
   featuredImage: CatalogImage | null

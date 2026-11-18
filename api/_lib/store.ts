@@ -33,6 +33,8 @@ export interface StoreDoc {
   content?: Record<string, string>
   // products from src/data/catalog.json already copied into this document (see ADDED_FROM_CODE)
   addedFromCode?: string[]
+  // one-time changes already made to this document (see CHANGES)
+  changes?: string[]
 }
 
 const PREFIX = 'store/document-'
@@ -62,10 +64,41 @@ let cache: { doc: StoreDoc; at: number } | null = null
 // dashboard like any other, and deleting it doesn't bring it back.
 const ADDED_FROM_CODE = ['u-part-raw-vietnamese']
 
+// One-time changes the owner asked for, made to the live document once each.
+const WIGS = ['the-kinky-curly-sukundu-half-wig', 'untitled-jul21_09-54-40', 'u-part-raw-vietnamese']
+const plus = (amount: string, add: number) => (Number(amount) + add).toFixed(2)
+const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
+  {
+    // wigs ship free: US$30 (CA$42) of shipping goes into their price
+    id: 'wigs-include-shipping',
+    run: (doc) => {
+      for (const p of doc.products) {
+        if (!WIGS.includes(p.handle) || p.shippingIncluded) continue
+        p.shippingIncluded = true
+        for (const v of p.variants) {
+          v.price = { USD: plus(v.price.USD, 30), CAD: plus(v.price.CAD, 42) }
+          if (v.compareAtPrice) v.compareAtPrice = { USD: plus(v.compareAtPrice.USD, 30), CAD: plus(v.compareAtPrice.CAD, 42) }
+        }
+      }
+    },
+  },
+]
+
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
-  const done = new Set(doc.addedFromCode ?? [])
-  const pending = ADDED_FROM_CODE.filter((h) => !done.has(h))
-  if (!pending.length) return doc
+  const next = upgrade(doc)
+  if (!next) return doc
+  // the bundled defaults already hold all this; only a saved document needs writing
+  if (saved) await write(next).catch((err) => console.error('updating the store from the code', err))
+  return next
+}
+
+// The document with the code's new products and one-time changes applied, or null if it has them all.
+export function upgrade(doc: StoreDoc): StoreDoc | null {
+  const added = new Set(doc.addedFromCode ?? [])
+  const pending = ADDED_FROM_CODE.filter((h) => !added.has(h))
+  const made = new Set(doc.changes ?? [])
+  const changes = CHANGES.filter((c) => !made.has(c.id))
+  if (!pending.length && !changes.length) return null
   const next = structuredClone(doc)
   const bundled = bundledProducts()
   for (const handle of pending) {
@@ -73,8 +106,10 @@ async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
     if (product && !next.products.some((p) => p.handle === handle)) next.products.push(product)
     next.addedFromCode = [...(next.addedFromCode ?? []), handle]
   }
-  // the bundled defaults already hold them; only a saved document needs writing
-  if (saved) await write(next).catch((err) => console.error('adding products from the code', err))
+  for (const change of changes) {
+    change.run(next)
+    next.changes = [...(next.changes ?? []), change.id]
+  }
   return next
 }
 

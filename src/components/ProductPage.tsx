@@ -41,9 +41,11 @@ function shipNote(
   currency: Currency,
   shipping: ShippingData,
   free: { code: string; minSubtotal: Record<Currency, number> | null; firstOrderOnly: boolean } | null,
+  included = false,
 ): string {
   const rate = shippingRate(country, shipping)
   const where = new Intl.DisplayNames(['en'], { type: 'region' }).of(country) ?? country
+  if (included && rate !== null) return `Free tracked shipping to ${where}, included in the price.`
   const base = rate === null ? 'Shipping is shown in your bag.' : `Shipping to ${where}: ${formatMoneyShort(rate, currency)}.`
   if (!free) return base
   const min = free.minSubtotal?.[currency]
@@ -376,7 +378,7 @@ export default function ProductPage() {
             {/* Shipping is no longer included in the price, so say so here
                 rather than letting it surprise her at the checkout step. */}
             <p className="mt-3 text-xs text-[#1B1113]/50">
-              {shipNote(country, currency, shipping, freeShipping)}
+              {shipNote(country, currency, shipping, freeShipping, product.shippingIncluded)}
             </p>
 
             {/* Full description stays on the page (and indexable) but closed,

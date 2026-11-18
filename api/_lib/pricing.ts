@@ -35,6 +35,8 @@ export interface Priced {
   taxAtCheckout: boolean
   total: number
   rule: CodeRule | null
+  // every item's price already includes shipping
+  shippingIncluded: boolean
 }
 
 const cents = (amount: string | number) => Math.round(Number(amount) * 100)
@@ -82,17 +84,28 @@ export function price(req: PriceRequest, history: History | null, doc: StoreDoc)
   const rule = req.code ? findCode(doc.discounts, req.code) : null
   if (rule) checkCode(rule, subtotal / 100, zone.currency, history)
 
+  // codes don't add up with a sale: they only take money off what isn't on sale
+  const sale = doc.site.sale
+  const saleRunning = Boolean(sale && Date.parse(sale.endsAt) > Date.now())
+  const onSale = (l: PricedLine) => saleRunning && Boolean(sale?.handles.includes(l.product.handle))
+  const eligible = lines.filter((l) => !onSale(l))
+  const eligibleSubtotal = eligible.reduce((n, l) => n + l.originalUnit * l.quantity, 0)
+  if (rule && (rule.kind === 'percent' || rule.kind === 'amount') && !eligible.length) {
+    throw new HttpError(400, "Codes can't be combined with sale prices. Your sale price is already applied.", 'not_with_sale')
+  }
+
   // an amount off is spread over the items in proportion to their price
   const share =
     rule?.kind === 'percent' && rule.percent
       ? rule.percent / 100
-      : rule?.kind === 'amount' && rule.amount
-        ? Math.min(1, cents(rule.amount[zone.currency]) / subtotal)
+      : rule?.kind === 'amount' && rule.amount && eligibleSubtotal
+        ? Math.min(1, cents(rule.amount[zone.currency]) / eligibleSubtotal)
         : 0
-  if (share) for (const l of lines) l.unit = Math.round(l.originalUnit * (1 - share))
+  if (share) for (const l of eligible) l.unit = Math.round(l.originalUnit * (1 - share))
   const discounted = lines.reduce((n, l) => n + l.unit * l.quantity, 0)
   const freeShipping = rule?.kind === 'free_shipping'
-  const shipping = freeShipping ? 0 : cents(zone.rate)
+  const shippingIncluded = lines.every((l) => l.product.shippingIncluded)
+  const shipping = freeShipping || shippingIncluded ? 0 : cents(zone.rate)
 
   return {
     lines,
@@ -105,5 +118,6 @@ export function price(req: PriceRequest, history: History | null, doc: StoreDoc)
     taxAtCheckout: req.country === 'CA',
     total: discounted + shipping,
     rule,
+    shippingIncluded,
   }
 }

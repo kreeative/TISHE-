@@ -51,6 +51,8 @@ export interface Product {
   handle: string
   // who makes it: 'nine' (Nine ISEE, India) or 'evelyn' (Evelyn Thanh An, Vietnam)
   supplier: string
+  // the price already includes tracked shipping
+  shippingIncluded?: boolean
   descriptionHtml: string
   tags: string[]
   featuredImage: ProductImage | null

@@ -84,7 +84,11 @@ export default handler(async (request) => {
         shipping_rate_data: {
           type: 'fixed_amount',
           fixed_amount: { amount: priced.shipping, currency },
-          display_name: priced.freeShipping ? `Free tracked shipping · ${rule?.code}` : 'Tracked shipping',
+          display_name: priced.freeShipping
+            ? `Free tracked shipping · ${rule?.code}`
+            : priced.shippingIncluded
+              ? 'Free tracked shipping'
+              : 'Tracked shipping',
           tax_behavior: 'exclusive',
           tax_code: TAX_CODE_SHIPPING,
           // 5–10 business days to prepare, then 5–12 in transit

@@ -86,8 +86,8 @@
           "title": "18\" / 250%",
           "availableForSale": true,
           "price": {
-            "USD": "259.00",
-            "CAD": "363.00"
+            "USD": "289.00",
+            "CAD": "405.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -106,8 +106,8 @@
           "title": "20\" / 180%",
           "availableForSale": true,
           "price": {
-            "USD": "269.00",
-            "CAD": "377.00"
+            "USD": "299.00",
+            "CAD": "419.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -126,8 +126,8 @@
           "title": "20\" / 250%",
           "availableForSale": true,
           "price": {
-            "USD": "299.00",
-            "CAD": "419.00"
+            "USD": "329.00",
+            "CAD": "461.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -146,8 +146,8 @@
           "title": "22\" / 180%",
           "availableForSale": true,
           "price": {
-            "USD": "309.00",
-            "CAD": "433.00"
+            "USD": "339.00",
+            "CAD": "475.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -166,8 +166,8 @@
           "title": "22\" / 250%",
           "availableForSale": true,
           "price": {
-            "USD": "349.00",
-            "CAD": "489.00"
+            "USD": "379.00",
+            "CAD": "531.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -186,8 +186,8 @@
           "title": "24\" / 180%",
           "availableForSale": true,
           "price": {
-            "USD": "359.00",
-            "CAD": "503.00"
+            "USD": "389.00",
+            "CAD": "545.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -206,8 +206,8 @@
           "title": "24\" / 250%",
           "availableForSale": true,
           "price": {
-            "USD": "389.00",
-            "CAD": "545.00"
+            "USD": "419.00",
+            "CAD": "587.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -226,8 +226,8 @@
           "title": "30\" / 180%",
           "availableForSale": true,
           "price": {
-            "USD": "439.00",
-            "CAD": "615.00"
+            "USD": "469.00",
+            "CAD": "657.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -241,7 +241,8 @@
             }
           ]
         }
-      ]
+      ],
+      "shippingIncluded": true
     },
     {
       "id": "gid://shopify/Product/10661374460069",
@@ -329,8 +330,8 @@
           "title": "16” / 180%",
           "availableForSale": true,
           "price": {
-            "USD": "239.00",
-            "CAD": "335.00"
+            "USD": "269.00",
+            "CAD": "377.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -349,8 +350,8 @@
           "title": "18” / 180%",
           "availableForSale": true,
           "price": {
-            "USD": "249.00",
-            "CAD": "349.00"
+            "USD": "279.00",
+            "CAD": "391.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -369,8 +370,8 @@
           "title": "20” / 180%",
           "availableForSale": true,
           "price": {
-            "USD": "269.00",
-            "CAD": "377.00"
+            "USD": "299.00",
+            "CAD": "419.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -389,8 +390,8 @@
           "title": "22” / 180%",
           "availableForSale": true,
           "price": {
-            "USD": "309.00",
-            "CAD": "433.00"
+            "USD": "339.00",
+            "CAD": "475.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -409,8 +410,8 @@
           "title": "24” / 180%",
           "availableForSale": true,
           "price": {
-            "USD": "359.00",
-            "CAD": "503.00"
+            "USD": "389.00",
+            "CAD": "545.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -429,8 +430,8 @@
           "title": "26” / 180%",
           "availableForSale": true,
           "price": {
-            "USD": "409.00",
-            "CAD": "573.00"
+            "USD": "439.00",
+            "CAD": "615.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -449,8 +450,8 @@
           "title": "16” / 250%",
           "availableForSale": true,
           "price": {
-            "USD": "249.00",
-            "CAD": "349.00"
+            "USD": "279.00",
+            "CAD": "391.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -469,8 +470,8 @@
           "title": "18” / 250%",
           "availableForSale": true,
           "price": {
-            "USD": "259.00",
-            "CAD": "363.00"
+            "USD": "289.00",
+            "CAD": "405.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -489,8 +490,8 @@
           "title": "20” / 250%",
           "availableForSale": true,
           "price": {
-            "USD": "299.00",
-            "CAD": "419.00"
+            "USD": "329.00",
+            "CAD": "461.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -509,8 +510,8 @@
           "title": "22” / 250%",
           "availableForSale": true,
           "price": {
-            "USD": "349.00",
-            "CAD": "489.00"
+            "USD": "379.00",
+            "CAD": "531.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -529,8 +530,8 @@
           "title": "24” / 250%",
           "availableForSale": true,
           "price": {
-            "USD": "389.00",
-            "CAD": "545.00"
+            "USD": "419.00",
+            "CAD": "587.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -549,8 +550,8 @@
           "title": "26” / 250%",
           "availableForSale": true,
           "price": {
-            "USD": "479.00",
-            "CAD": "671.00"
+            "USD": "509.00",
+            "CAD": "713.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -564,7 +565,8 @@
             }
           ]
         }
-      ]
+      ],
+      "shippingIncluded": true
     },
     {
       "id": "gid://shopify/Product/10798842675365",
@@ -2448,8 +2450,8 @@
           "title": "20\"",
           "availableForSale": true,
           "price": {
-            "USD": "250.00",
-            "CAD": "350.00"
+            "USD": "280.00",
+            "CAD": "392.00"
           },
           "compareAtPrice": null,
           "selectedOptions": [
@@ -2459,7 +2461,8 @@
             }
           ]
         }
-      ]
+      ],
+      "shippingIncluded": true
     }
   ]
 }
