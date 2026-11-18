@@ -29,13 +29,6 @@ export default function Campaign() {
             <Link to="/collections" className={ctaGlassOnLight} style={ctaTracking}>
               <Text k="campaign.cta">Shop the Half-Wig</Text>
             </Link>
-            <Link
-              to="/quiz"
-              className="text-xs font-semibold uppercase text-[#5A3224] hover:text-[#1B1113] transition-colors"
-              style={ctaTracking}
-            >
-              <Text k="campaign.quiz">Not sure? Take the quiz →</Text>
-            </Link>
           </div>
         </Reveal>
       </div>

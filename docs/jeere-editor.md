@@ -76,7 +76,7 @@ Authorization: Bearer <session token>
 
 | page | keys |
 |---|---|
-| Home | `hero.logo` (picture), `hero.cta`, `campaign.eyebrow`, `campaign.title`, `campaign.body`, `campaign.cta`, `campaign.quiz` |
+| Home | `hero.logo` (picture), `hero.cta`, `campaign.eyebrow`, `campaign.title`, `campaign.body`, `campaign.cta` |
 | Home, Collections | `collection.eyebrow`, `collection.title`, `collection.body`, `reviews.eyebrow`, `reviews.title` |
 | Collections | `lengths.eyebrow`, `lengths.title`, `lengths.body`, `lengths.tip` |
 | Our Hair | `ourhair.eyebrow`, `ourhair.title`, `ourhair.body`, `ourhair.reason1.title` … `ourhair.reason3.body`, `ourhair.closing` |
