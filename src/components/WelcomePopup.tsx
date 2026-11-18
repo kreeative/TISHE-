@@ -1,36 +1,67 @@
 import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { X } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { subscribeEmail } from '../lib/subscribe'
+import { hasJoined, subscribeEmail } from '../lib/subscribe'
+import { savedSession } from '../lib/account'
+import { saleOffer } from '../lib/sale'
 import { trackSignUp } from '../lib/analytics'
+import { useStore } from './StoreContext'
 
-const STORAGE_KEY = 'tis-welcome-popup'
+// Closed during this visit: it shows again the next time the site is opened,
+// until the visitor joins the Circle (or signs in).
+const CLOSED_KEY = 'tis-welcome-popup-closed'
 const DISCOUNT_CODE = 'WELCOME10'
 
+function closedThisVisit(): boolean {
+  try {
+    return sessionStorage.getItem(CLOSED_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
 export default function WelcomePopup() {
+  const { sale, products } = useStore()
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [joined, setJoined] = useState(false)
   const [copied, setCopied] = useState(false)
 
+  // while a sale runs, the popup offers the sale (WELCOME10 can't be combined with it)
+  const offer = saleOffer(sale)
+  const everything = Boolean(sale) && products.every((p) => sale?.handles.includes(p.handle))
+
   useEffect(() => {
-    if (localStorage.getItem(STORAGE_KEY)) return
+    if (hasJoined() || savedSession() || closedThisVisit()) return
+    // not over an order confirmation
+    if (window.location.hash.startsWith('#/order')) return
     const t = setTimeout(() => setOpen(true), 3500)
     return () => clearTimeout(t)
   }, [])
 
   const dismiss = () => {
-    localStorage.setItem(STORAGE_KEY, 'dismissed')
+    try {
+      sessionStorage.setItem(CLOSED_KEY, '1')
+    } catch {
+      // private mode: closing still works for this page
+    }
     setOpen(false)
   }
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!email.trim()) return
-    localStorage.setItem(STORAGE_KEY, 'joined')
     setJoined(true)
     trackSignUp('welcome_popup')
     void subscribeEmail(email.trim(), 'welcome_popup')
+  }
+
+  const shopSale = () => {
+    dismiss()
+    if (!pathname.startsWith('/collections')) navigate('/collections')
   }
 
   const copyCode = async () => {
@@ -42,6 +73,8 @@ export default function WelcomePopup() {
       /* clipboard unavailable — code is still visible to copy manually */
     }
   }
+
+  const eyebrow = offer ? `${offer.name} · The Circle` : 'Welcome to the Circle'
 
   return (
     <AnimatePresence>
@@ -81,10 +114,25 @@ export default function WelcomePopup() {
 
             <div className="p-8 sm:p-10 flex flex-col items-center text-center overflow-y-auto">
               <p className="text-xs font-semibold uppercase text-[#5A3224]" style={{ letterSpacing: '0.06em' }}>
-                Welcome to the Circle
+                {eyebrow}
               </p>
 
-              {joined ? (
+              {joined && offer ? (
+                <>
+                  <h2 className="font-display text-4xl sm:text-5xl mt-4 leading-[1.16]">You're in.</h2>
+                  <p className="mt-4 text-sm text-[#1B1113]/75 leading-[1.85] max-w-xs">
+                    Your {offer.percent}% off is already applied in your bag, no code needed. The sale ends{' '}
+                    {offer.lastDay} at midnight (Eastern time).
+                  </p>
+                  <button
+                    onClick={shopSale}
+                    className="mt-6 w-full bg-[#1B1113] text-[#FAF7F3] text-xs font-semibold uppercase px-8 py-4 hover:bg-[#2A1D20] transition-colors"
+                    style={{ letterSpacing: '0.08em' }}
+                  >
+                    Shop the sale
+                  </button>
+                </>
+              ) : joined ? (
                 <>
                   <h2 className="font-display text-4xl sm:text-5xl mt-4 leading-[1.16]">You're in.</h2>
                   <p className="mt-4 text-sm text-[#1B1113]/75 leading-[1.85] max-w-xs">
@@ -111,14 +159,15 @@ export default function WelcomePopup() {
               ) : (
                 <>
                   <h2 className="font-display text-4xl sm:text-5xl mt-4 leading-[1.16]">
-                    Enjoy 10% off
+                    Enjoy {offer ? offer.percent : 10}% off
                   </h2>
                   <p className="text-sm font-semibold uppercase mt-3 text-[#1B1113]/70" style={{ letterSpacing: '0.1em' }}>
-                    your first order
+                    {offer ? (everything ? 'on everything' : 'on the sale') : 'your first order'}
                   </p>
                   <p className="mt-5 text-sm text-[#1B1113]/70 leading-[1.85] max-w-xs">
-                    Join the Sukundu Circle and get 10% off your first order, plus early access to
-                    every drop and restock.
+                    {offer
+                      ? `Join the Sukundu Circle and shop our ${offer.name} sale until ${offer.lastDay}, no code needed. We'll remind you before it ends.`
+                      : 'Join the Sukundu Circle and get 10% off your first order, plus early access to every drop and restock.'}
                   </p>
                   <form onSubmit={submit} className="w-full mt-6 flex flex-col gap-3">
                     <label className="sr-only" htmlFor="welcome-email">Email address</label>
@@ -136,7 +185,7 @@ export default function WelcomePopup() {
                       className="w-full bg-[#1B1113] text-[#FAF7F3] text-xs font-semibold uppercase px-8 py-4 hover:bg-[#2A1D20] transition-colors"
                       style={{ letterSpacing: '0.08em' }}
                     >
-                      Continue
+                      {offer ? `Get ${offer.percent}% off` : 'Continue'}
                     </button>
                   </form>
                   <button
@@ -144,11 +193,14 @@ export default function WelcomePopup() {
                     className="mt-5 text-xs font-medium text-[#1B1113]/50 hover:text-[#5A3224] uppercase underline underline-offset-4 transition-colors"
                     style={{ letterSpacing: '0.08em' }}
                   >
-                    Decline offer
+                    {offer ? 'No thanks' : 'Decline offer'}
                   </button>
                   <p className="mt-5 text-[10px] text-[#1B1113]/40 leading-relaxed max-w-xs">
                     By signing up you agree to receive marketing emails from The Ivory Sukundu. You can
-                    unsubscribe at any time. Offer excludes gift cards and can't be combined with other codes.
+                    unsubscribe at any time.{' '}
+                    {offer
+                      ? "Sale prices can't be combined with other codes."
+                      : "Offer excludes gift cards and can't be combined with other codes."}
                   </p>
                 </>
               )}

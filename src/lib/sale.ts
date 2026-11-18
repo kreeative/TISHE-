@@ -43,6 +43,25 @@ export function saleTimeLeft(sale: Sale | null, now: number = Date.now()): TimeL
   }
 }
 
+export interface SaleOffer {
+  name: string
+  percent: number
+  // the sale's last day, e.g. "November 30" (it ends at midnight, Eastern time)
+  lastDay: string
+}
+
+// A sale with a percentage off, while it runs: what the Circle signup offers instead of WELCOME10
+// (codes can't be combined with sale prices).
+export function saleOffer(sale: Sale | null, now: number = Date.now()): SaleOffer | null {
+  if (!sale?.percent || saleTimeLeft(sale, now).ms <= 0) return null
+  const lastDay = new Date(Date.parse(sale.endsAt) - 1).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'America/Toronto',
+  })
+  return { name: sale.name, percent: sale.percent, lastDay }
+}
+
 const pad = (n: number) => String(n).padStart(2, '0')
 
 // 8d 04h 12m 33s, dropping the day part on the last day

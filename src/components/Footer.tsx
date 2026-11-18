@@ -4,6 +4,8 @@ import { NavLink } from 'react-router-dom'
 import { subscribeEmail } from '../lib/subscribe'
 import { trackSignUp } from '../lib/analytics'
 import { Text } from './SiteContent'
+import { useStore } from './StoreContext'
+import { saleOffer } from '../lib/sale'
 
 // Legal pages: written in Shopify admin (Settings → Policies),
 // rendered on-site at /legal/:handle in the brand's typography.
@@ -47,6 +49,8 @@ const footerLink =
 export default function Footer() {
   const [email, setEmail] = useState('')
   const [joined, setJoined] = useState(false)
+  // while a sale runs, the signup offers the sale (WELCOME10 can't be combined with it)
+  const offer = saleOffer(useStore().sale)
 
   return (
     <footer
@@ -138,12 +142,16 @@ export default function Footer() {
           <p className={footerHeading} style={{ letterSpacing: '0.06em' }}>The Circle</p>
           {joined ? (
             <p className="mt-4 text-sm text-[#FAF7F3]/70 leading-[1.85]">
-              Welcome to the Circle. Your 10% code is on its way to your inbox.
+              {offer
+                ? `Welcome to the Circle. Your ${offer.percent}% off is already in your bag, no code needed.`
+                : 'Welcome to the Circle. Your 10% code is on its way to your inbox.'}
             </p>
           ) : (
             <>
               <p className="mt-4 text-sm text-[#FAF7F3]/60 leading-[1.85]">
-                10% off your first order, early access to every drop.
+                {offer
+                  ? `${offer.name}: ${offer.percent}% off until ${offer.lastDay}. Join for a reminder before it ends, and early access to every drop.`
+                  : '10% off your first order, early access to every drop.'}
               </p>
               <form
                 className="mt-4 flex"

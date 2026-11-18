@@ -179,8 +179,44 @@ export async function sendReviewRequest(order: Order): Promise<boolean> {
   })
 }
 
-export async function sendWelcome(email: string): Promise<boolean> {
+export interface WelcomeSale {
+  name: string
+  percent: number
+  // e.g. "November 30" (the sale ends at midnight that day, Eastern time)
+  lastDay: string
+}
+
+// While a sale with a percentage runs, the welcome email announces the sale
+// instead of WELCOME10, which can't be combined with sale prices.
+export async function sendWelcome(email: string, sale?: WelcomeSale | null): Promise<boolean> {
   const shop = `${env.siteUrl()}/#/collections`
+  if (sale) {
+    return sendEmail({
+      to: email,
+      subject: `Welcome to the Circle. ${sale.name} is on: ${sale.percent}% off.`,
+      idempotencyKey: `welcome/${email}`,
+      tags: { type: 'welcome' },
+      html: layout({
+        preheader: `${sale.percent}% off until ${sale.lastDay}, no code needed.`,
+        title: 'Welcome to the Circle',
+        body: [
+          p(`Thank you for joining. Our ${esc(sale.name)} sale is on: <strong>${sale.percent}% off</strong>, until <strong>${esc(sale.lastDay)}</strong> at midnight (Eastern time).`),
+          codeBox(`${sale.percent}% OFF`),
+          p("No code needed: the sale price is already in your bag. And every order ships free, with tracking. You'll also be first to hear about new drops and restocks."),
+          button('Shop the sale', shop),
+          small('Raw Vietnamese hair from a single donor, cuticle-aligned Indian hair, and glueless half wigs. Every texture is labelled exactly as it is.'),
+        ].join(''),
+      }),
+      text: textOf([
+        'Welcome to the Circle.',
+        '',
+        `Our ${sale.name} sale is on: ${sale.percent}% off, until ${sale.lastDay} at midnight (Eastern time).`,
+        'No code needed: the sale price is already in your bag.',
+        '',
+        `Shop the sale: ${shop}`,
+      ]),
+    })
+  }
   return sendEmail({
     to: email,
     subject: 'Welcome to the Circle. Here is your 10% off.',
