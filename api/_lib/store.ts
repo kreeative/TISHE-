@@ -123,6 +123,19 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
         .map(({ p }) => p)
     },
   },
+  {
+    // the owner removed the curly photo with the inset from the Kinky Curly Half Wig
+    id: 'kinky-remove-photo-2',
+    run: (doc) => {
+      const gone = (url: string) => url.endsWith('/the-kinky-curly-sukundu-half-wig/2.jpg')
+      for (const p of doc.products) {
+        if (p.handle !== 'the-kinky-curly-sukundu-half-wig') continue
+        p.media = p.media.filter((m) => !gone(m.url))
+        p.images = p.images.filter((i) => !gone(i.url))
+        p.featuredImage = p.images[0] ?? null
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
