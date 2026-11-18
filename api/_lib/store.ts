@@ -154,6 +154,18 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // the same Canva video, sent again in HD: it replaces the first export
+    id: 'kinky-canva-video-hd',
+    run: (doc) => {
+      const swap = (url: string) => url.replace(/\/the-kinky-curly-sukundu-half-wig\/5(-poster(-sm)?\.jpg|\.mp4)$/, '/the-kinky-curly-sukundu-half-wig/6$1')
+      for (const p of doc.products) {
+        if (p.handle !== 'the-kinky-curly-sukundu-half-wig') continue
+        p.media = p.media.map((m) => ({ ...m, url: swap(m.url), previewUrl: m.previewUrl && swap(m.previewUrl), poster: m.poster && swap(m.poster) }))
+        if (p.featuredImage) p.featuredImage = { ...p.featuredImage, url: swap(p.featuredImage.url), thumb: swap(p.featuredImage.thumb) }
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
