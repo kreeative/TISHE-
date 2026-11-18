@@ -190,6 +190,26 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // the Indian bundles before the Vietnamese ones, after the three wigs
+    id: 'collection-order-indian-first',
+    run: (doc) => {
+      const order = [
+        'the-kinky-curly-sukundu-half-wig',
+        'u-part-raw-vietnamese',
+        'untitled-jul21_09-54-40',
+        'straight-bundles',
+        'burmese-curly-bundles',
+        'raw-wavy-bundles',
+        'raw-curly-bundles',
+      ]
+      const rank = (handle: string) => (order.includes(handle) ? order.indexOf(handle) : order.length)
+      doc.products = doc.products
+        .map((p, i) => ({ p, i }))
+        .sort((a, b) => rank(a.p.handle) - rank(b.p.handle) || a.i - b.i)
+        .map(({ p }) => p)
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
