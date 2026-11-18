@@ -373,7 +373,16 @@ const api = handler(async (request) => {
 
   if (action === 'saveSite') {
     const site = cleanSite(body)
-    return json({ doc: await saveStore((d) => void (d.site = site)) })
+    return json({
+      doc: await saveStore((d) => {
+        // a dashboard that doesn't know about percentages keeps the running one
+        const before = d.site.sale
+        if (site.sale && before?.percent && site.sale.percent === undefined && site.sale.endsAt === before.endsAt) {
+          site.sale.percent = before.percent
+        }
+        d.site = site
+      }),
+    })
   }
 
   if (action === 'saveContent') {

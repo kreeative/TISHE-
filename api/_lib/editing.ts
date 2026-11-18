@@ -128,6 +128,7 @@ export function cleanSite(raw: Record<string, unknown>): SiteSettings {
       banner: String(s.banner ?? '').trim().slice(0, 60),
       endsAt: new Date(endsAt).toISOString(),
       handles: (Array.isArray(s.handles) ? s.handles : []).map(String).slice(0, 50),
+      ...(Number(s.percent) >= 1 && Number(s.percent) <= 90 ? { percent: Math.round(Number(s.percent)) } : {}),
     }
   }
   return { announcements, sale }

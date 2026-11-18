@@ -14,6 +14,9 @@ export interface SaleSettings {
   banner: string
   endsAt: string
   handles: string[]
+  // a percentage off the normal prices, while the sale runs (the prices themselves stay as they are,
+  // so they're back to normal by themselves when it ends)
+  percent?: number
 }
 
 export interface SiteSettings {
@@ -93,6 +96,19 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       for (const c of doc.discounts) if (c.kind === 'free_shipping') c.active = false
       const lines = doc.site.announcements.map((a) => (/freeship|ships free|free shipping/i.test(a) ? 'Free tracked shipping on every order' : a))
       doc.site.announcements = [...new Set(lines)]
+    },
+  },
+  {
+    // Black Friday, asked for on November 18: 20% off everything until Cyber Monday ends (Eastern time)
+    id: 'black-friday-2026',
+    run: (doc) => {
+      doc.site.sale = {
+        name: 'Black Friday',
+        banner: 'Black Friday · 20% off everything',
+        endsAt: '2026-12-01T05:00:00.000Z',
+        handles: doc.products.map((p) => p.handle),
+        percent: 20,
+      }
     },
   },
 ]

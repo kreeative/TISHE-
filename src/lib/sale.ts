@@ -10,6 +10,8 @@ export interface Sale {
   banner: string
   endsAt: string
   handles: string[]
+  // a percentage off the normal prices while the sale runs
+  percent?: number
 }
 
 export function isSaleProduct(sale: Sale | null, handle: string | undefined): boolean {

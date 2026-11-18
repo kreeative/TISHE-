@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { buildCart, loadLines, saveLines, type Cart, type StoredLine } from '../lib/cart'
-import { BUNDLED_PRODUCTS, buildProducts, type Currency, type Product, type RawProduct } from '../lib/catalog'
+import { BUNDLED_PRODUCTS, buildProducts, withSale, type Currency, type Product, type RawProduct } from '../lib/catalog'
 import { SHIPPING, currencyFor, guessCountry, shipsTo, type ShippingData } from '../lib/shipping'
 import type { Sale } from '../lib/sale'
 import { api } from '../lib/api'
@@ -111,7 +111,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [customerLoading, setCustomerLoading] = useState(false)
 
   const currency = currencyFor(shipTo.country)
-  const products = useMemo(() => buildProducts(live.products, currency), [live.products, currency])
+  const products = useMemo(() => buildProducts(withSale(live.products, live.site.sale), currency), [live.products, live.site.sale, currency])
   const cart = useMemo(() => buildCart(lines, products, currency), [lines, products, currency])
 
   const showStore = (doc: StoreDocument) =>

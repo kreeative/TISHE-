@@ -1,4 +1,5 @@
 import data from '../data/catalog.json'
+import type { Sale } from './sale'
 
 // Product types and the catalog. The live catalog is edited in the dashboard
 // and served by /api/store (see StoreContext); src/data/catalog.json is the
@@ -113,4 +114,24 @@ export function findVariantById(products: Product[], id: string): VariantMatch |
     if (variant) return { product, variant }
   }
   return null
+}
+
+// A percentage sale, while it runs: each product on sale shows its normal price as the
+// "was" price and the reduced one as its price (worked out like the checkout does).
+export function withSale(raw: RawProduct[], sale: Sale | null, now = Date.now()): RawProduct[] {
+  if (!sale?.percent || !(Date.parse(sale.endsAt) > now)) return raw
+  const factor = 1 - sale.percent / 100
+  const off = (amount: string) => (Math.round(Math.round(Number(amount) * 100) * factor) / 100).toFixed(2)
+  return raw.map((p) =>
+    sale.handles.includes(p.handle)
+      ? {
+          ...p,
+          variants: p.variants.map((v) => ({
+            ...v,
+            compareAtPrice: { USD: v.price.USD, CAD: v.price.CAD },
+            price: { USD: off(v.price.USD), CAD: off(v.price.CAD) },
+          })),
+        }
+      : p,
+  )
 }

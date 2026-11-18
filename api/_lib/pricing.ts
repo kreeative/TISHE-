@@ -71,12 +71,18 @@ export function price(req: PriceRequest, history: History | null, doc: StoreDoc)
   const zone = ship.zones.find((z) => z.countries.includes(req.country))
   if (!zone) throw new HttpError(400, "We don't ship to that country yet. Write to hello@theivorysukundu.com and we'll see what we can do.")
 
+  const sale = doc.site.sale
+  const saleRunning = Boolean(sale && Date.parse(sale.endsAt) > Date.now())
+  const saleOn = (handle: string) => saleRunning && Boolean(sale?.handles.includes(handle))
+
   const lines: PricedLine[] = req.items.map(({ variantId, quantity }) => {
     const match = findVariant(doc.products, variantId)
     if (!match || !match.variant.availableForSale) {
       throw new HttpError(409, 'Something in your bag is no longer available. Please remove it and try again.', 'unavailable')
     }
-    const unit = cents(match.variant.price[zone.currency])
+    let unit = cents(match.variant.price[zone.currency])
+    // a percentage sale is worked out here, the same way the shop shows it
+    if (sale?.percent && saleOn(match.product.handle)) unit = Math.round(unit * (1 - sale.percent / 100))
     return { ...match, quantity, originalUnit: unit, unit }
   })
   const subtotal = lines.reduce((n, l) => n + l.originalUnit * l.quantity, 0)
@@ -85,10 +91,7 @@ export function price(req: PriceRequest, history: History | null, doc: StoreDoc)
   if (rule) checkCode(rule, subtotal / 100, zone.currency, history)
 
   // codes don't add up with a sale: they only take money off what isn't on sale
-  const sale = doc.site.sale
-  const saleRunning = Boolean(sale && Date.parse(sale.endsAt) > Date.now())
-  const onSale = (l: PricedLine) => saleRunning && Boolean(sale?.handles.includes(l.product.handle))
-  const eligible = lines.filter((l) => !onSale(l))
+  const eligible = lines.filter((l) => !saleOn(l.product.handle))
   const eligibleSubtotal = eligible.reduce((n, l) => n + l.originalUnit * l.quantity, 0)
   if (rule && (rule.kind === 'percent' || rule.kind === 'amount') && !eligible.length) {
     throw new HttpError(400, "Codes can't be combined with sale prices. Your sale price is already applied.", 'not_with_sale')
