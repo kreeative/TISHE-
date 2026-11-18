@@ -166,6 +166,18 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // and then the owner's cropped version of it, which is the one to keep
+    id: 'kinky-canva-video-cropped',
+    run: (doc) => {
+      const swap = (url: string) => url.replace(/\/the-kinky-curly-sukundu-half-wig\/[56](-poster(-sm)?\.jpg|\.mp4)$/, '/the-kinky-curly-sukundu-half-wig/7$1')
+      for (const p of doc.products) {
+        if (p.handle !== 'the-kinky-curly-sukundu-half-wig') continue
+        p.media = p.media.map((m) => ({ ...m, url: swap(m.url), previewUrl: m.previewUrl && swap(m.previewUrl), poster: m.poster && swap(m.poster) }))
+        if (p.featuredImage) p.featuredImage = { ...p.featuredImage, url: swap(p.featuredImage.url), thumb: swap(p.featuredImage.thumb) }
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
