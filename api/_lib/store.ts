@@ -271,6 +271,18 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // the owner found the Yaki Body Wave Half-Wig too expensive: 15% off its normal prices, for good
+    // (rounded to the dollar; shipping stays included, and the Black Friday sale still applies on top)
+    id: 'yaki-15-percent-lower',
+    run: (doc) => {
+      const lower = (amount: string) => Math.round(Number(amount) * 0.85).toFixed(2)
+      for (const p of doc.products) {
+        if (p.handle !== 'untitled-jul21_09-54-40') continue
+        for (const v of p.variants) v.price = { USD: lower(v.price.USD), CAD: lower(v.price.CAD) }
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
