@@ -210,6 +210,14 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
         .map(({ p }) => p)
     },
   },
+  {
+    // then the owner put the Indian Burmese Curly Bundles at the very top; the rest keeps its order
+    id: 'collection-burmese-curly-top',
+    run: (doc) => {
+      const top = doc.products.filter((p) => p.handle === 'burmese-curly-bundles')
+      doc.products = [...top, ...doc.products.filter((p) => p.handle !== 'burmese-curly-bundles')]
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {

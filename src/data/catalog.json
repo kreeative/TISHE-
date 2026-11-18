@@ -6,6 +6,413 @@
   "note": "USD is the base price everywhere except Canada, which is charged the CAD price.",
   "products": [
     {
+      "id": "gid://shopify/Product/10798860107941",
+      "title": "Indian Burmese Curly Bundles",
+      "handle": "burmese-curly-bundles",
+      "supplier": "nine",
+      "descriptionHtml": "<p><strong>100% Indian human hair, cuticle aligned,</strong> with a full, defined Burmese curl pattern. Natural black, 100g per bundle. Take a single bundle to add length to a set you already own, or a set of three for a full install at a better price.</p>\n\n<p>Cuticle aligned means every strand runs in the same direction, so the hair stays soft and resists tangling. Co-wash it, define it with a curl cream, or blow it out when you want a change.</p>\n\n<h4>1 bundle or 3?</h4>\n<p>Most full installs take three bundles. Two is enough for a partial or for shorter lengths, and four gives a very full look past 24\". A set of three costs considerably less than three singles.</p>\n\n<h4>Choosing your length</h4>\n<p>Lengths are measured straight, before the curl. Burmese curly wears roughly three to four inches shorter than the number on the label, so size up if you want a specific fall. Mixed sets give you natural layering and movement. Matched lengths give you a fuller, blunter look. If you are unsure, 20\" / 22\" / 24\" is the set most people reach for.</p>\n\n<h4>What you receive with a set of 3</h4>\n<ul>\n<li>Three 100g Burmese curly bundles</li>\n<li>Wide tooth comb</li>\n<li>Silk scrunchie</li>\n<li>Care card and branded packaging</li>\n</ul>\n\n<h4>Care</h4>\n<p>Co-wash in cool water, condition generously, and air dry. Detangle with your fingers or a wide tooth comb, always from the ends up. Use heat sparingly to keep the curl defined.</p>\n\n<p><em>Every bundle is individually prepared, so slight variation in curl pattern between bundles is normal.</em></p>",
+      "tags": [
+        "bundle deal",
+        "bundles",
+        "burmese curly"
+      ],
+      "featuredImage": {
+        "url": "/media/products/burmese-curly-bundles/1.jpg",
+        "thumb": "/media/products/burmese-curly-bundles/1-sm.jpg",
+        "altText": "Sophie wears 3 bundles of 22\", bleached and dyed by her (bundles ship in natural black). Shop the model: 3 Bundles / 22\""
+      },
+      "images": [
+        {
+          "url": "/media/products/burmese-curly-bundles/1.jpg",
+          "thumb": "/media/products/burmese-curly-bundles/1-sm.jpg",
+          "altText": "Sophie wears 3 bundles of 22\", bleached and dyed by her (bundles ship in natural black). Shop the model: 3 Bundles / 22\""
+        },
+        {
+          "url": "/media/products/burmese-curly-bundles/2.jpg",
+          "thumb": "/media/products/burmese-curly-bundles/2-sm.jpg",
+          "altText": "Sophie wears 3 bundles of 22\", bleached and dyed by her (bundles ship in natural black). Shop the model: 3 Bundles / 22\""
+        },
+        {
+          "url": "/media/products/burmese-curly-bundles/3.jpg",
+          "thumb": "/media/products/burmese-curly-bundles/3-sm.jpg",
+          "altText": "Burmese curly hair bundles by The Ivory Sukundu"
+        }
+      ],
+      "media": [
+        {
+          "type": "image",
+          "url": "/media/products/burmese-curly-bundles/1.jpg",
+          "previewUrl": "/media/products/burmese-curly-bundles/1-sm.jpg",
+          "altText": "Sophie wears 3 bundles of 22\", bleached and dyed by her (bundles ship in natural black). Shop the model: 3 Bundles / 22\""
+        },
+        {
+          "type": "image",
+          "url": "/media/products/burmese-curly-bundles/2.jpg",
+          "previewUrl": "/media/products/burmese-curly-bundles/2-sm.jpg",
+          "altText": "Sophie wears 3 bundles of 22\", bleached and dyed by her (bundles ship in natural black). Shop the model: 3 Bundles / 22\""
+        },
+        {
+          "type": "image",
+          "url": "/media/products/burmese-curly-bundles/3.jpg",
+          "previewUrl": "/media/products/burmese-curly-bundles/3-sm.jpg",
+          "altText": "Burmese curly hair bundles by The Ivory Sukundu"
+        }
+      ],
+      "options": [
+        {
+          "name": "Bundles",
+          "values": [
+            "1 Bundle",
+            "3 Bundles"
+          ]
+        },
+        {
+          "name": "Length",
+          "values": [
+            "18\"",
+            "20\"",
+            "22\"",
+            "24\"",
+            "26\"",
+            "28\"",
+            "18\" / 20\" / 22\"",
+            "20\" / 22\" / 24\"",
+            "22\" / 24\" / 26\""
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "id": "gid://shopify/ProductVariant/50567084441765",
+          "title": "1 Bundle / 18\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "189.00",
+            "CAD": "265.00"
+          },
+          "compareAtPrice": null,
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "1 Bundle"
+            },
+            {
+              "name": "Length",
+              "value": "18\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084474533",
+          "title": "1 Bundle / 20\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "209.00",
+            "CAD": "293.00"
+          },
+          "compareAtPrice": null,
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "1 Bundle"
+            },
+            {
+              "name": "Length",
+              "value": "20\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084507301",
+          "title": "1 Bundle / 22\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "219.00",
+            "CAD": "307.00"
+          },
+          "compareAtPrice": null,
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "1 Bundle"
+            },
+            {
+              "name": "Length",
+              "value": "22\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084540069",
+          "title": "1 Bundle / 24\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "239.00",
+            "CAD": "335.00"
+          },
+          "compareAtPrice": null,
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "1 Bundle"
+            },
+            {
+              "name": "Length",
+              "value": "24\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084572837",
+          "title": "1 Bundle / 26\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "269.00",
+            "CAD": "377.00"
+          },
+          "compareAtPrice": null,
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "1 Bundle"
+            },
+            {
+              "name": "Length",
+              "value": "26\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084605605",
+          "title": "1 Bundle / 28\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "299.00",
+            "CAD": "419.00"
+          },
+          "compareAtPrice": null,
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "1 Bundle"
+            },
+            {
+              "name": "Length",
+              "value": "28\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084638373",
+          "title": "3 Bundles / 18\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "359.00",
+            "CAD": "503.00"
+          },
+          "compareAtPrice": {
+            "USD": "507.00",
+            "CAD": "710.00"
+          },
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "3 Bundles"
+            },
+            {
+              "name": "Length",
+              "value": "18\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084671141",
+          "title": "3 Bundles / 20\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "379.00",
+            "CAD": "531.00"
+          },
+          "compareAtPrice": {
+            "USD": "567.00",
+            "CAD": "794.00"
+          },
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "3 Bundles"
+            },
+            {
+              "name": "Length",
+              "value": "20\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084703909",
+          "title": "3 Bundles / 22\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "419.00",
+            "CAD": "587.00"
+          },
+          "compareAtPrice": {
+            "USD": "597.00",
+            "CAD": "836.00"
+          },
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "3 Bundles"
+            },
+            {
+              "name": "Length",
+              "value": "22\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084736677",
+          "title": "3 Bundles / 24\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "469.00",
+            "CAD": "657.00"
+          },
+          "compareAtPrice": {
+            "USD": "657.00",
+            "CAD": "920.00"
+          },
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "3 Bundles"
+            },
+            {
+              "name": "Length",
+              "value": "24\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084769445",
+          "title": "3 Bundles / 26\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "499.00",
+            "CAD": "699.00"
+          },
+          "compareAtPrice": {
+            "USD": "747.00",
+            "CAD": "1046.00"
+          },
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "3 Bundles"
+            },
+            {
+              "name": "Length",
+              "value": "26\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084802213",
+          "title": "3 Bundles / 28\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "549.00",
+            "CAD": "769.00"
+          },
+          "compareAtPrice": {
+            "USD": "837.00",
+            "CAD": "1172.00"
+          },
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "3 Bundles"
+            },
+            {
+              "name": "Length",
+              "value": "28\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084834981",
+          "title": "3 Bundles / 18\" / 20\" / 22\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "389.00",
+            "CAD": "545.00"
+          },
+          "compareAtPrice": {
+            "USD": "557.00",
+            "CAD": "780.00"
+          },
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "3 Bundles"
+            },
+            {
+              "name": "Length",
+              "value": "18\" / 20\" / 22\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084867749",
+          "title": "3 Bundles / 20\" / 22\" / 24\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "419.00",
+            "CAD": "587.00"
+          },
+          "compareAtPrice": {
+            "USD": "607.00",
+            "CAD": "850.00"
+          },
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "3 Bundles"
+            },
+            {
+              "name": "Length",
+              "value": "20\" / 22\" / 24\""
+            }
+          ]
+        },
+        {
+          "id": "gid://shopify/ProductVariant/50567084900517",
+          "title": "3 Bundles / 22\" / 24\" / 26\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "459.00",
+            "CAD": "643.00"
+          },
+          "compareAtPrice": {
+            "USD": "667.00",
+            "CAD": "934.00"
+          },
+          "selectedOptions": [
+            {
+              "name": "Bundles",
+              "value": "3 Bundles"
+            },
+            {
+              "name": "Length",
+              "value": "22\" / 24\" / 26\""
+            }
+          ]
+        }
+      ],
+      "shippingIncluded": true
+    },
+    {
       "id": "gid://shopify/Product/10650736984229",
       "title": "The Kinky Curly Half Wig",
       "handle": "the-kinky-curly-sukundu-half-wig",
@@ -1046,413 +1453,6 @@
           "compareAtPrice": {
             "USD": "637.00",
             "CAD": "892.00"
-          },
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "3 Bundles"
-            },
-            {
-              "name": "Length",
-              "value": "22\" / 24\" / 26\""
-            }
-          ]
-        }
-      ],
-      "shippingIncluded": true
-    },
-    {
-      "id": "gid://shopify/Product/10798860107941",
-      "title": "Indian Burmese Curly Bundles",
-      "handle": "burmese-curly-bundles",
-      "supplier": "nine",
-      "descriptionHtml": "<p><strong>100% Indian human hair, cuticle aligned,</strong> with a full, defined Burmese curl pattern. Natural black, 100g per bundle. Take a single bundle to add length to a set you already own, or a set of three for a full install at a better price.</p>\n\n<p>Cuticle aligned means every strand runs in the same direction, so the hair stays soft and resists tangling. Co-wash it, define it with a curl cream, or blow it out when you want a change.</p>\n\n<h4>1 bundle or 3?</h4>\n<p>Most full installs take three bundles. Two is enough for a partial or for shorter lengths, and four gives a very full look past 24\". A set of three costs considerably less than three singles.</p>\n\n<h4>Choosing your length</h4>\n<p>Lengths are measured straight, before the curl. Burmese curly wears roughly three to four inches shorter than the number on the label, so size up if you want a specific fall. Mixed sets give you natural layering and movement. Matched lengths give you a fuller, blunter look. If you are unsure, 20\" / 22\" / 24\" is the set most people reach for.</p>\n\n<h4>What you receive with a set of 3</h4>\n<ul>\n<li>Three 100g Burmese curly bundles</li>\n<li>Wide tooth comb</li>\n<li>Silk scrunchie</li>\n<li>Care card and branded packaging</li>\n</ul>\n\n<h4>Care</h4>\n<p>Co-wash in cool water, condition generously, and air dry. Detangle with your fingers or a wide tooth comb, always from the ends up. Use heat sparingly to keep the curl defined.</p>\n\n<p><em>Every bundle is individually prepared, so slight variation in curl pattern between bundles is normal.</em></p>",
-      "tags": [
-        "bundle deal",
-        "bundles",
-        "burmese curly"
-      ],
-      "featuredImage": {
-        "url": "/media/products/burmese-curly-bundles/1.jpg",
-        "thumb": "/media/products/burmese-curly-bundles/1-sm.jpg",
-        "altText": "Sophie wears 3 bundles of 22\", bleached and dyed by her (bundles ship in natural black). Shop the model: 3 Bundles / 22\""
-      },
-      "images": [
-        {
-          "url": "/media/products/burmese-curly-bundles/1.jpg",
-          "thumb": "/media/products/burmese-curly-bundles/1-sm.jpg",
-          "altText": "Sophie wears 3 bundles of 22\", bleached and dyed by her (bundles ship in natural black). Shop the model: 3 Bundles / 22\""
-        },
-        {
-          "url": "/media/products/burmese-curly-bundles/2.jpg",
-          "thumb": "/media/products/burmese-curly-bundles/2-sm.jpg",
-          "altText": "Sophie wears 3 bundles of 22\", bleached and dyed by her (bundles ship in natural black). Shop the model: 3 Bundles / 22\""
-        },
-        {
-          "url": "/media/products/burmese-curly-bundles/3.jpg",
-          "thumb": "/media/products/burmese-curly-bundles/3-sm.jpg",
-          "altText": "Burmese curly hair bundles by The Ivory Sukundu"
-        }
-      ],
-      "media": [
-        {
-          "type": "image",
-          "url": "/media/products/burmese-curly-bundles/1.jpg",
-          "previewUrl": "/media/products/burmese-curly-bundles/1-sm.jpg",
-          "altText": "Sophie wears 3 bundles of 22\", bleached and dyed by her (bundles ship in natural black). Shop the model: 3 Bundles / 22\""
-        },
-        {
-          "type": "image",
-          "url": "/media/products/burmese-curly-bundles/2.jpg",
-          "previewUrl": "/media/products/burmese-curly-bundles/2-sm.jpg",
-          "altText": "Sophie wears 3 bundles of 22\", bleached and dyed by her (bundles ship in natural black). Shop the model: 3 Bundles / 22\""
-        },
-        {
-          "type": "image",
-          "url": "/media/products/burmese-curly-bundles/3.jpg",
-          "previewUrl": "/media/products/burmese-curly-bundles/3-sm.jpg",
-          "altText": "Burmese curly hair bundles by The Ivory Sukundu"
-        }
-      ],
-      "options": [
-        {
-          "name": "Bundles",
-          "values": [
-            "1 Bundle",
-            "3 Bundles"
-          ]
-        },
-        {
-          "name": "Length",
-          "values": [
-            "18\"",
-            "20\"",
-            "22\"",
-            "24\"",
-            "26\"",
-            "28\"",
-            "18\" / 20\" / 22\"",
-            "20\" / 22\" / 24\"",
-            "22\" / 24\" / 26\""
-          ]
-        }
-      ],
-      "variants": [
-        {
-          "id": "gid://shopify/ProductVariant/50567084441765",
-          "title": "1 Bundle / 18\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "189.00",
-            "CAD": "265.00"
-          },
-          "compareAtPrice": null,
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "1 Bundle"
-            },
-            {
-              "name": "Length",
-              "value": "18\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084474533",
-          "title": "1 Bundle / 20\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "209.00",
-            "CAD": "293.00"
-          },
-          "compareAtPrice": null,
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "1 Bundle"
-            },
-            {
-              "name": "Length",
-              "value": "20\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084507301",
-          "title": "1 Bundle / 22\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "219.00",
-            "CAD": "307.00"
-          },
-          "compareAtPrice": null,
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "1 Bundle"
-            },
-            {
-              "name": "Length",
-              "value": "22\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084540069",
-          "title": "1 Bundle / 24\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "239.00",
-            "CAD": "335.00"
-          },
-          "compareAtPrice": null,
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "1 Bundle"
-            },
-            {
-              "name": "Length",
-              "value": "24\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084572837",
-          "title": "1 Bundle / 26\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "269.00",
-            "CAD": "377.00"
-          },
-          "compareAtPrice": null,
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "1 Bundle"
-            },
-            {
-              "name": "Length",
-              "value": "26\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084605605",
-          "title": "1 Bundle / 28\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "299.00",
-            "CAD": "419.00"
-          },
-          "compareAtPrice": null,
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "1 Bundle"
-            },
-            {
-              "name": "Length",
-              "value": "28\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084638373",
-          "title": "3 Bundles / 18\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "359.00",
-            "CAD": "503.00"
-          },
-          "compareAtPrice": {
-            "USD": "507.00",
-            "CAD": "710.00"
-          },
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "3 Bundles"
-            },
-            {
-              "name": "Length",
-              "value": "18\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084671141",
-          "title": "3 Bundles / 20\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "379.00",
-            "CAD": "531.00"
-          },
-          "compareAtPrice": {
-            "USD": "567.00",
-            "CAD": "794.00"
-          },
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "3 Bundles"
-            },
-            {
-              "name": "Length",
-              "value": "20\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084703909",
-          "title": "3 Bundles / 22\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "419.00",
-            "CAD": "587.00"
-          },
-          "compareAtPrice": {
-            "USD": "597.00",
-            "CAD": "836.00"
-          },
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "3 Bundles"
-            },
-            {
-              "name": "Length",
-              "value": "22\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084736677",
-          "title": "3 Bundles / 24\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "469.00",
-            "CAD": "657.00"
-          },
-          "compareAtPrice": {
-            "USD": "657.00",
-            "CAD": "920.00"
-          },
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "3 Bundles"
-            },
-            {
-              "name": "Length",
-              "value": "24\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084769445",
-          "title": "3 Bundles / 26\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "499.00",
-            "CAD": "699.00"
-          },
-          "compareAtPrice": {
-            "USD": "747.00",
-            "CAD": "1046.00"
-          },
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "3 Bundles"
-            },
-            {
-              "name": "Length",
-              "value": "26\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084802213",
-          "title": "3 Bundles / 28\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "549.00",
-            "CAD": "769.00"
-          },
-          "compareAtPrice": {
-            "USD": "837.00",
-            "CAD": "1172.00"
-          },
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "3 Bundles"
-            },
-            {
-              "name": "Length",
-              "value": "28\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084834981",
-          "title": "3 Bundles / 18\" / 20\" / 22\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "389.00",
-            "CAD": "545.00"
-          },
-          "compareAtPrice": {
-            "USD": "557.00",
-            "CAD": "780.00"
-          },
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "3 Bundles"
-            },
-            {
-              "name": "Length",
-              "value": "18\" / 20\" / 22\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084867749",
-          "title": "3 Bundles / 20\" / 22\" / 24\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "419.00",
-            "CAD": "587.00"
-          },
-          "compareAtPrice": {
-            "USD": "607.00",
-            "CAD": "850.00"
-          },
-          "selectedOptions": [
-            {
-              "name": "Bundles",
-              "value": "3 Bundles"
-            },
-            {
-              "name": "Length",
-              "value": "20\" / 22\" / 24\""
-            }
-          ]
-        },
-        {
-          "id": "gid://shopify/ProductVariant/50567084900517",
-          "title": "3 Bundles / 22\" / 24\" / 26\"",
-          "availableForSale": true,
-          "price": {
-            "USD": "459.00",
-            "CAD": "643.00"
-          },
-          "compareAtPrice": {
-            "USD": "667.00",
-            "CAD": "934.00"
           },
           "selectedOptions": [
             {
