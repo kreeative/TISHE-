@@ -256,6 +256,21 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // the new photos replace the old ones: the pink-top photos first (the first is the cover), the new
+    // video, then the first video
+    id: 'u-part-new-photos-only',
+    run: (doc) => {
+      const base = '/media/products/u-part-raw-vietnamese'
+      const keep = [`${base}/5.jpg`, `${base}/6.jpg`, `${base}/video2.mp4`, `${base}/video.mp4`]
+      for (const p of doc.products) {
+        if (p.handle !== 'u-part-raw-vietnamese') continue
+        p.media = keep.map((url) => p.media.find((m) => m.url === url)).filter((m): m is NonNullable<typeof m> => Boolean(m))
+        p.images = p.images.filter((im) => keep.includes(im.url))
+        p.featuredImage = p.images[0] ?? null
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
