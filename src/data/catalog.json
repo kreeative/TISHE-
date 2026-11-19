@@ -652,7 +652,7 @@
       "title": "Raw Vietnamese U-Part Wig",
       "handle": "u-part-raw-vietnamese",
       "supplier": "evelyn",
-      "descriptionHtml": "<p><strong>100% raw Vietnamese hair from a single donor, on a U-part wig.</strong> Bone straight and glossy in its natural colour, 20\" long. The U-shaped opening at the top lets you leave out a little of your own hair along the part, so the wig blends into your hairline instead of sitting on it. No lace, no glue.</p>\n\n<p>Raw means the hair is cut from one donor and never chemically processed. No acid wash, no silicone, no re-dyeing, so it moves, blends and ages the way your own hair does. Wear it sleek, curl it, or press your leave-out to match.</p>\n\n<h4>How to wear it</h4>\n<p>Braid your hair down, leaving a small section out along your part. Put the unit on, then smooth your leave-out over the opening. It goes on in minutes and comes off just as easily, so your own hair rests protected underneath.</p>\n\n<h4>Care</h4>\n<p>Wash in cool water, condition generously and let it air dry. Detangle from the ends up with a wide tooth comb, and use a heat protectant before any hot tool. Treated well, raw hair lasts years rather than months.</p>\n\n<p><em>Because this is real single-donor hair that is never re-dyed, a few strands may show soft golden or reddish tones from natural sun exposure. That is a mark of genuine raw hair.</em></p>",
+      "descriptionHtml": "<p><strong>100% raw Vietnamese hair from a single donor, on a U-part wig.</strong> Bone straight and glossy in its natural colour, from 18\" to 24\". The U-shaped opening at the top lets you leave out a little of your own hair along the part, so the wig blends into your hairline instead of sitting on it. No lace, no glue.</p>\n\n<p>Raw means the hair is cut from one donor and never chemically processed. No acid wash, no silicone, no re-dyeing, so it moves, blends and ages the way your own hair does. Wear it sleek, curl it, or press your leave-out to match.</p>\n\n<h4>How to wear it</h4>\n<p>Braid your hair down, leaving a small section out along your part. Put the unit on, then smooth your leave-out over the opening. It goes on in minutes and comes off just as easily, so your own hair rests protected underneath.</p>\n\n<h4>Care</h4>\n<p>Wash in cool water, condition generously and let it air dry. Detangle from the ends up with a wide tooth comb, and use a heat protectant before any hot tool. Treated well, raw hair lasts years rather than months.</p>\n\n<p><em>Because this is real single-donor hair that is never re-dyed, a few strands may show soft golden or reddish tones from natural sun exposure. That is a mark of genuine raw hair.</em></p>",
       "tags": [
         "u-part",
         "wig",
@@ -724,11 +724,30 @@
         {
           "name": "Length",
           "values": [
-            "20\""
+            "18\"",
+            "20\"",
+            "22\"",
+            "24\""
           ]
         }
       ],
       "variants": [
+        {
+          "id": "tis-variant-u-part-raw-vietnamese-18",
+          "title": "18\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "240.00",
+            "CAD": "336.00"
+          },
+          "compareAtPrice": null,
+          "selectedOptions": [
+            {
+              "name": "Length",
+              "value": "18\""
+            }
+          ]
+        },
         {
           "id": "tis-variant-u-part-raw-vietnamese-20",
           "title": "20\"",
@@ -742,6 +761,38 @@
             {
               "name": "Length",
               "value": "20\""
+            }
+          ]
+        },
+        {
+          "id": "tis-variant-u-part-raw-vietnamese-22",
+          "title": "22\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "320.00",
+            "CAD": "448.00"
+          },
+          "compareAtPrice": null,
+          "selectedOptions": [
+            {
+              "name": "Length",
+              "value": "22\""
+            }
+          ]
+        },
+        {
+          "id": "tis-variant-u-part-raw-vietnamese-24",
+          "title": "24\"",
+          "availableForSale": true,
+          "price": {
+            "USD": "390.00",
+            "CAD": "546.00"
+          },
+          "compareAtPrice": null,
+          "selectedOptions": [
+            {
+              "name": "Length",
+              "value": "24\""
             }
           ]
         }

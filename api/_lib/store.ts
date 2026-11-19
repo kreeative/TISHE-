@@ -314,6 +314,36 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // the U-part in 18", 22" and 24" too, priced like the 20" from the supplier's prices
+    // (US$102 / 139 / 175), shipping included
+    id: 'u-part-lengths-18-24',
+    run: (doc) => {
+      const prices: Record<string, { USD: string; CAD: string }> = {
+        '18"': { USD: '240.00', CAD: '336.00' },
+        '22"': { USD: '320.00', CAD: '448.00' },
+        '24"': { USD: '390.00', CAD: '546.00' },
+      }
+      for (const p of doc.products) {
+        if (p.handle !== 'u-part-raw-vietnamese') continue
+        for (const [length, price] of Object.entries(prices)) {
+          if (p.variants.some((v) => v.title === length)) continue
+          p.variants.push({
+            id: `tis-variant-u-part-raw-vietnamese-${length.replace('"', '')}`,
+            title: length,
+            availableForSale: true,
+            price,
+            compareAtPrice: null,
+            selectedOptions: [{ name: 'Length', value: length }],
+          })
+        }
+        const inches = (title: string) => parseInt(title, 10) || 0
+        p.variants.sort((a, b) => inches(a.title) - inches(b.title))
+        p.options = [{ name: 'Length', values: p.variants.map((v) => v.title) }]
+        p.descriptionHtml = p.descriptionHtml.replace('in its natural colour, 20" long.', 'in its natural colour, from 18" to 24".')
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
