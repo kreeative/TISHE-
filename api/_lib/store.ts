@@ -344,6 +344,16 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // the 18" U-part earned the least once the supplier's shipping is counted: US$250 / CA$350
+    id: 'u-part-18-250',
+    run: (doc) => {
+      for (const p of doc.products) {
+        if (p.handle !== 'u-part-raw-vietnamese') continue
+        for (const v of p.variants) if (v.title === '18"') v.price = { USD: '250.00', CAD: '350.00' }
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
