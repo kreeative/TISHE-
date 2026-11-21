@@ -1,6 +1,7 @@
 import { findVariant, type CatalogProduct, type CatalogVariant, type Currency } from './catalog.js'
 import { checkCode, findCode, needsEmail, type CodeRule, type History } from './discounts.js'
 import { HttpError, email as cleanEmail, str } from './http.js'
+import { strandsOffer, type Strands, type StrandsOffer } from './strands.js'
 import type { StoreDoc } from './store.js'
 
 // Prices a bag on the server from the catalog. The browser only sends variant
@@ -13,6 +14,8 @@ export interface PriceRequest {
   country: string
   code: string | null
   email: string | null
+  // a signed-in Circle member asks to spend her strands
+  useStrands: boolean
 }
 
 export interface PricedLine {
@@ -37,6 +40,8 @@ export interface Priced {
   rule: CodeRule | null
   // every item's price already includes shipping
   shippingIncluded: boolean
+  // a signed-in member's strands: what they can take off, and whether they do
+  strands: StrandsOffer | null
 }
 
 const cents = (amount: string | number) => Math.round(Number(amount) * 100)
@@ -58,6 +63,7 @@ export function parsePriceRequest(body: Record<string, unknown>): PriceRequest {
     country: str(body.country, 2).toUpperCase(),
     code: str(body.code, 40).toUpperCase() || null,
     email: cleanEmail(body.email) || null,
+    useStrands: body.strands === true,
   }
 }
 
@@ -65,8 +71,9 @@ export function needsHistory(req: PriceRequest, doc: StoreDoc): boolean {
   return Boolean(req.code && req.email && needsEmail(findCode(doc.discounts, req.code)))
 }
 
-// history is the shopper's past orders, looked up by email when a code needs it
-export function price(req: PriceRequest, history: History | null, doc: StoreDoc): Priced {
+// history is the shopper's past orders, looked up by email when a code needs it;
+// member is a signed-in Circle member's strands (they add up with a sale and with codes)
+export function price(req: PriceRequest, history: History | null, doc: StoreDoc, member: Strands | null = null): Priced {
   const ship = doc.shipping
   const zone = ship.zones.find((z) => z.countries.includes(req.country))
   if (!zone) throw new HttpError(400, "We don't ship to that country yet. Write to hello@theivorysukundu.com and we'll see what we can do.")
@@ -109,6 +116,8 @@ export function price(req: PriceRequest, history: History | null, doc: StoreDoc)
   const freeShipping = rule?.kind === 'free_shipping'
   const shippingIncluded = Boolean(ship.included) || lines.every((l) => l.product.shippingIncluded)
   const shipping = freeShipping || shippingIncluded ? 0 : cents(zone.rate)
+  const strands = member ? strandsOffer(member, discounted, zone.currency, req.useStrands) : null
+  const strandsOff = strands?.applied ? strands.amount : 0
 
   return {
     lines,
@@ -119,8 +128,9 @@ export function price(req: PriceRequest, history: History | null, doc: StoreDoc)
     freeShipping,
     zone: { id: zone.id, label: zone.label },
     taxAtCheckout: req.country === 'CA',
-    total: discounted + shipping,
+    total: discounted + shipping - strandsOff,
     rule,
     shippingIncluded,
+    strands,
   }
 }

@@ -153,7 +153,7 @@ it needs comes back from `order` (and `update`, `refund`):
 | Header buttons | **Rembourser** (`refund`), **Écrire à la cliente** (`email`, see above), **Plus**: mark delivered (`update { status: 'delivered' }`), cancel (`update { status: 'cancelled' }`), open in Stripe (`stripeUrl`) |
 | Fulfilled / timeline | `createdAt` → `orderedAt` (sent to supplier) → `shippedAt` → `deliveredAt`; `carrier`, `trackingNumbers` (one link each, or `trackingUrl` that follows them all) |
 | Items | `items[]`: `image`, `title`, `variant`, `unitAmount` × `quantity`, `total` |
-| Paid | `subtotal`, `discount` (+ `code`), `shippingAmount`, `tax` (`taxLabel`), `total`, `payment` ("Visa •••• 4242", "PayPal (€167.31)"); to the bank: `settled`, `fee`, `net` (CAD) |
+| Paid | `subtotal`, `discount` (+ `code`; it includes Circle strands: `strandsUsed` strands took `strandsAmount` off), `shippingAmount`, `tax` (`taxLabel`), `total`, `payment` ("Visa •••• 4242", "PayPal (€167.31)"); to the bank: `settled`, `fee`, `net` (CAD) |
 | Customer | `name`, `email`, `phone` |
 | Shipping address | `shipping` |
 | Billing address | `billing` (`null` = Stripe only took the card's country and postcode) |

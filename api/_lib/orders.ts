@@ -66,7 +66,11 @@ export interface Order {
   summary: string
   currency: string
   subtotal: number
+  // everything taken off: a code, and Circle strands
   discount: number
+  // Circle strands spent on this order, and what they took off
+  strandsUsed: number
+  strandsAmount: number
   shippingAmount: number
   tax: number
   total: number
@@ -187,9 +191,11 @@ export function toOrder(session: SessionWithPi, lineItems: Stripe.LineItem[] = [
   const subtotal = items.length
     ? items.reduce((n, i) => n + i.originalUnit * i.quantity, 0)
     : Number(sm.subtotal) || 0
-  const discount = items.length
-    ? items.reduce((n, i) => n + (i.originalUnit - i.unitAmount) * i.quantity, 0)
-    : Number(sm.discount) || 0
+  // strands come off as a Stripe coupon on the whole order, not off the items
+  const strandsAmount = Number(sm.strands_amount) || 0
+  const discount =
+    (items.length ? items.reduce((n, i) => n + (i.originalUnit - i.unitAmount) * i.quantity, 0) : Number(sm.discount) || 0) +
+    strandsAmount
 
   return {
     id: session.id,
@@ -212,6 +218,8 @@ export function toOrder(session: SessionWithPi, lineItems: Stripe.LineItem[] = [
     currency: (session.currency ?? 'cad').toUpperCase(),
     subtotal,
     discount,
+    strandsUsed: Number(sm.strands) || 0,
+    strandsAmount,
     // shipping is a Checkout shipping option (older orders had it as a line item)
     shippingAmount: session.shipping_cost?.amount_subtotal ?? (items.length ? shippingAmount : Number(sm.shipping) || 0),
     tax: session.total_details?.amount_tax ?? 0,

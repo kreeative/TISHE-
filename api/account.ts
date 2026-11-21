@@ -4,11 +4,12 @@ import { issueToken, verifyToken } from './_lib/tokens.js'
 import { STATUS_LABELS, ordersForEmail } from './_lib/orders.js'
 import { legacyCustomer } from './_lib/legacy.js'
 import { sendSignInLink } from './_lib/notify.js'
+import { strandsFrom } from './_lib/strands.js'
 
 // Sukundu Circle accounts, without passwords.
 //   link   { email }  → emails a sign-in link if this email has ordered
 //   redeem { token }  → swaps the link's token for a 30-day session
-//   me     (Bearer session) → name, orders and legacy spend
+//   me     (Bearer session) → name, orders, legacy spend and strands
 export default handler(async (request) => {
   const body = await readBody(request)
   const action = str(body.action)
@@ -34,12 +35,14 @@ export default handler(async (request) => {
     const address = verifyToken(bearer(request), 'session')
     const orders = await ordersForEmail(address)
     const latest = orders[0]
+    const legacySpend = legacyCustomer(address).spend
     const [firstName, ...rest] = (latest?.name ?? '').split(/\s+/).filter(Boolean)
     return json({
       email: address,
       firstName: firstName ?? null,
       lastName: rest.join(' ') || null,
-      legacySpend: legacyCustomer(address).spend,
+      legacySpend,
+      strands: strandsFrom(orders, legacySpend),
       orders: orders
         .filter((o) => o.status !== 'cancelled' && !o.refunded)
         .map((o) => ({

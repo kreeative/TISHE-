@@ -75,6 +75,8 @@ function toOrder(r: LegacyRecord): LegacyOrder {
     currency: 'CAD',
     subtotal: r.subtotal,
     discount: r.discount,
+    strandsUsed: 0,
+    strandsAmount: 0,
     shippingAmount: r.shippingAmount,
     tax: r.tax,
     total: r.total,

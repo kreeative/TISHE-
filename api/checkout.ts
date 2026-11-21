@@ -1,19 +1,23 @@
 import type Stripe from 'stripe'
-import { handler, json, readBody, str } from './_lib/http.js'
+import { HttpError, bearer, handler, json, readBody, str } from './_lib/http.js'
 import { env } from './_lib/env.js'
 import { stripe, SOURCE } from './_lib/stripe.js'
 import { needsHistory, parsePriceRequest, price } from './_lib/pricing.js'
 import { historyFor } from './_lib/orders.js'
 import { absolute, money } from './_lib/templates.js'
 import { loadStore } from './_lib/store.js'
+import { strandsFor } from './_lib/strands.js'
+import { verifyToken } from './_lib/tokens.js'
 
 // Product tax codes for Stripe Tax: general tangible goods, and shipping
 const TAX_CODE_GOODS = 'txcd_99999999'
 const TAX_CODE_SHIPPING = 'txcd_92010001'
 
-// POST { action: 'quote' | 'create', items, country, code, email }
+// POST { action: 'quote' | 'create', items, country, code, email, strands }
 //   quote  → the totals for the bag, to show before paying
 //   create → a Stripe Checkout Session; the browser is sent to its url
+// With a Circle member's session (Authorization: Bearer), the totals show what her
+// strands can take off, and strands: true spends them (a one-time Stripe coupon).
 //
 // Stripe Tax adds GST/HST for Canadian addresses (shipping included) and
 // zero-rates exports; Adaptive Pricing shows shoppers outside Canada and the
@@ -21,9 +25,14 @@ const TAX_CODE_SHIPPING = 'txcd_92010001'
 export default handler(async (request) => {
   const body = await readBody(request)
   const req = parsePriceRequest(body)
+  const member = memberEmail(request)
+  if (req.useStrands && !member) throw new HttpError(401, 'Please sign in again to use your strands.', 'unauthorized')
+  // a member's orders carry her email: the checkout is hers
+  if (member) req.email = member
   const doc = await loadStore()
   const history = needsHistory(req, doc) && req.email ? await historyFor(req.email) : null
-  const priced = price(req, history, doc)
+  const priced = price(req, history, doc, member ? await strandsFor(member) : null)
+  const strands = priced.strands
 
   if (str(body.action) === 'quote') {
     return json({
@@ -34,6 +43,9 @@ export default handler(async (request) => {
       total: priced.total / 100,
       currency: priced.currency,
       code: priced.rule ? { code: priced.rule.code, label: priced.rule.label } : null,
+      strands: strands
+        ? { available: strands.available, usable: strands.usable, amount: strands.amount / 100, applied: strands.applied }
+        : null,
     })
   }
 
@@ -72,9 +84,22 @@ export default handler(async (request) => {
     .join('; ')
     .slice(0, 480)
 
+  // the strands come off the whole order, as a coupon that works once
+  const coupon = strands?.applied
+    ? await stripe().coupons.create({
+        name: `Circle strands (${strands.usable})`,
+        amount_off: strands.amount,
+        currency,
+        duration: 'once',
+        max_redemptions: 1,
+        metadata: { source: SOURCE, email: req.email ?? '', strands: String(strands.usable) },
+      })
+    : null
+
   const session = await stripe().checkout.sessions.create({
     mode: 'payment',
     line_items: lineItems,
+    discounts: coupon ? [{ coupon: coupon.id }] : undefined,
     customer_email: req.email ?? undefined,
     automatic_tax: { enabled: true },
     adaptive_pricing: { enabled: true },
@@ -124,6 +149,8 @@ export default handler(async (request) => {
       subtotal: String(priced.subtotal),
       discount: String(priced.discount),
       shipping: String(priced.shipping),
+      strands: coupon ? String(strands?.usable ?? 0) : '',
+      strands_amount: coupon ? String(strands?.amount ?? 0) : '',
     },
     payment_intent_data: {
       description: `The Ivory Sukundu: ${summary}`.slice(0, 500),
@@ -134,3 +161,14 @@ export default handler(async (request) => {
   if (!session.url) throw new Error('Stripe returned a session without a url')
   return json({ url: session.url })
 })
+
+// the signed-in Circle member, if the bag came with a valid session
+function memberEmail(request: Request): string | null {
+  const token = bearer(request)
+  if (!token) return null
+  try {
+    return verifyToken(token, 'session')
+  } catch {
+    return null
+  }
+}

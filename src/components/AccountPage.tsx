@@ -103,7 +103,7 @@ export default function AccountPage() {
                 <span className="text-lg text-[#5A3224] ml-2">strands</span>
               </p>
               <p className="mt-1 mb-5 text-xs text-[#1B1113]/50">
-                Every $1 spent earns 1 strand. 200 strands is $20 off your next order.
+                Every $1 spent earns 1 strand. 200 strands is $20 off: use them in your bag, at checkout.
               </p>
               {status.next ? (
                 <>

@@ -21,6 +21,8 @@ export interface Customer {
   orders: CustomerOrder[]
   // spend from orders placed on the previous shop, before October 2026
   legacySpend: number
+  // earned (every $1 spent), used in the bag, and what's left to spend
+  strands?: { earned: number; used: number; available: number }
 }
 
 export function savedSession(): string | null {
@@ -67,7 +69,8 @@ export function fetchCustomer(token: string): Promise<Customer> {
   return api('account', { action: 'me' }, token)
 }
 
-// Circle rules: every $1 spent earns 1 strand
+// Circle rules: every $1 spent earns 1 strand; 200 strands take $20 (CA$28) off an order
+export const STRANDS_PER_REWARD = 200
 export const TIER_THRESHOLDS = [
   { name: 'Ivory', min: 0 },
   { name: 'Gold', min: 500 },
@@ -81,7 +84,8 @@ export function lifetimeSpend(customer: Customer): number {
 
 export function circleStatus(customer: Customer) {
   const spend = lifetimeSpend(customer)
-  const strands = Math.floor(spend)
+  // the tier follows everything ever spent; the balance drops as strands are used
+  const strands = customer.strands?.available ?? Math.floor(spend)
   let tier: (typeof TIER_THRESHOLDS)[number] = TIER_THRESHOLDS[0]
   for (const t of TIER_THRESHOLDS) if (spend >= t.min) tier = t
   const next = TIER_THRESHOLDS.find((t) => t.min > spend) ?? null

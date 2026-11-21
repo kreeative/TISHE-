@@ -16,6 +16,8 @@ interface Confirmed {
   items: { title: string; variant: string; quantity: number; total: number; image: string | null; handle: string; unit: number }[]
   subtotal: number
   discount: number
+  strandsUsed?: number
+  strandsAmount?: number
   shipping: number
   tax: number
   total: number
@@ -136,10 +138,16 @@ export default function OrderConfirmed() {
                   <dt>Subtotal</dt>
                   <dd>{formatMoney(order.subtotal, order.currency)}</dd>
                 </div>
-                {order.discount > 0 && (
+                {order.discount - (order.strandsAmount ?? 0) > 0.001 && (
                   <div className="flex justify-between text-[#1B1113]/70">
                     <dt>Discount{order.code ? ` (${order.code})` : ''}</dt>
-                    <dd>−{formatMoney(order.discount, order.currency)}</dd>
+                    <dd>−{formatMoney(order.discount - (order.strandsAmount ?? 0), order.currency)}</dd>
+                  </div>
+                )}
+                {(order.strandsAmount ?? 0) > 0 && (
+                  <div className="flex justify-between text-[#1B1113]/70">
+                    <dt>Circle strands ({order.strandsUsed})</dt>
+                    <dd>−{formatMoney(order.strandsAmount ?? 0, order.currency)}</dd>
                   </div>
                 )}
                 <div className="flex justify-between text-[#1B1113]/70">

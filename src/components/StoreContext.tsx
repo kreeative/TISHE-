@@ -15,6 +15,8 @@ export const STRIPE_CHECKOUT = import.meta.env.VITE_CHECKOUT === 'stripe'
 export interface CheckoutDetails {
   code?: string
   email?: string
+  // a signed-in member spends her strands
+  strands?: boolean
 }
 
 const PREFS_KEY = 'tis-ship-to'
@@ -219,12 +221,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     try {
       const url = STRIPE_CHECKOUT
         ? (
-            await api<{ url: string }>('checkout', {
-              items,
-              country: shipTo.country,
-              code: details.code,
-              email: details.email || customer?.email,
-            })
+            await api<{ url: string }>(
+              'checkout',
+              {
+                items,
+                country: shipTo.country,
+                code: details.code,
+                email: details.email || customer?.email,
+                strands: Boolean(details.strands),
+              },
+              customer ? savedSession() : null,
+            )
           ).url
         : await shopifyCheckoutUrl(items)
       window.location.href = url

@@ -28,6 +28,8 @@ export default handler(async (request) => {
     })),
     subtotal: order.subtotal / 100,
     discount: order.discount / 100,
+    strandsUsed: order.strandsUsed,
+    strandsAmount: order.strandsAmount / 100,
     shipping: order.shippingAmount / 100,
     tax: order.tax / 100,
     total: order.total / 100,

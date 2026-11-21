@@ -13,7 +13,9 @@ function addressBlock(order: Order): string[] {
 
 function orderTotals(order: Order): [string, string, boolean?][] {
   const rows: [string, string, boolean?][] = [['Subtotal', money(order.subtotal, order.currency)]]
-  if (order.discount) rows.push([`Discount${order.code ? ` (${order.code})` : ''}`, `−${money(order.discount, order.currency)}`])
+  const codeOff = order.discount - order.strandsAmount
+  if (codeOff) rows.push([`Discount${order.code ? ` (${order.code})` : ''}`, `−${money(codeOff, order.currency)}`])
+  if (order.strandsAmount) rows.push([`Circle strands (${order.strandsUsed})`, `−${money(order.strandsAmount, order.currency)}`])
   rows.push(['Shipping', order.shippingAmount ? money(order.shippingAmount, order.currency) : 'Free'])
   if (order.tax) rows.push([order.taxLabel, money(order.tax, order.currency)])
   rows.push(['Total', money(order.total, order.currency), true])
