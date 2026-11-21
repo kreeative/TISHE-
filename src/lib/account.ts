@@ -69,8 +69,8 @@ export function fetchCustomer(token: string): Promise<Customer> {
   return api('account', { action: 'me' }, token)
 }
 
-// Circle rules: every $1 spent earns 1 strand; 200 strands take $20 (CA$28) off an order
-export const STRANDS_PER_REWARD = 200
+// Circle rules: every $1 spent earns 1 strand; 500 strands take $20 (CA$28) off an order
+export const STRANDS_PER_REWARD = 500
 export const TIER_THRESHOLDS = [
   { name: 'Ivory', min: 0 },
   { name: 'Gold', min: 500 },

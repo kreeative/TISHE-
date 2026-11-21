@@ -3,12 +3,12 @@ import { legacyCustomer } from './legacy.js'
 import { ordersForEmail, type Order } from './orders.js'
 
 // Circle strands: every US$1 spent earns 1 strand (Canadian dollars count at 1.40),
-// and every 200 strands take US$20 (CA$28) off an order, in the bag. Strands spent
+// and every 500 strands take US$20 (CA$28) off an order, in the bag. Strands spent
 // are recorded on the order they were used on; a cancelled or refunded order gives
 // back both the strands it earned and the strands it used.
 
-export const STRANDS_PER_REWARD = 200
-// what 200 strands take off, in cents
+export const STRANDS_PER_REWARD = 500
+// what 500 strands take off, in cents
 export const REWARD: Record<Currency, number> = { USD: 2000, CAD: 2800 }
 
 export interface Strands {
@@ -31,7 +31,7 @@ export async function strandsFor(email: string): Promise<Strands> {
 
 export interface StrandsOffer {
   available: number
-  // the most this order can take: whole rewards of 200, leaving at least $1 to pay
+  // the most this order can take: whole rewards of 500, leaving at least $1 to pay
   usable: number
   amount: number
   applied: boolean

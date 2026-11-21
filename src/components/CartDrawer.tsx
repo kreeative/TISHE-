@@ -281,7 +281,7 @@ export default function CartDrawer() {
                   )}
                 </form>
 
-                {/* Circle strands: 200 take $20 (CA$28) off */}
+                {/* Circle strands: every 500 take $20 (CA$28) off */}
                 {customer && quote?.strands ? (
                   quote.strands.usable > 0 ? (
                     <label className="flex items-start gap-3 border border-[#5A3224]/25 px-3 py-3 cursor-pointer">

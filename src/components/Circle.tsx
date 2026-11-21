@@ -15,7 +15,7 @@ const TIERS = [
     name: 'Ivory',
     threshold: 'Free to join',
     perks: [
-      'Every $1 earns 1 strand. 200 strands is $20 off',
+      'Every $1 earns 1 strand. 500 strands is $20 off',
       'Early access to drops and restocks',
       'Sukundu School: care guides and install tutorials',
       'A gift on your birthday, always',
