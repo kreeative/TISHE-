@@ -367,6 +367,18 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // the owner's real shipping is now US$60 an order (China to her, then on to the customer):
+    // every price gets the other US$30 / CA$42, on top of the US$30 / CA$42 already in it
+    id: 'shipping-60-included',
+    run: (doc) => {
+      const up = (amount: string, by: number) => (Number(amount) + by).toFixed(2)
+      for (const p of doc.products) {
+        for (const v of p.variants) v.price = { USD: up(v.price.USD, 30), CAD: up(v.price.CAD, 42) }
+        p.shippingIncluded = true
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
