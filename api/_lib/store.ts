@@ -354,6 +354,19 @@ const CHANGES: { id: string; run: (doc: StoreDoc) => void }[] = [
       }
     },
   },
+  {
+    // Cyber Weekend: the sale goes from 20% to 25% off everything, still until Cyber Monday midnight (Toronto)
+    id: 'cyber-weekend-25',
+    run: (doc) => {
+      doc.site.sale = {
+        name: 'Cyber Weekend',
+        banner: 'Cyber Weekend · 25% off everything',
+        endsAt: '2026-12-01T05:00:00.000Z',
+        handles: doc.products.map((p) => p.handle),
+        percent: 25,
+      }
+    },
+  },
 ]
 
 async function addFromCode(doc: StoreDoc, saved: boolean): Promise<StoreDoc> {
